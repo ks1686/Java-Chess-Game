@@ -7,6 +7,7 @@ public abstract class Piece extends ReturnPiece {
 
     boolean isWhite;
     boolean hasMoved = false; // default, nothing moved
+    PieceType pieceType; // enum to represent the type of piece
 
     // Setter; sets the color of the piece
     public void setWhite(boolean isWhite) {
@@ -32,6 +33,13 @@ public abstract class Piece extends ReturnPiece {
 
     public abstract boolean canMove(int rank, int file, int newRank, int newFile, boolean isNewSpotEmpty);
 
-    public abstract void movePiece();
+    // set hasMoved to true when moved
+    public void movePiece() {
+        this.hasMoved = true;
+    }
 
+    // return the piece type
+    public PieceType getPieceType() {
+        return this.pieceType;
+    }
 }

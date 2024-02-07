@@ -2,35 +2,28 @@ package chess;
 
 public class Rook extends Piece {
 
-    private PieceType pieceType;
-
     // check color to set PieceType
     public Rook(boolean isWhite) {
         this.isWhite = isWhite;
         if (isWhite) {
-            this.pieceType = PieceType.WQ;
+            this.pieceType = PieceType.WR;
         } else {
-            this.pieceType = PieceType.BQ;
+            this.pieceType = PieceType.BR;
         }
     }
 
     // check if the move is valid for a queen
     public boolean canMove(int rank, int file, int newRank, int newFile, boolean isNewSpotEmpty) {
-        int diagX = Math.abs(rank - newRank);
-        int diagY = Math.abs(file - newFile);
-        if (diagX == 0 && diagY != 0) {
+        int rankChange = Math.abs(rank - newRank);
+        int fileChange = Math.abs(file - newFile);
+        if (rankChange == 0 && fileChange != 0) {
             // perfect vertical
             return true;
-        } else if (diagY == 0 && diagX != 0) {
+        } else if (fileChange == 0 && rankChange != 0) {
             // perfect horizontal
             return true;
         }
         // invalid move not accounting for pieces in the way
         return false;
     }
-
-    public void movePiece() {
-        this.hasMoved = true;
-    }
-
 }
