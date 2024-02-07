@@ -30,7 +30,7 @@ public abstract class Piece extends ReturnPiece {
 
     // Abstract method to be implemented by the subclasses
 
-    public abstract boolean canMove(int rank, char file, int newRank, char newFile, boolean isNewSpotEmpty);
+    public abstract boolean canMove(int rank, int file, int newRank, int newFile, boolean isNewSpotEmpty);
 
     public abstract void movePiece();
 
