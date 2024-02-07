@@ -1,51 +1,37 @@
 package chess;
 
-//Class to represent a generic chess piece and commonly shared methods for inheritance
+/*Class to represent a generic chess piece and commonly shared methods for inheritance
+* Extends ReturnPiece class to use the PieceType and PieceFile enums
+*/
+public abstract class Piece extends ReturnPiece {
 
-public abstract class Piece {
+    boolean isWhite;
+    boolean hasMoved = false; // default, nothing moved
 
-    // Boolean to track if the piece is white, 1 for white, 0 for black
-    public boolean isWhite;
-
-    // Set the color of the piece
-    public void setColor(boolean isWhite) {
+    // Setter; sets the color of the piece
+    public void setWhite(boolean isWhite) {
         this.isWhite = isWhite;
     }
 
-    // return if piece is white (1) or black (0)
+    // Getter; gets the color of the piece
     public boolean isWhite() {
-        return isWhite;
+        return this.isWhite;
     }
 
-    // check if other piece is an enemy piece (1) or not (0)
-    public boolean isEnemy(Piece other) {
-        return this.isWhite != other.isWhite;
+    // Setter; sets the hasMoved boolean
+    public void setHasMoved(boolean hasMoved) {
+        this.hasMoved = hasMoved;
     }
 
-    // boolean to track if this is piece's first move (pawns, rooks, kings)
-    public boolean firstMove;
-
-    // set if this is piece's first move (1) or not (0)
-    public void setFirstMove(boolean firstMove) {
-        this.firstMove = firstMove;
+    // Getter; gets the hasMoved boolean
+    public boolean getHasMoved() {
+        return this.hasMoved;
     }
 
-    // return if this is piece's first move (1) or not (0)
-    public boolean isFirstMove() {
-        return firstMove;
-    }
+    // Abstract method to be implemented by the subclasses
 
-    // boolean to track if piece is still on the board
-    public boolean isCaptured;
+    public abstract boolean canMove(int rank, char file, int newRank, char newFile, boolean isNewSpotEmpty);
 
-    // set if piece is captured (1) or not (0)
-    public void setCaptured(boolean isCaptured) {
-        this.isCaptured = isCaptured;
-    }
-
-    // return if piece is captured (1) or not (0)
-    public boolean isCaptured() {
-        return isCaptured;
-    }
+    public abstract void movePiece();
 
 }
