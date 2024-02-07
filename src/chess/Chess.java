@@ -69,10 +69,9 @@ public class Chess {
 	}
 
 	/**
-	 * Method that the autograder will actually run to test your code.
+	 * This method should reset the game, and start from scratch.
 	 */
 	public static void start() {
-		// start or reset the game from scratch
-
+		/* FILL IN THIS METHOD */
 	}
 }
