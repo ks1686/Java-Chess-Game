@@ -162,10 +162,13 @@ public class Chess {
 		 */
 		
 
-		// if we change PieceType
-		// ReturnPiece.PieceType[] piece_order = ReturnPiece.PieceType.values();
-		// PieceFile[] piece_files = ReturnPiece.PieceFile.values();
-
+		/*if we change PieceType
+			ReturnPiece.PieceType[] piece_order = ReturnPiece.PieceType.values();
+			PieceFile[] piece_files = ReturnPiece.PieceFile.values();
+			then for PieceType in piece_order, createNewPiece(), set piecerank and file, 
+			then play.PiecesOnBoard.add(piece)
+		*/
+		
 		// ? -- White --
 		// A1
 		ReturnPiece WR1 = new Rook(true);
