@@ -34,8 +34,10 @@ public class Queen extends Piece {
          *      - if nothing is in between, return true
          */
  
-
-        if (rank == newRank || file == newFile || rankChange == fileChange) {
+        if (rank == newRank && file == newFile) {
+            // can't move in place
+            return false;
+        } else if (rank == newRank || file == newFile || rankChange == fileChange) {
             // perfect diagonal
             return true;
         } else if (rankChange == 0 && fileChange != 0) {
