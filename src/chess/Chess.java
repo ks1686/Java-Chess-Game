@@ -2,24 +2,8 @@ package chess;
 
 import java.util.ArrayList;
 
-// wait why do we need these imports here, isn't ReturnPiece in this class
-import chess.ReturnPiece.PieceFile;
-import chess.ReturnPiece.PieceType;
-
+//!Cannot modify this class
 class ReturnPiece {
-	// im thinking we can change this to 
-	/* 
-	 * 
-	static enum PieceType {
-		R, N, B, Q, K, B, N, R;
-	};
-
-	because we already have the isWhite flag, so specificing WP, WR or BP BR is redundant
-	it would also make setting up the pieces easier, since we can just iterate through 
-	PieceType.values() for each team
-
-	but im unsure whether or not we might need the original PieceType below for something else?
-	 */
 	static enum PieceType {
 		WP, WR, WN, WB, WQ, WK,
 		BP, BR, BN, BB, BK, BQ
@@ -48,6 +32,7 @@ class ReturnPiece {
 	}
 }
 
+// !Cannot modify this class
 class ReturnPlay {
 	enum Message {
 		ILLEGAL_MOVE, DRAW,
@@ -117,16 +102,17 @@ public class Chess {
 		return play;
 	}
 
-	/* if we change enum PieceType, we can use this to simplify creating pieces
+	/*
+	 * if we change enum PieceType, we can use this to simplify creating pieces
 	 * private ReturnPiece createNewPiece(boolean isWhite, PieceType pieceType){
-		switch (pieceType) {
-			case ReturnPiece.PieceType.R: return new Rook(isWhite);
-			case ReturnPiece.PieceType.N: return new Knight(isWhite);
-			case ReturnPiece.PieceType.B: return new Bishop(isWhite);
-			case ReturnPiece.PieceType.Q: return new Queen(isWhite);
-			case ReturnPiece.PieceType.K: return new King(isWhite);
-		}
-	}
+	 * switch (pieceType) {
+	 * case ReturnPiece.PieceType.R: return new Rook(isWhite);
+	 * case ReturnPiece.PieceType.N: return new Knight(isWhite);
+	 * case ReturnPiece.PieceType.B: return new Bishop(isWhite);
+	 * case ReturnPiece.PieceType.Q: return new Queen(isWhite);
+	 * case ReturnPiece.PieceType.K: return new King(isWhite);
+	 * }
+	 * }
 	 */
 
 	/**
@@ -134,7 +120,6 @@ public class Chess {
 	 */
 	public static void start() {
 
-		
 		// Create a new ReturnPlay object
 		play = new ReturnPlay();
 
@@ -160,18 +145,18 @@ public class Chess {
 		 * figure it out.
 		 * Loops maybe?
 		 */
-		
 
-		/*if we change PieceType
-			ReturnPiece.PieceType[] piece_order = ReturnPiece.PieceType.values();
-			PieceFile[] piece_files = ReturnPiece.PieceFile.values();
-			then for PieceType in piece_order, createNewPiece(), set piecerank and file, 
-			then play.PiecesOnBoard.add(piece)
-		*/
-		
-		// ? -- White --
+		/*
+		 * if we change PieceType
+		 * ReturnPiece.PieceType[] piece_order = ReturnPiece.PieceType.values();
+		 * PieceFile[] piece_files = ReturnPiece.PieceFile.values();
+		 * then for PieceType in piece_order, createNewPiece(), set piecerank and file,
+		 * then play.PiecesOnBoard.add(piece)
+		 */
+
+		// ? -- White - ?//
 		// A1
-		ReturnPiece WR1 = new Rook(true);
+		ReturnPiece WR1 = new Rook(true); // boolean in constructor already defines piece enum
 		WR1.pieceFile = ReturnPiece.PieceFile.a;
 		WR1.pieceRank = 1;
 		play.piecesOnBoard.add(WR1);
@@ -210,16 +195,48 @@ public class Chess {
 		WR2.pieceFile = ReturnPiece.PieceFile.h;
 		WR2.pieceRank = 1;
 		play.piecesOnBoard.add(WR2);
-		
-		// white pawns
-		for (PieceFile file : PieceFile.values()) {
-			ReturnPiece bp = new Pawn(false);
-			bp.pieceFile = file;
-			bp.pieceRank = 2;
-			play.piecesOnBoard.add(bp);
-		}
-		
-		// ? -- Black --
+		// A2
+		ReturnPiece WP1 = new Pawn(true);
+		WP1.pieceFile = ReturnPiece.PieceFile.a;
+		WP1.pieceRank = 2;
+		play.piecesOnBoard.add(WP1);
+		// B2
+		ReturnPiece WP2 = new Pawn(true);
+		WP2.pieceFile = ReturnPiece.PieceFile.b;
+		WP2.pieceRank = 2;
+		play.piecesOnBoard.add(WP2);
+		// C2
+		ReturnPiece WP3 = new Pawn(true);
+		WP3.pieceFile = ReturnPiece.PieceFile.c;
+		WP3.pieceRank = 2;
+		play.piecesOnBoard.add(WP3);
+		// D2
+		ReturnPiece WP4 = new Pawn(true);
+		WP4.pieceFile = ReturnPiece.PieceFile.d;
+		WP4.pieceRank = 2;
+		play.piecesOnBoard.add(WP4);
+		// E2
+		ReturnPiece WP5 = new Pawn(true);
+		WP5.pieceFile = ReturnPiece.PieceFile.e;
+		WP5.pieceRank = 2;
+		play.piecesOnBoard.add(WP5);
+		// F2
+		ReturnPiece WP6 = new Pawn(true);
+		WP6.pieceFile = ReturnPiece.PieceFile.f;
+		WP6.pieceRank = 2;
+		play.piecesOnBoard.add(WP6);
+		// G2
+		ReturnPiece WP7 = new Pawn(true);
+		WP7.pieceFile = ReturnPiece.PieceFile.g;
+		WP7.pieceRank = 2;
+		play.piecesOnBoard.add(WP7);
+		// H2
+		ReturnPiece WP8 = new Pawn(true);
+		WP8.pieceFile = ReturnPiece.PieceFile.h;
+		WP8.pieceRank = 2;
+		play.piecesOnBoard.add(WP8);
+
+		// ? -- Black - ?//
 		// A8
 		ReturnPiece BR1 = new Rook(false);
 		BR1.pieceFile = ReturnPiece.PieceFile.a;
@@ -260,14 +277,46 @@ public class Chess {
 		BR2.pieceFile = ReturnPiece.PieceFile.h;
 		BR2.pieceRank = 8;
 		play.piecesOnBoard.add(BR2);
-
-		// black pawns
-		for (PieceFile file : PieceFile.values()) {
-			ReturnPiece bp = new Pawn(false);
-			bp.pieceFile = file;
-			bp.pieceRank = 7;
-			play.piecesOnBoard.add(bp);
-		}
+		// A7
+		ReturnPiece BP1 = new Pawn(false);
+		BP1.pieceFile = ReturnPiece.PieceFile.a;
+		BP1.pieceRank = 7;
+		play.piecesOnBoard.add(BP1);
+		// B7
+		ReturnPiece BP2 = new Pawn(false);
+		BP2.pieceFile = ReturnPiece.PieceFile.b;
+		BP2.pieceRank = 7;
+		play.piecesOnBoard.add(BP2);
+		// C7
+		ReturnPiece BP3 = new Pawn(false);
+		BP3.pieceFile = ReturnPiece.PieceFile.c;
+		BP3.pieceRank = 7;
+		play.piecesOnBoard.add(BP3);
+		// D7
+		ReturnPiece BP4 = new Pawn(false);
+		BP4.pieceFile = ReturnPiece.PieceFile.d;
+		BP4.pieceRank = 7;
+		play.piecesOnBoard.add(BP4);
+		// E7
+		ReturnPiece BP5 = new Pawn(false);
+		BP5.pieceFile = ReturnPiece.PieceFile.e;
+		BP5.pieceRank = 7;
+		play.piecesOnBoard.add(BP5);
+		// F7
+		ReturnPiece BP6 = new Pawn(false);
+		BP6.pieceFile = ReturnPiece.PieceFile.f;
+		BP6.pieceRank = 7;
+		play.piecesOnBoard.add(BP6);
+		// G7
+		ReturnPiece BP7 = new Pawn(false);
+		BP7.pieceFile = ReturnPiece.PieceFile.g;
+		BP7.pieceRank = 7;
+		play.piecesOnBoard.add(BP7);
+		// H7
+		ReturnPiece BP8 = new Pawn(false);
+		BP8.pieceFile = ReturnPiece.PieceFile.h;
+		BP8.pieceRank = 7;
+		play.piecesOnBoard.add(BP8);
 
 	}
 }
