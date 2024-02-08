@@ -2,8 +2,6 @@ package chess;
 
 import java.util.ArrayList;
 
-import chess.ReturnPiece.PieceFile;
-
 class ReturnPiece {
 	static enum PieceType {
 		WP, WR, WN, WB, WQ, WK,
