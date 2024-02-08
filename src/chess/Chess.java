@@ -2,9 +2,24 @@ package chess;
 
 import java.util.ArrayList;
 
+// wait why do we need these imports here, isn't ReturnPiece in this class
 import chess.ReturnPiece.PieceFile;
+import chess.ReturnPiece.PieceType;
 
 class ReturnPiece {
+	// im thinking we can change this to 
+	/* 
+	 * 
+	static enum PieceType {
+		R, N, B, Q, K, B, N, R;
+	};
+
+	because we already have the isWhite flag, so specificing WP, WR or BP BR is redundant
+	it would also make setting up the pieces easier, since we can just iterate through 
+	PieceType.values() for each team
+
+	but im unsure whether or not we might need the original PieceType below for something else?
+	 */
 	static enum PieceType {
 		WP, WR, WN, WB, WQ, WK,
 		BP, BR, BN, BB, BK, BQ
@@ -102,10 +117,24 @@ public class Chess {
 		return play;
 	}
 
+	/* if we change enum PieceType, we can use this to simplify creating pieces
+	 * private ReturnPiece createNewPiece(boolean isWhite, PieceType pieceType){
+		switch (pieceType) {
+			case ReturnPiece.PieceType.R: return new Rook(isWhite);
+			case ReturnPiece.PieceType.N: return new Knight(isWhite);
+			case ReturnPiece.PieceType.B: return new Bishop(isWhite);
+			case ReturnPiece.PieceType.Q: return new Queen(isWhite);
+			case ReturnPiece.PieceType.K: return new King(isWhite);
+		}
+	}
+	 */
+
 	/**
 	 * This method should reset the game, and start from scratch.
 	 */
 	public static void start() {
+
+		
 		// Create a new ReturnPlay object
 		play = new ReturnPlay();
 
@@ -131,6 +160,12 @@ public class Chess {
 		 * figure it out.
 		 * Loops maybe?
 		 */
+		
+
+		// if we change PieceType
+		// ReturnPiece.PieceType[] piece_order = ReturnPiece.PieceType.values();
+		// PieceFile[] piece_files = ReturnPiece.PieceFile.values();
+
 		// ? -- White --
 		// A1
 		ReturnPiece WR1 = new Rook(true);
