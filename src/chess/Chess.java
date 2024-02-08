@@ -2,6 +2,8 @@ package chess;
 
 import java.util.ArrayList;
 
+import chess.ReturnPiece.PieceFile;
+
 class ReturnPiece {
 	static enum PieceType {
 		WP, WR, WN, WB, WQ, WK,
@@ -77,6 +79,7 @@ public class Chess {
 		}
 
 		// move input formatting
+		move = move.trim();
 		String fromFile = move.substring(0, 1);
 		int fromRank = Integer.parseInt(move.substring(1, 2));
 		String toFile = move.substring(3, 4);
@@ -169,46 +172,15 @@ public class Chess {
 		WR2.pieceFile = ReturnPiece.PieceFile.h;
 		WR2.pieceRank = 1;
 		play.piecesOnBoard.add(WR2);
-		// A2
-		ReturnPiece WP1 = new Pawn(true);
-		WP1.pieceFile = ReturnPiece.PieceFile.a;
-		WP1.pieceRank = 2;
-		play.piecesOnBoard.add(WP1);
-		// B2
-		ReturnPiece WP2 = new Pawn(true);
-		WP2.pieceFile = ReturnPiece.PieceFile.b;
-		WP2.pieceRank = 2;
-		play.piecesOnBoard.add(WP2);
-		// C2
-		ReturnPiece WP3 = new Pawn(true);
-		WP3.pieceFile = ReturnPiece.PieceFile.c;
-		WP3.pieceRank = 2;
-		play.piecesOnBoard.add(WP3);
-		// D2
-		ReturnPiece WP4 = new Pawn(true);
-		WP4.pieceFile = ReturnPiece.PieceFile.d;
-		WP4.pieceRank = 2;
-		play.piecesOnBoard.add(WP4);
-		// E2
-		ReturnPiece WP5 = new Pawn(true);
-		WP5.pieceFile = ReturnPiece.PieceFile.e;
-		WP5.pieceRank = 2;
-		play.piecesOnBoard.add(WP5);
-		// F2
-		ReturnPiece WP6 = new Pawn(true);
-		WP6.pieceFile = ReturnPiece.PieceFile.f;
-		WP6.pieceRank = 2;
-		play.piecesOnBoard.add(WP6);
-		// G2
-		ReturnPiece WP7 = new Pawn(true);
-		WP7.pieceFile = ReturnPiece.PieceFile.g;
-		WP7.pieceRank = 2;
-		play.piecesOnBoard.add(WP7);
-		// H2
-		ReturnPiece WP8 = new Pawn(true);
-		WP8.pieceFile = ReturnPiece.PieceFile.h;
-		WP8.pieceRank = 2;
-		play.piecesOnBoard.add(WP8);
+		
+		// white pawns
+		for (PieceFile file : PieceFile.values()) {
+			ReturnPiece bp = new Pawn(false);
+			bp.pieceFile = file;
+			bp.pieceRank = 2;
+			play.piecesOnBoard.add(bp);
+		}
+		
 		// ? -- Black --
 		// A8
 		ReturnPiece BR1 = new Rook(false);
@@ -250,46 +222,14 @@ public class Chess {
 		BR2.pieceFile = ReturnPiece.PieceFile.h;
 		BR2.pieceRank = 8;
 		play.piecesOnBoard.add(BR2);
-		// A7
-		ReturnPiece BP1 = new Pawn(false);
-		BP1.pieceFile = ReturnPiece.PieceFile.a;
-		BP1.pieceRank = 7;
-		play.piecesOnBoard.add(BP1);
-		// B7
-		ReturnPiece BP2 = new Pawn(false);
-		BP2.pieceFile = ReturnPiece.PieceFile.b;
-		BP2.pieceRank = 7;
-		play.piecesOnBoard.add(BP2);
-		// C7
-		ReturnPiece BP3 = new Pawn(false);
-		BP3.pieceFile = ReturnPiece.PieceFile.c;
-		BP3.pieceRank = 7;
-		play.piecesOnBoard.add(BP3);
-		// D7
-		ReturnPiece BP4 = new Pawn(false);
-		BP4.pieceFile = ReturnPiece.PieceFile.d;
-		BP4.pieceRank = 7;
-		play.piecesOnBoard.add(BP4);
-		// E7
-		ReturnPiece BP5 = new Pawn(false);
-		BP5.pieceFile = ReturnPiece.PieceFile.e;
-		BP5.pieceRank = 7;
-		play.piecesOnBoard.add(BP5);
-		// F7
-		ReturnPiece BP6 = new Pawn(false);
-		BP6.pieceFile = ReturnPiece.PieceFile.f;
-		BP6.pieceRank = 7;
-		play.piecesOnBoard.add(BP6);
-		// G7
-		ReturnPiece BP7 = new Pawn(false);
-		BP7.pieceFile = ReturnPiece.PieceFile.g;
-		BP7.pieceRank = 7;
-		play.piecesOnBoard.add(BP7);
-		// H7
-		ReturnPiece BP8 = new Pawn(false);
-		BP8.pieceFile = ReturnPiece.PieceFile.h;
-		BP8.pieceRank = 7;
-		play.piecesOnBoard.add(BP8);
+
+		// black pawns
+		for (PieceFile file : PieceFile.values()) {
+			ReturnPiece bp = new Pawn(false);
+			bp.pieceFile = file;
+			bp.pieceRank = 7;
+			play.piecesOnBoard.add(bp);
+		}
 
 	}
 }
