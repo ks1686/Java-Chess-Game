@@ -32,6 +32,11 @@ public class Queen extends Piece {
          *      - and first pawn move (if pawn moves two squares up)
          *      - no need to do this for king or knight moves.
          *      - if nothing is in between, return true
+         * 
+         * Karim's idea:
+         * 1. Check if the move is even valid for a queen (diagonals, horizontals, etc.)
+         * 2. Loop to check if there are pieces in the way (will need to make the board an import into such a method)
+         * 3. Edge cases for if there is/isn't a piece, if it's a friendly or not, etc.
          */
  
         if (rank == newRank && file == newFile) {
