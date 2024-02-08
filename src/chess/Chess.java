@@ -34,12 +34,10 @@ class ReturnPiece {
 
 // !Cannot modify this class
 class ReturnPlay {
-	enum Message {
-		ILLEGAL_MOVE, DRAW,
+	enum Message {ILLEGAL_MOVE, DRAW,
 		RESIGN_BLACK_WINS, RESIGN_WHITE_WINS,
-		CHECK, CHECKMATE_BLACK_WINS, CHECKMATE_WHITE_WINS,
-		STALEMATE
-	};
+		CHECK, CHECKMATE_BLACK_WINS,	CHECKMATE_WHITE_WINS,
+		STALEMATE};
 
 	ArrayList<ReturnPiece> piecesOnBoard;
 	Message message;
@@ -62,11 +60,6 @@ public class Chess {
 
 	public static ReturnPlay play(String move) {
 
-		/* FILL IN THIS METHOD */
-
-		/* FOLLOWING LINE IS A PLACEHOLDER TO MAKE COMPILER HAPPY */
-		/* WHEN YOU FILL IN THIS METHOD, YOU NEED TO RETURN A ReturnPlay OBJECT */
-
 		// resign resets entire game
 		if (move.equals("resign")) {
 			if (currentPlayer == chess.Chess.Player.white) {
@@ -79,7 +72,6 @@ public class Chess {
 		}
 
 		// move input formatting
-		move = move.trim();
 		String fromFile = move.substring(0, 1);
 		int fromRank = Integer.parseInt(move.substring(1, 2));
 		String toFile = move.substring(3, 4);
@@ -101,19 +93,6 @@ public class Chess {
 		play = null;
 		return play;
 	}
-
-	/*
-	 * if we change enum PieceType, we can use this to simplify creating pieces
-	 * private ReturnPiece createNewPiece(boolean isWhite, PieceType pieceType){
-	 * switch (pieceType) {
-	 * case ReturnPiece.PieceType.R: return new Rook(isWhite);
-	 * case ReturnPiece.PieceType.N: return new Knight(isWhite);
-	 * case ReturnPiece.PieceType.B: return new Bishop(isWhite);
-	 * case ReturnPiece.PieceType.Q: return new Queen(isWhite);
-	 * case ReturnPiece.PieceType.K: return new King(isWhite);
-	 * }
-	 * }
-	 */
 
 	/**
 	 * This method should reset the game, and start from scratch.
@@ -141,17 +120,9 @@ public class Chess {
 		 * Add all pieces to the board
 		 * Some pieces have repeats, numbers go from left to right (follow the file
 		 * logic)
-		 * I'm going to be honest, there's gotta be a better way to do this but I can't
+		 * I'm going to be honest, there's gotta be a better way to do this, but I can't
 		 * figure it out.
 		 * Loops maybe?
-		 */
-
-		/*
-		 * if we change PieceType
-		 * ReturnPiece.PieceType[] piece_order = ReturnPiece.PieceType.values();
-		 * PieceFile[] piece_files = ReturnPiece.PieceFile.values();
-		 * then for PieceType in piece_order, createNewPiece(), set piecerank and file,
-		 * then play.PiecesOnBoard.add(piece)
 		 */
 
 		// ? -- White - ?//
