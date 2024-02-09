@@ -53,7 +53,7 @@ public class Chess {
 	static final char MIN_FILE = 'a';
 	static final char MAX_FILE = 'h';
 	public static Board ChessBoard = new Board(MIN_FILE, MAX_FILE, MIN_RANK, MAX_RANK);
-	
+	private static String[] pieceOrder = {"R", "N", "B", "Q", "K", "B", "N", "R"};
 	// TODO: May move these to King class
 	static boolean white_check; // true if white is in check
 	static boolean black_check; // true if black is in check
@@ -90,6 +90,22 @@ public class Chess {
 		if (move.length() >= 7) { pawnPromotion = move.charAt(6); } // move looks like "e4 e5 Q"
 
 		// must implement logic to play the move
+		// 1. find the piece on (fromFile, fromRank). if there's no piece, it's ILLEGAL_MOVE. 
+		// 2. check if piece.canMove() to the location. if false, it's ILLEGAL_MOVE
+		// 3. if true, piece.movePiece(file, rank, Piece[][] board). 
+		// then after that we can handle pawn promotion and draw (they might happen at the same time too)
+
+		// play the move (WIP)
+		Piece piece = ChessBoard.getPiece(fromRank, fromFile);
+
+		if (piece == null) {
+			play.message= ReturnPlay.Message.ILLEGAL_MOVE;
+			return play;
+		}
+
+		if (piece.canMove(fromRank, fromFile, toRank, toFile)){
+			piece.movePiece(toRank, toFile);
+		}
 
 		// must implement logic to handle draw. (we should handle draw after playing the move).
 		boolean draw = false;
@@ -121,7 +137,7 @@ public class Chess {
 		newPiece.pieceFile = file;
 		newPiece.pieceRank = rank;
 		play.piecesOnBoard.add(newPiece);
-		ChessBoard.placePiece(file.name().charAt(0), rank, (Piece) newPiece); // im not sure if casting to Piece is the play here
+		ChessBoard.placePiece(rank, file.name().charAt(0), (Piece) newPiece); // im not sure if casting to Piece is the play here
 	}	
 
 	private static void setupTeam(ReturnPlay play, String[] pieceOrder, boolean isWhite) {
@@ -169,7 +185,6 @@ public class Chess {
 		moves.clear();
 		play.message = null;
 
-		String[] pieceOrder = {"R", "N", "B", "Q", "K", "B", "N", "R"}; // we can probably put this somewhere else 
 		setupTeam(play, pieceOrder, true); // setup white's pawns + back rank
 		setupTeam(play, pieceOrder, false); // setup black's pawns + back rank
 

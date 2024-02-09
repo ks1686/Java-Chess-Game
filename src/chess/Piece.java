@@ -33,11 +33,25 @@ public abstract class Piece extends ReturnPiece {
     }
 
     // Abstract method to be implemented by the subclasses
+    public abstract boolean canMovePiece(int rank, char file, int newRank, char newFile, int rankChange, int fileChange, Piece sourcePiece, Piece destinationPiece);
+    // this signature is kinda long lol maybe theres a better way to do this? not sure
 
-    public abstract boolean canMove(int rank, int file, int newRank, int newFile, boolean isNewSpotEmpty);
+    public boolean canMove(int rank, char file, int newRank, char newFile) {
+        // all canMove functions should (imo) first check if coordinates are in bounds of the board, then if there is a piece at (newRank, newFile)
+        // then get rank and file changes, etc.
+        // so we can group common behavior together
+
+        // this method still isn't finished
+        Piece sourcePiece = Chess.ChessBoard.getPiece(rank, file);
+        Piece destinationPiece = Chess.ChessBoard.getPiece(newRank, newFile);
+        int rankChange = Math.abs(rank - newRank);
+        int fileChange = Math.abs(file - newFile);
+
+        return canMovePiece(rank, file, newRank, newFile, rankChange, fileChange, sourcePiece, destinationPiece);
+    }
 
     // set hasMoved to true when moved
-    public void movePiece() {
+    public void movePiece(int toRank, int toFile) {
         this.hasMoved = true;
     }
 

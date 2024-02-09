@@ -2,11 +2,9 @@ package chess;
 
 public class Pawn extends Piece {
 
-    private boolean firstMove;
 
-    public Pawn(boolean isWhite, boolean firstMove) {
+    public Pawn(boolean isWhite) {
         super(isWhite);
-        this.firstMove = firstMove;
         if (this.isWhite()) {
             this.pieceType = PieceType.WP;
         } else {
@@ -14,17 +12,7 @@ public class Pawn extends Piece {
         }
     }
 
-    public Pawn(boolean isWhite) {
-        this(isWhite, true);
-    }
-
-    public boolean getFirstMove() {
-        return this.firstMove;
-    }
-
-    public boolean canMove(int rank, int file, int newRank, int newFile, boolean isNewSpotEmpty) {
-        int rankChange;
-        int fileChange;
+    public boolean canMovePiece(int rank, char file, int newRank, char newFile, int rankChange, int fileChange, Piece sourcePiece, Piece destinationPiece) {
         boolean isAllowed = false; // default to false for legal move
 
         // check if the pawn is moving up or down
@@ -35,6 +23,9 @@ public class Pawn extends Piece {
             // black pawn, moves down
             rankChange = -(newRank - rank);
         }
+
+        boolean isNewSpotEmpty = false;
+        if (destinationPiece == null) isNewSpotEmpty = false;
 
         fileChange = Math.abs(file - newFile);
         // check if the move is valid for a pawn

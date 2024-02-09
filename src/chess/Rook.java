@@ -2,11 +2,9 @@ package chess;
 
 public class Rook extends Piece {
 
-    private boolean firstMove;
 
-    public Rook(boolean isWhite, boolean firstMove) {
+    public Rook(boolean isWhite) {
         super(isWhite);
-        this.firstMove = firstMove;
         if (this.isWhite()) {
             this.pieceType = PieceType.WR;
         } else {
@@ -14,18 +12,8 @@ public class Rook extends Piece {
         }
     }
 
-    public Rook(boolean isWhite) {
-        this(isWhite, true);
-    }
-
-    public boolean getFirstMove() {
-        return this.firstMove;
-    }   
-
     // check if the move is valid for a queen
-    public boolean canMove(int rank, int file, int newRank, int newFile, boolean isNewSpotEmpty) {
-        int rankChange = Math.abs(rank - newRank);
-        int fileChange = Math.abs(file - newFile);
+    public boolean canMovePiece(int rank, char file, int newRank, char newFile, int rankChange, int fileChange, Piece sourcePiece, Piece destinationPiece) {
         if (rankChange == 0 && fileChange != 0) {
             // perfect vertical
             return true;

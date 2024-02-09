@@ -11,9 +11,7 @@ public class Knight extends Piece {
         }
     }
 
-    public boolean canMove(int rank, int file, int newRank, int newFile, boolean isNewSpotEmpty) {
-        int rankChange = Math.abs(rank - newRank);
-        int fileChange = Math.abs(file - newFile);
+    public boolean canMovePiece(int rank, char file, int newRank, char newFile, int rankChange, int fileChange, Piece sourcePiece, Piece destinationPiece) {
         if ((rankChange == 2 && fileChange == 1) || (rankChange == 1 && fileChange == 2)) {
             // perfect L
             return true;

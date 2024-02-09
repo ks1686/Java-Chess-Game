@@ -13,10 +13,7 @@ public class Queen extends Piece {
     }
 
     // check if the move is valid for a queen
-    public boolean canMove(int rank, int file, int newRank, int newFile, boolean isNewSpotEmpty) {
-        int rankChange = Math.abs(rank - newRank);
-        int fileChange = Math.abs(file - newFile);
-
+    public boolean canMovePiece(int rank, char file, int newRank, char newFile, int rankChange, int fileChange, Piece sourcePiece, Piece destinationPiece) {
         /*
          * Karim's idea:
          * 1. Check if the move is even valid for a queen (diagonals, horizontals, etc.)

@@ -35,11 +35,11 @@ public class Board {
         this.boardGrid = new Piece[8][8];
     }
 
-    public void placePiece(char file, int rank, Piece pieceToPlace) {
+    public void placePiece(int rank, char file, Piece pieceToPlace) {
         this.boardGrid[rank - 1][file - 'a'] = pieceToPlace;
     }
 
-    public Piece getPiece(char file, int rank) {
+    public Piece getPiece(int rank, char file) {
         return this.boardGrid[rank - 1][file - 'a'];
     }
 
