@@ -81,13 +81,12 @@ public class Chess {
 		int toRank = Integer.parseInt(move.substring(4, 5));
 		
 		// must implement logic to handle pawn promotion
-		if (move.length() >= 7) { // move looks like "e4 e5 N"
-			String pawnPromotion = move.substring(7,8);
-		} else {
-			String pawnPromotion = null;
-		}
+		String pawnPromotion = null;
+		if (move.length() >= 7) { pawnPromotion = move.substring(7,8); } // move looks like "e4 e5 Q"
 
-		// must implement logic to handle draw
+		// must implement logic to play the move
+
+		// must implement logic to handle draw. (we should handle draw after playing the move).
 		boolean draw = false;
 		if (move.endsWith("draw?")) draw = true;
 
@@ -96,6 +95,8 @@ public class Chess {
 
 
 		// Check if player is picking a valid position on the board (not out of bounds)
+		// idea: maybe instead of hardcoding the min and max ranks/files, we can put them in the board class.
+		// and then maybe we can have a method in the board class, that takes a given coordinate and returns true if it's within the bounds of the board
 		if (fromFile.charAt(0) < 'a' || fromFile.charAt(0) > 'h' || toFile.charAt(0) < 'a' || toFile.charAt(0) > 'h'
 				|| fromRank < 1 || fromRank > 8 || toRank < 1 || toRank > 8) {
 			play.message = ReturnPlay.Message.ILLEGAL_MOVE;
