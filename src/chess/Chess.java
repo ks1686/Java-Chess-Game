@@ -79,17 +79,14 @@ public class Chess {
 		String toFile = move.substring(3, 4);
 		int toRank = Integer.parseInt(move.substring(4, 5));
 
+		// must implement logic to handle pawn promotion later
 		if (move.length() >= 7) { // move looks like "e4 e5 N"
 			String pawnPromotion = move.substring(7,8);
 		} else {
 			String pawnPromotion = null;
 		}
 
-		// Check if player even made a move
-		if (fromFile.equals(toFile) && fromRank == toRank) {
-			play.message = ReturnPlay.Message.ILLEGAL_MOVE;
-			return play;
-		}
+
 
 		// Check if player is picking a valid position on the board (not out of bounds)
 		if (fromFile.charAt(0) < 'a' || fromFile.charAt(0) > 'h' || toFile.charAt(0) < 'a' || toFile.charAt(0) > 'h'
@@ -98,7 +95,6 @@ public class Chess {
 			return play;
 		}
 
-		play = null;
 		return play;
 	}
 
@@ -167,7 +163,7 @@ public class Chess {
 		moves.clear();
 		play.message = null;
 
-		String[] pieceOrder = {"R", "N", "B", "Q", "K", "B", "N", "R"};
+		String[] pieceOrder = {"R", "N", "B", "Q", "K", "B", "N", "R"}; // we can probably put this somewhere else 
 		setupTeam(play, pieceOrder, true); // setup white's pawns + back rank
 		setupTeam(play, pieceOrder, false); // setup black's pawns + back rank
 
