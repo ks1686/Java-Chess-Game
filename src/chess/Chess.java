@@ -124,7 +124,6 @@ public class Chess {
 			pawnRank = 7;
 		}
 		
-		System.out.println("Setting up pawns for team, white = " + isWhite);
 		// setup pawns for this team
 		for (ReturnPiece.PieceFile file : ReturnPiece.PieceFile.values()) {
 			ReturnPiece newPiece = createNewPiece("P", isWhite);
@@ -134,7 +133,6 @@ public class Chess {
 		}
 
 		// setup the back rank for this team
-		System.out.println("Setting up back rank for team, white = " + isWhite);
 		for (int i = 0; i < pieceOrder.length; i++){
 			ReturnPiece newPiece = createNewPiece(pieceOrder[i], true);
 			newPiece.pieceFile = fileOrder[i];
