@@ -61,6 +61,8 @@ public class Chess {
 
 	public static ReturnPlay play(String move) {
 
+		move = move.trim(); // remove trailing and leading whitespace
+
 		// resign resets entire game
 		if (move.equals("resign")) {
 			if (currentPlayer == chess.Chess.Player.white) {
@@ -73,18 +75,23 @@ public class Chess {
 		}
 
 		// move input formatting
-		move = move.trim(); // remove trailing and leading whitespace
 		String fromFile = move.substring(0, 1);
 		int fromRank = Integer.parseInt(move.substring(1, 2));
 		String toFile = move.substring(3, 4);
 		int toRank = Integer.parseInt(move.substring(4, 5));
-
-		// must implement logic to handle pawn promotion later
+		
+		// must implement logic to handle pawn promotion
 		if (move.length() >= 7) { // move looks like "e4 e5 N"
 			String pawnPromotion = move.substring(7,8);
 		} else {
 			String pawnPromotion = null;
 		}
+
+		// must implement logic to handle draw
+		boolean draw = false;
+		if (move.endsWith("draw?")) draw = true;
+
+		
 
 
 
@@ -111,6 +118,13 @@ public class Chess {
 		}
 	}
 
+	private static void addPieceToBoard(ReturnPlay play, String pieceType, ReturnPiece.PieceFile file, int rank, boolean isWhite) {
+		ReturnPiece newPiece = createNewPiece(pieceType, isWhite);
+		newPiece.pieceFile = file;
+		newPiece.pieceRank = rank;
+		play.piecesOnBoard.add(newPiece);
+	}	
+
 	private static void setupTeam(ReturnPlay play, String[] pieceOrder, boolean isWhite) {
 		ReturnPiece.PieceFile[] fileOrder = ReturnPiece.PieceFile.values();
 		int backrank;
@@ -124,20 +138,14 @@ public class Chess {
 			pawnRank = 7;
 		}
 		
-		// setup pawns for this team
+		// setup pawns
 		for (ReturnPiece.PieceFile file : ReturnPiece.PieceFile.values()) {
-			ReturnPiece newPiece = createNewPiece("P", isWhite);
-			newPiece.pieceFile = file;
-			newPiece.pieceRank = pawnRank;
-			play.piecesOnBoard.add(newPiece);
+			addPieceToBoard(play, "P", file, pawnRank, isWhite);
 		}
 
-		// setup the back rank for this team
-		for (int i = 0; i < pieceOrder.length; i++){
-			ReturnPiece newPiece = createNewPiece(pieceOrder[i], true);
-			newPiece.pieceFile = fileOrder[i];
-			newPiece.pieceRank = backrank;
-			play.piecesOnBoard.add(newPiece);
+		// setup back rank
+		for (int i = 0; i < pieceOrder.length; i++) {
+			addPieceToBoard(play, pieceOrder[i], ReturnPiece.PieceFile.values()[i], backrank, isWhite);
 		}
 	}
 
