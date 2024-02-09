@@ -5,8 +5,12 @@ package chess;
 */
 public abstract class Piece extends ReturnPiece {
 
-    boolean isWhite;
-    boolean hasMoved = false; // default, nothing moved
+    private boolean isWhite;
+    private boolean hasMoved = false; // default, nothing moved
+
+    public Piece(boolean isWhite){
+        this.isWhite = isWhite;
+    }
 
     // Setter; sets the color of the piece
     public void setWhite(boolean isWhite) {
@@ -19,12 +23,12 @@ public abstract class Piece extends ReturnPiece {
     }
 
     // Setter; sets the hasMoved boolean
-    public void setHasMoved(boolean hasMoved) {
+    public void hasMoved(boolean hasMoved) {
         this.hasMoved = hasMoved;
     }
 
     // Getter; gets the hasMoved boolean
-    public boolean getHasMoved() {
+    public boolean hasMoved() {
         return this.hasMoved;
     }
 

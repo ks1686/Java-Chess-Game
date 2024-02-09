@@ -2,15 +2,25 @@ package chess;
 
 public class Rook extends Piece {
 
-    // check color to set PieceType
-    public Rook(boolean isWhite) {
-        this.isWhite = isWhite;
-        if (isWhite) {
+    private boolean firstMove;
+
+    public Rook(boolean isWhite, boolean firstMove) {
+        super(isWhite);
+        this.firstMove = firstMove;
+        if (this.isWhite()) {
             this.pieceType = PieceType.WR;
         } else {
             this.pieceType = PieceType.BR;
         }
     }
+
+    public Rook(boolean isWhite) {
+        this(isWhite, true);
+    }
+
+    public boolean getFirstMove() {
+        return this.firstMove;
+    }   
 
     // check if the move is valid for a queen
     public boolean canMove(int rank, int file, int newRank, int newFile, boolean isNewSpotEmpty) {

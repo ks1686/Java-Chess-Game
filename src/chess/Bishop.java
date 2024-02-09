@@ -4,8 +4,8 @@ public class Bishop extends Piece {
 
     // check color to set PieceType
     public Bishop(boolean isWhite) {
-        this.isWhite = isWhite;
-        if (isWhite) {
+        super(isWhite);
+        if (this.isWhite()) {
             this.pieceType = PieceType.WB;
         } else {
             this.pieceType = PieceType.BB;

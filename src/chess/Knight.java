@@ -3,8 +3,8 @@ package chess;
 public class Knight extends Piece {
 
     public Knight(boolean isWhite) {
-        this.isWhite = isWhite;
-        if (isWhite) {
+        super(isWhite);
+        if (this.isWhite()) {
             this.pieceType = PieceType.WN;
         } else {
             this.pieceType = PieceType.BN;

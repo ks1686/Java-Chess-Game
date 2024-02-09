@@ -4,8 +4,8 @@ public class Queen extends Piece {
 
     // check color to set PieceType
     public Queen(boolean isWhite) {
-        this.isWhite = isWhite;
-        if (isWhite) {
+        super(isWhite);
+        if (this.isWhite()) {
             this.pieceType = PieceType.WQ;
         } else {
             this.pieceType = PieceType.BQ;

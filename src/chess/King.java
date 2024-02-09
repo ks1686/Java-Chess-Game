@@ -2,13 +2,24 @@ package chess;
 
 public class King extends Piece {
 
+    private boolean firstMove;
+
     public King(boolean isWhite) {
-        this.isWhite = isWhite;
-        if (isWhite) {
+        this(isWhite, true);
+    }
+
+    public King(boolean isWhite, boolean firstMove) {
+        super(isWhite);
+        this.firstMove = firstMove;
+        if (this.isWhite()) {
             this.pieceType = PieceType.WK;
         } else {
             this.pieceType = PieceType.BK;
         }
+    }
+
+    public boolean getFirstMove() {
+        return this.firstMove;
     }
 
     public boolean canMove(int rank, int file, int newRank, int newFile, boolean isNewSpotEmpty) {

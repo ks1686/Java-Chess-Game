@@ -49,6 +49,12 @@ public class Chess {
 	static ReturnPlay play; // the result of the last play
 	public static ArrayList<String> moves = new ArrayList<String>(); // list of moves
 
+	static final int MIN_RANK = 1;
+	static final int MAX_RANK = 8;
+	static final char MIN_FILE = 'a';
+	static final char MAX_FILE = 'h';
+	public static Board ChessBoard = new Board(MIN_FILE, MAX_FILE, MIN_RANK, MAX_RANK);
+	
 	// TODO: May move these to King class
 	static boolean white_check; // true if white is in check
 	static boolean black_check; // true if black is in check
@@ -75,14 +81,14 @@ public class Chess {
 		}
 
 		// move input formatting
-		String fromFile = move.substring(0, 1);
-		int fromRank = Integer.parseInt(move.substring(1, 2));
-		String toFile = move.substring(3, 4);
-		int toRank = Integer.parseInt(move.substring(4, 5));
+		char fromFile = move.charAt(0);
+		int fromRank = Character.getNumericValue(move.charAt(1));
+		char toFile = move.charAt(3);
+		int toRank = Character.getNumericValue(move.charAt(4));
 		
 		// must implement logic to handle pawn promotion
-		String pawnPromotion = null;
-		if (move.length() >= 7) { pawnPromotion = move.substring(7,8); } // move looks like "e4 e5 Q"
+		Character pawnPromotion = null;
+		if (move.length() >= 7) { pawnPromotion = move.charAt(6); } // move looks like "e4 e5 Q"
 
 		// must implement logic to play the move
 
@@ -90,15 +96,10 @@ public class Chess {
 		boolean draw = false;
 		if (move.endsWith("draw?")) draw = true;
 
-		
-
-
-
 		// Check if player is picking a valid position on the board (not out of bounds)
 		// idea: maybe instead of hardcoding the min and max ranks/files, we can put them in the board class.
 		// and then maybe we can have a method in the board class, that takes a given coordinate and returns true if it's within the bounds of the board
-		if (fromFile.charAt(0) < 'a' || fromFile.charAt(0) > 'h' || toFile.charAt(0) < 'a' || toFile.charAt(0) > 'h'
-				|| fromRank < 1 || fromRank > 8 || toRank < 1 || toRank > 8) {
+		if (!ChessBoard.areCoordsInBounds(fromFile, fromRank) || !ChessBoard.areCoordsInBounds(toFile, toRank)){
 			play.message = ReturnPlay.Message.ILLEGAL_MOVE;
 			return play;
 		}
