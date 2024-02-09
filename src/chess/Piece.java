@@ -7,7 +7,6 @@ public abstract class Piece extends ReturnPiece {
 
     boolean isWhite;
     boolean hasMoved = false; // default, nothing moved
-    PieceType pieceType; // enum to represent the type of piece
 
     // Setter; sets the color of the piece
     public void setWhite(boolean isWhite) {
