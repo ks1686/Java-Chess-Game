@@ -64,6 +64,7 @@ public class Chess {
 	};
 
 	private static Player currentPlayer = chess.Chess.Player.white; // current player
+	// we need to change this so that currentPlayer alternates between white and black each time a move is played
 
 	public static ReturnPlay play(String move) {
 
@@ -86,6 +87,12 @@ public class Chess {
 		char toFile = move.toLowerCase().charAt(3);
 		int toRank = Character.getNumericValue(move.charAt(4));
 		
+		// if coords are out of bounds, its ilegal
+		if (!ChessBoard.areCoordsInBounds(fromFile, fromRank) || !ChessBoard.areCoordsInBounds(toFile, toRank)){
+			play.message = ReturnPlay.Message.ILLEGAL_MOVE;
+			return play;
+		}
+
 		// must implement logic to handle pawn promotion
 		Character pawnPromotion = null;
 		if (move.length() >= 7) { pawnPromotion = move.charAt(6); } // move looks like "e4 e5 Q"
@@ -95,6 +102,7 @@ public class Chess {
 		// 2. check if piece.canMove() to the location. if false, it's ILLEGAL_MOVE
 		// 3. if true, piece.movePiece(file, rank, Piece[][] board). 
 		// then after that we can handle pawn promotion and draw (they might happen at the same time too)
+		// does this sound good?
 
 		// play the move (WIP)
 		Piece piece = ChessBoard.getPiece(fromRank, fromFile);
@@ -110,12 +118,12 @@ public class Chess {
 
 		// must implement logic to handle draw. (we should handle draw after playing the move).
 		boolean draw = false;
-		if (move.endsWith("draw?")) draw = true;
-
-		if (!ChessBoard.areCoordsInBounds(fromFile, fromRank) || !ChessBoard.areCoordsInBounds(toFile, toRank)){
-			play.message = ReturnPlay.Message.ILLEGAL_MOVE;
+		if (move.endsWith("draw?")) {
+			play.message = ReturnPlay.Message.DRAW;
 			return play;
 		}
+
+		
 
 		return play;
 	}

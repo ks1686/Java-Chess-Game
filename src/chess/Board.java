@@ -10,7 +10,8 @@ public class Board {
     // Idea for board class: have a 2D array boardGrid that contains pieces. on Chess.start(), clear() the boardGrid and add these pieces in the correct spots.
     // on piece capture, set the value at the array location corresponding to that coordinate to null
     // on piece move, set the value at the old array location to null, and the value to the new array location to the piece.
-    // this lets us check what piece is at a given location easily (the alternative being linearly search through play.piecesOnBoard until you find the location you're looking for)
+    // this lets us check what piece is at a given location easily (the alternative being linearly search through play.piecesOnBoard until you
+    // find the piece with the coordinate you're looking for)
     private Piece[][] boardGrid;
 
     public Board(char minFile, char maxFile, int minRank, int maxRank) {

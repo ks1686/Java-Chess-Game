@@ -38,21 +38,22 @@ public abstract class Piece extends ReturnPiece {
 
     public boolean canMove(int rank, char file, int newRank, char newFile) {
         // all canMove functions should (imo) first check if coordinates are in bounds of the board, then if there is a piece at (newRank, newFile)
-        // then get rank and file changes, etc.
+        // then get rank and file changes
         // so we can group common behavior together
 
-        // this method still isn't finished
         Piece sourcePiece = Chess.ChessBoard.getPiece(rank, file);
         Piece destinationPiece = Chess.ChessBoard.getPiece(newRank, newFile);
         int rankChange = Math.abs(rank - newRank);
         int fileChange = Math.abs(file - newFile);
 
+        // we still need to finish the implementation of this method for most of the piece classes
         return canMovePiece(rank, file, newRank, newFile, rankChange, fileChange, sourcePiece, destinationPiece);
     }
 
     // set hasMoved to true when moved
     public void movePiece(int toRank, int toFile) {
         this.hasMoved = true;
+        // should also set the value at the old array location to null, and the value to the new array location to the piece.
     }
 
     // return the piece type
