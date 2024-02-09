@@ -59,4 +59,8 @@ public abstract class Piece extends ReturnPiece {
     public PieceType getPieceType() {
         return this.pieceType;
     }
+
+    public String toString() {
+        return "Piece: " + this.getPieceType().name() + " " + this.pieceFile.name() + this.pieceRank;
+    }
 }

@@ -54,6 +54,7 @@ public class Chess {
 	static final char MAX_FILE = 'h';
 	public static Board ChessBoard = new Board(MIN_FILE, MAX_FILE, MIN_RANK, MAX_RANK);
 	private static String[] pieceOrder = {"R", "N", "B", "Q", "K", "B", "N", "R"};
+	
 	// TODO: May move these to King class
 	static boolean white_check; // true if white is in check
 	static boolean black_check; // true if black is in check
