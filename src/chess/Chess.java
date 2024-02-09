@@ -2,7 +2,6 @@ package chess;
 
 import java.util.ArrayList;
 
-
 //!Cannot modify this class
 class ReturnPiece {
 	static enum PieceType {
@@ -81,9 +80,9 @@ public class Chess {
 		}
 
 		// move input formatting
-		char fromFile = move.charAt(0);
+		char fromFile = move.toLowerCase().charAt(0);
 		int fromRank = Character.getNumericValue(move.charAt(1));
-		char toFile = move.charAt(3);
+		char toFile = move.toLowerCase().charAt(3);
 		int toRank = Character.getNumericValue(move.charAt(4));
 		
 		// must implement logic to handle pawn promotion
@@ -96,9 +95,6 @@ public class Chess {
 		boolean draw = false;
 		if (move.endsWith("draw?")) draw = true;
 
-		// Check if player is picking a valid position on the board (not out of bounds)
-		// idea: maybe instead of hardcoding the min and max ranks/files, we can put them in the board class.
-		// and then maybe we can have a method in the board class, that takes a given coordinate and returns true if it's within the bounds of the board
 		if (!ChessBoard.areCoordsInBounds(fromFile, fromRank) || !ChessBoard.areCoordsInBounds(toFile, toRank)){
 			play.message = ReturnPlay.Message.ILLEGAL_MOVE;
 			return play;
@@ -125,6 +121,7 @@ public class Chess {
 		newPiece.pieceFile = file;
 		newPiece.pieceRank = rank;
 		play.piecesOnBoard.add(newPiece);
+		ChessBoard.placePiece(file.name().charAt(0), rank, (Piece) newPiece); // im not sure if casting to Piece is the play here
 	}	
 
 	private static void setupTeam(ReturnPlay play, String[] pieceOrder, boolean isWhite) {
@@ -166,6 +163,7 @@ public class Chess {
 
 		// list of pieces on the board
 		play.piecesOnBoard = new ArrayList<ReturnPiece>();
+		ChessBoard.clear();
 
 		// Clear the list of moves and reset message
 		moves.clear();
