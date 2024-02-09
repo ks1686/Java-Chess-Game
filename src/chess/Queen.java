@@ -15,14 +15,11 @@ public class Queen extends Piece {
     // check if the move is valid for a queen
     public boolean canMovePiece(int rank, char file, int newRank, char newFile, int rankChange, int fileChange, Piece sourcePiece, Piece destinationPiece) {
         /*
-         * Karim's idea:
-         * 1. Check if the move is even valid for a queen (diagonals, horizontals, etc.)
+         * 1. Check if the move is even valid for a queen (diagonals, horizontals, etc.) (complete)
          * 2. Loop to check if there are pieces in the way (will need to make the board an import into such a method)
          * 3. Edge cases for if there is/isn't a piece, if it's a friendly or not, etc.
-         * 
-         * (Jude) i like this lets do this
          */
- 
+
         if (rank == newRank && file == newFile) {
             // can't move in place
             return false;

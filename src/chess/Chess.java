@@ -2,7 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 
-//!Cannot modify this class
+// !Cannot modify this class
 class ReturnPiece {
 	static enum PieceType {
 		WP, WR, WN, WB, WQ, WK,
@@ -17,6 +17,11 @@ class ReturnPiece {
 	PieceFile pieceFile;
 	int pieceRank; // 1..8
 
+	/*
+	! IntelliJ crying that we override this method with Piece toString() method
+	! Since we can't edit this class, keep an eye out when testing and using toString()
+	! This method needs to work for their tester to work, so we just gotta be careful.
+	*/
 	public String toString() {
 		return "" + pieceFile + pieceRank + ":" + pieceType;
 	}
@@ -48,6 +53,7 @@ public class Chess {
 	static ReturnPlay play; // the result of the last play
 	public static ArrayList<String> moves = new ArrayList<String>(); // list of moves
 
+	// static final variables for the board (file, rank)
 	static final int MIN_RANK = 1;
 	static final int MAX_RANK = 8;
 	static final char MIN_FILE = 'a';
@@ -65,6 +71,8 @@ public class Chess {
 
 	private static Player currentPlayer = chess.Chess.Player.white; // current player
 	// we need to change this so that currentPlayer alternates between white and black each time a move is played
+	// idea: could just change it after each move() is inputted, flip it that way over and over.
+	// declaration needs to stay .white to start the game
 
 	public static ReturnPlay play(String move) {
 
@@ -87,13 +95,13 @@ public class Chess {
 		char toFile = move.toLowerCase().charAt(3);
 		int toRank = Character.getNumericValue(move.charAt(4));
 		
-		// if coords are out of bounds, its ilegal
+		// if coords are out of bounds, its illegal (uses Board.areCoordsInBounds)
 		if (!ChessBoard.areCoordsInBounds(fromFile, fromRank) || !ChessBoard.areCoordsInBounds(toFile, toRank)){
 			play.message = ReturnPlay.Message.ILLEGAL_MOVE;
 			return play;
 		}
 
-		// must implement logic to handle pawn promotion
+		//TODO: must implement logic to handle pawn promotion
 		Character pawnPromotion = null;
 		if (move.length() >= 7) { pawnPromotion = move.charAt(6); } // move looks like "e4 e5 Q"
 
@@ -103,6 +111,7 @@ public class Chess {
 		// 3. if true, piece.movePiece(file, rank, Piece[][] board). 
 		// then after that we can handle pawn promotion and draw (they might happen at the same time too)
 		// does this sound good?
+		// we should also handle check and checkmate after playing the move.
 
 		// play the move (WIP)
 		Piece piece = ChessBoard.getPiece(fromRank, fromFile);
@@ -128,6 +137,7 @@ public class Chess {
 		return play;
 	}
 
+	// creates a new piece based on the piece type
 	private static ReturnPiece createNewPiece(String pieceType, boolean isWhite){
 		switch (pieceType) {
 			case "P": return new Pawn(isWhite);
@@ -141,6 +151,7 @@ public class Chess {
 		}
 	}
 
+	// adds a piece to the board
 	private static void addPieceToBoard(ReturnPlay play, String pieceType, ReturnPiece.PieceFile file, int rank, boolean isWhite) {
 		ReturnPiece newPiece = createNewPiece(pieceType, isWhite);
 		newPiece.pieceFile = file;
@@ -149,6 +160,7 @@ public class Chess {
 		ChessBoard.placePiece(rank, file.name().charAt(0), (Piece) newPiece); // im not sure if casting to Piece is the play here
 	}	
 
+	// sets up the specified team
 	private static void setupTeam(ReturnPlay play, String[] pieceOrder, boolean isWhite) {
 		int backRank;
 		int pawnRank;
