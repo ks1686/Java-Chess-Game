@@ -127,15 +127,13 @@ public class Chess {
 	}	
 
 	private static void setupTeam(ReturnPlay play, String[] pieceOrder, boolean isWhite) {
-		ReturnPiece.PieceFile[] fileOrder = ReturnPiece.PieceFile.values();
-		int backrank;
+		int backRank;
 		int pawnRank;
-
 		if (isWhite) { 
-			backrank = 1;
+			backRank = 1;
 			pawnRank = 2;
 		} else { 
-			backrank = 8; 
+			backRank = 8; 
 			pawnRank = 7;
 		}
 		
@@ -146,7 +144,7 @@ public class Chess {
 
 		// setup back rank
 		for (int i = 0; i < pieceOrder.length; i++) {
-			addPieceToBoard(play, pieceOrder[i], ReturnPiece.PieceFile.values()[i], backrank, isWhite);
+			addPieceToBoard(play, pieceOrder[i], ReturnPiece.PieceFile.values()[i], backRank, isWhite);
 		}
 	}
 
