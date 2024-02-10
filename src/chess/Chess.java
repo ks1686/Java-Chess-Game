@@ -94,6 +94,14 @@ public class Chess {
 		int fromRank = Character.getNumericValue(move.charAt(1));
 		char toFile = move.toLowerCase().charAt(3);
 		int toRank = Character.getNumericValue(move.charAt(4));
+
+		// regular input and a draw; looks like e4 e5 draw?
+		if (move.length() >= 7) {
+			if (move.substring(5).equals("draw?")) {
+				play.message = ReturnPlay.Message.DRAW;
+				return play;
+			}
+		}
 		
 		// if coords are out of bounds, its illegal (uses Board.areCoordsInBounds)
 		if (!ChessBoard.areCoordsInBounds(fromFile, fromRank) || !ChessBoard.areCoordsInBounds(toFile, toRank)){
