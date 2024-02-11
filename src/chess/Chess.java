@@ -109,6 +109,12 @@ public class Chess {
 			return play;
 		}
 
+		// if player doesn't move at all, it's illegal
+		if (fromFile == toFile && fromRank == toRank) {
+			play.message = ReturnPlay.Message.ILLEGAL_MOVE;
+			return play;
+		}
+
 		//TODO: must implement logic to handle pawn promotion
 		Character pawnPromotion = null;
 		if (move.length() >= 7) { pawnPromotion = move.charAt(6); } // move looks like "e4 e5 Q"
@@ -125,7 +131,7 @@ public class Chess {
 		Piece piece = ChessBoard.getPiece(fromRank, fromFile);
 
 		if (piece == null) {
-			play.message= ReturnPlay.Message.ILLEGAL_MOVE;
+			play.message = ReturnPlay.Message.ILLEGAL_MOVE;
 			return play;
 		}
 
@@ -141,7 +147,8 @@ public class Chess {
 		}
 
 		
-
+		// all moves are legal, so make sure we don't output an illegal move message
+		play.message = null;
 		return play;
 	}
 
