@@ -50,33 +50,26 @@ class ReturnPlay {
 
 public class Chess {
 
-	static ReturnPlay play; // the result of the last play
-	public static ArrayList<String> moves = new ArrayList<String>(); // list of moves
+	static ReturnPlay play; // the current state of the game
+	public static ArrayList<String> moves = new ArrayList<String>(); // list of moves played
 
-	// static final variables for the board (file, rank)
+	// static final variables for the board (file, rank), which correspond to (column, row) respectively
 	static final int MIN_RANK = 1;
 	static final int MAX_RANK = 8;
 	static final char MIN_FILE = 'a';
 	static final char MAX_FILE = 'h';
-	public static Board ChessBoard = new Board(MIN_FILE, MAX_FILE, MIN_RANK, MAX_RANK);
-	private static String[] pieceOrder = {"R", "N", "B", "Q", "K", "B", "N", "R"};
-	
-	// TODO: May move these to King class
-	static boolean white_check; // true if white is in check
-	static boolean black_check; // true if black is in check
+	public static Board ChessBoard = new Board(MIN_FILE, MAX_FILE, MIN_RANK, MAX_RANK); // the board; will be used to place pieces and check for piece locations
+	private static String[] pieceOrder = {"R", "N", "B", "Q", "K", "B", "N", "R"}; // order of pieces on the back rank
 
 	enum Player {
 		white, black
 	};
 
-	private static Player currentPlayer = chess.Chess.Player.white; // current player
-	// we need to change this so that currentPlayer alternates between white and black each time a move is played
-	// idea: could just change it after each move() is inputted, flip it that way over and over.
-	// declaration needs to stay .white to start the game
+	private static Player currentPlayer = Player.white; // the current player (white starts)
 
 	public static ReturnPlay play(String move) {
 
-		move = move.trim(); // remove trailing and leading whitespace
+		move = move.trim(); // remove leading/trailing whitespace
 
 		// resign resets entire game
 		if (move.equals("resign")) {
@@ -116,8 +109,16 @@ public class Chess {
 		}
 
 		//TODO: must implement logic to handle pawn promotion
+		//moves can either look like "e4 e5" or "a7 a8 R"; queen is the default promotion if not specified
 		Character pawnPromotion = null;
-		if (move.length() >= 7) { pawnPromotion = move.charAt(6); } // move looks like "e4 e5 Q"
+		//acceptable promotion rows are 1 and 8
+		//logic: if move is 5 characters and pieceRank is at 1 or 8, then it's a promotion to queen
+		if (move.length() == 5 && (toRank == 1 || toRank == 8)) {
+			pawnPromotion = 'Q';
+		} else if (move.length() == 7) {
+			pawnPromotion = move.charAt(6);
+		}
+
 
 		// must implement logic to play the move
 		// 1. find the piece on (fromFile, fromRank). if there's no piece, it's ILLEGAL_MOVE. 
@@ -135,13 +136,14 @@ public class Chess {
 			return play;
 		}
 
+		//TODO: most implement logic for canMove and movePiece
 		if (piece.canMove(fromRank, fromFile, toRank, toFile)){
 			piece.movePiece(toRank, toFile);
 		}
 
 		// must implement logic to handle draw. (we should handle draw after playing the move).
-		boolean draw = false;
 		if (move.endsWith("draw?")) {
+			// handle the move first per assignment requirements
 			play.message = ReturnPlay.Message.DRAW;
 			return play;
 		}
@@ -149,6 +151,12 @@ public class Chess {
 		
 		// all moves are legal, so make sure we don't output an illegal move message
 		play.message = null;
+		//set the current player to the other player
+		if (currentPlayer == chess.Chess.Player.white) {
+			currentPlayer = chess.Chess.Player.black;
+		} else {
+			currentPlayer = chess.Chess.Player.white;
+		}
 		return play;
 	}
 
@@ -169,10 +177,11 @@ public class Chess {
 	// adds a piece to the board
 	private static void addPieceToBoard(ReturnPlay play, String pieceType, ReturnPiece.PieceFile file, int rank, boolean isWhite) {
 		ReturnPiece newPiece = createNewPiece(pieceType, isWhite);
-		newPiece.pieceFile = file;
-		newPiece.pieceRank = rank;
+		newPiece.pieceFile = file; //map to file enum
+		newPiece.pieceRank = rank; //map to rank enum
 		play.piecesOnBoard.add(newPiece);
-		ChessBoard.placePiece(rank, file.name().charAt(0), (Piece) newPiece); // im not sure if casting to Piece is the play here
+		ChessBoard.placePiece(rank, file.name().charAt(0), (Piece) newPiece);
+		// ? for the above line, we need to cast to Piece because the board is a 2D array of Pieces, not ReturnPieces. Just so we can remain consistent with our thought process.
 	}	
 
 	// sets up the specified team
@@ -206,12 +215,8 @@ public class Chess {
 		// Create a new ReturnPlay object
 		play = new ReturnPlay();
 
-		// Set white player to start
+		// Set white player to start the game (useful for resets/draws)
 		currentPlayer = chess.Chess.Player.white;
-
-		// May remove this later; maybe move check to King class?
-		white_check = false; // white is not in check at start
-		black_check = false; // black is not in check at start
 
 		// list of pieces on the board
 		play.piecesOnBoard = new ArrayList<ReturnPiece>();
