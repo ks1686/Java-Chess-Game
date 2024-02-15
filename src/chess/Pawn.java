@@ -2,6 +2,8 @@ package chess;
 
 public class Pawn extends Piece {
 
+    // en passant (moved two spaces, when programming capture for en passant we need to check if the pawn is in the correct position to be captured)
+    private boolean canEnPassant = false; // default to false; must move first before can be captured with en passant
 
     public Pawn(boolean isWhite) {
         super(isWhite);
