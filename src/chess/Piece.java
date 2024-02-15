@@ -7,13 +7,10 @@ public abstract class Piece extends ReturnPiece {
 
     private boolean isWhite;
     private boolean hasMoved = false; // default, nothing moved
+    private boolean isCaptured = false; // default, nothing captured
 
+    // Constructor; sets the color of the piece
     public Piece(boolean isWhite){
-        this.isWhite = isWhite;
-    }
-
-    // Setter; sets the color of the piece
-    public void setWhite(boolean isWhite) {
         this.isWhite = isWhite;
     }
 
@@ -32,15 +29,22 @@ public abstract class Piece extends ReturnPiece {
         return this.hasMoved;
     }
 
+    // Setter; sets the isCaptured boolean
+    public void isCaptured(boolean isCaptured) {
+        this.isCaptured = isCaptured;
+    }
+
+    // Getter; gets the isCaptured boolean
+    public boolean isCaptured() {
+        return this.isCaptured;
+    }
+
     // Abstract method to be implemented by the subclasses
     public abstract boolean canMovePiece(int rank, char file, int newRank, char newFile, int rankChange, int fileChange, Piece sourcePiece, Piece destinationPiece);
     // this signature is kinda long lol maybe theres a better way to do this? not sure
 
     public boolean canMove(int rank, char file, int newRank, char newFile) {
-        // all canMove functions should (imo) first check if coordinates are in bounds of the board, then if there is a piece at (newRank, newFile)
-        // then get rank and file changes
-        // so we can group common behavior together
-
+        //? this method can only be called if coordinates are already in bound, no need to check here
         Piece sourcePiece = Chess.ChessBoard.getPiece(rank, file);
         Piece destinationPiece = Chess.ChessBoard.getPiece(newRank, newFile);
         int rankChange = Math.abs(rank - newRank);
