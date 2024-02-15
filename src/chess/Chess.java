@@ -119,13 +119,8 @@ public class Chess {
 		// play the move (WIP)
 		Piece piece = ChessBoard.getPiece(fromRank, fromFile);
 
-		if (piece == null) {
-			play.message = ReturnPlay.Message.ILLEGAL_MOVE;
-			return play;
-		}
-
 		//TODO: most implement logic for canMove and movePiece
-		if (piece.canMove(ChessBoard, fromRank, fromFile, toRank, toFile)){
+		if (piece != null && piece.canMove(ChessBoard, fromRank, fromFile, toRank, toFile)){
 			piece.movePiece(toRank, toFile);
 		} else {
 			play.message = ReturnPlay.Message.ILLEGAL_MOVE;
