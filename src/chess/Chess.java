@@ -96,18 +96,6 @@ public class Chess {
 			}
 		}
 		
-		// if coords are out of bounds, its illegal (uses Board.areCoordsInBounds)
-		if (!ChessBoard.areCoordsInBounds(fromFile, fromRank) || !ChessBoard.areCoordsInBounds(toFile, toRank)){
-			play.message = ReturnPlay.Message.ILLEGAL_MOVE;
-			return play;
-		}
-
-		// if player doesn't move at all, it's illegal
-		if (fromFile == toFile && fromRank == toRank) {
-			play.message = ReturnPlay.Message.ILLEGAL_MOVE;
-			return play;
-		}
-
 		//TODO: must implement logic to handle pawn promotion
 		//moves can either look like "e4 e5" or "a7 a8 R"; queen is the default promotion if not specified
 		Character pawnPromotion = null;
@@ -137,8 +125,11 @@ public class Chess {
 		}
 
 		//TODO: most implement logic for canMove and movePiece
-		if (piece.canMove(fromRank, fromFile, toRank, toFile)){
+		if (piece.canMove(ChessBoard, fromRank, fromFile, toRank, toFile)){
 			piece.movePiece(toRank, toFile);
+		} else {
+			play.message = ReturnPlay.Message.ILLEGAL_MOVE;
+			return play;
 		}
 
 		// must implement logic to handle draw. (we should handle draw after playing the move).

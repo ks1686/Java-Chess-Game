@@ -43,8 +43,14 @@ public abstract class Piece extends ReturnPiece {
     public abstract boolean canMovePiece(int rank, char file, int newRank, char newFile, int rankChange, int fileChange, Piece sourcePiece, Piece destinationPiece);
     // this signature is kinda long lol maybe theres a better way to do this? not sure
 
-    public boolean canMove(int rank, char file, int newRank, char newFile) {
-        //? this method can only be called if coordinates are already in bound, no need to check here
+    public boolean canMove(Board chessBoard, int rank, char file, int newRank, char newFile) {
+        
+		if (!chessBoard.areCoordsInBounds(file, rank) || !chessBoard.areCoordsInBounds(newFile, newRank)){
+			return false; // if coords are out of bounds, its illegal (uses Board.areCoordsInBounds)
+		} else if (file == newFile && rank == newRank) {
+			return false; // if player doesn't move at all, it's illegal
+		}
+        
         Piece sourcePiece = Chess.ChessBoard.getPiece(rank, file);
         Piece destinationPiece = Chess.ChessBoard.getPiece(newRank, newFile);
         int rankChange = Math.abs(rank - newRank);
