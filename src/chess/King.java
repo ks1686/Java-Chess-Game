@@ -2,6 +2,8 @@ package chess;
 
 public class King extends Piece {
 
+    // in check
+    private boolean inCheck = false; // default to false because we didn't even get to play yet
 
     public King(boolean isWhite) {
         super(isWhite);
