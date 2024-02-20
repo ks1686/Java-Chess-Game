@@ -2,8 +2,6 @@ package chess;
 
 public class Rook extends Piece {
 
-  private final boolean canCastle = true; // default to true; set to false if king moves
-
   public Rook(boolean isWhite) {
     super(isWhite);
     if (isWhite) {

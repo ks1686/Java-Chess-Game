@@ -1,9 +1,8 @@
 package chess;
 
 public abstract class Piece extends ReturnPiece {
-  public final boolean isWhite;
+  public boolean isWhite;
   public boolean hasMoved = false; // default, nothing moved
-  public boolean isCaptured = false; // default, nothing captured
 
   // Constructor; sets the color of the piece
   public Piece(boolean isWhite) {

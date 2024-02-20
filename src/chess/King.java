@@ -2,8 +2,7 @@ package chess;
 
 public class King extends Piece {
 
-  private final boolean inCheck = false; // default to false; will be set to true if in check
-  private final boolean canCastle = true; // default to true; set to false if king moves
+  private boolean inCheck; // default to false; will be set to true if in check
 
   public King(boolean isWhite) {
     super(isWhite);
