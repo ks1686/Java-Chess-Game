@@ -132,6 +132,15 @@ public class Chess {
       return play;
     }
 
+    // check if the piece to move is the correct color
+    if (currentPlayer == Player.white && pieceToMove.pieceType.name().charAt(0) == 'B') {
+      play.message = ReturnPlay.Message.ILLEGAL_MOVE;
+      return play;
+    } else if (currentPlayer == Player.black && pieceToMove.pieceType.name().charAt(0) == 'W') {
+      play.message = ReturnPlay.Message.ILLEGAL_MOVE;
+      return play;
+    }
+
     // check if we even move the piece at all
     if (fromFile == toFile && fromRank == toRank) {
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
