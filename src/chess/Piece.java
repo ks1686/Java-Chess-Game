@@ -29,8 +29,7 @@ public abstract class Piece extends ReturnPiece {
   }
 
   // method that returns a char for the piece's file
-  public char enumFileToChar(ReturnPiece.PieceFile pieceFile) {
-    // 'a' is 97 in ASCII, so use ordinal to get the correct char
-    return (char) (this.pieceFile.ordinal() + 97);
+  public char enumFileToChar(ReturnPiece.PieceFile file) {
+    return file.name().charAt(0);
   }
 }
