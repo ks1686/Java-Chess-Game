@@ -2,7 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 
-// ! Do not chang
+// ! Do not change
 
 class ReturnPiece {
   enum PieceType {
@@ -191,8 +191,22 @@ public class Chess {
   }
 
   // method to move a piece given specific piece and new rank and file after checking for obstacles
-  // (other pieces)
-  private static void movePiece(ReturnPiece piece, int newRank, ReturnPiece.PieceFile newFile) {}
+  private static void movePiece(ReturnPiece piece, int newRank, ReturnPiece.PieceFile newFile) {
+
+    // TODO: implement checking for pieces in the way
+
+    // knight move (has its own logic since it can jump over pieces; check for obstacle only at the
+    // new spot)
+    if (piece.pieceType.name().charAt(1) == 'N') {
+      // check if the new spot is empty
+      for (ReturnPiece otherPiece : play.piecesOnBoard) {
+        if (otherPiece.pieceFile == newFile && otherPiece.pieceRank == newRank) {
+          // new spot is not empty, must check if it's an enemy piece (can capture) or an ally piece
+          // (can't move)
+        }
+      }
+    }
+  }
 
   // method to create a new piece given a piece type and color
   private static ReturnPiece createNewPiece(String pieceType, boolean isWhite) {
