@@ -117,7 +117,22 @@ public class Chess {
       return play;
     }
 
-    // check if we even move at all
+    // find the piece to move in the piecesOnBoard list
+    ReturnPiece pieceToMove = null; // the piece to move
+    for (ReturnPiece piece : play.piecesOnBoard) {
+      if (piece.pieceFile.name().charAt(0) == fromFile && piece.pieceRank == fromRank) {
+        pieceToMove = piece;
+        break;
+      }
+    }
+
+    // check if the piece to move exists
+    if (pieceToMove == null) {
+      play.message = ReturnPlay.Message.ILLEGAL_MOVE;
+      return play;
+    }
+
+    // check if we even move the piece at all
     if (fromFile == toFile && fromRank == toRank) {
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
       return play;
@@ -166,7 +181,11 @@ public class Chess {
     return play; // return the current state of the game
   }
 
-  // create new piece based on piece type
+  // method to move a piece given specific piece and new rank and file after checking for obstacles
+  // (other pieces)
+  private static void movePiece(ReturnPiece piece, int newRank, ReturnPiece.PieceFile newFile) {}
+
+  // method to create a new piece given a piece type and color
   private static ReturnPiece createNewPiece(String pieceType, boolean isWhite) {
     switch (pieceType) {
       case "P":
@@ -186,7 +205,7 @@ public class Chess {
     }
   }
 
-  // add piece to ReturnPiece board
+  // method to add a piece to the board
   private static void addPieceToBoard(
       ReturnPlay play, String pieceType, ReturnPiece.PieceFile file, int rank, boolean isWhite) {
     ReturnPiece piece = createNewPiece(pieceType, isWhite);
@@ -195,7 +214,7 @@ public class Chess {
     play.piecesOnBoard.add(piece);
   }
 
-  // set up specified team's pieces
+  // method to set up pieces on the board
   private static void setupPieces(ReturnPlay play, String[] pieceOrder, boolean isWhite) {
     int backRank;
     int pawnRank;
@@ -219,6 +238,7 @@ public class Chess {
     }
   }
 
+  // method to start a new game
   public static void start() {
     play = new ReturnPlay(); // create new ReturnPlay object
     currentPlayer = Player.white; // white goes first (needed for resets/draws)
