@@ -168,7 +168,7 @@ public class Chess {
         moveKnight(pieceToMove, toRank, ReturnPiece.PieceFile.valueOf(String.valueOf(toFile)));
         break;
       case 'K': // king; currently only for castling
-        movePiece(pieceToMove, toRank, ReturnPiece.PieceFile.valueOf(String.valueOf(toFile)));
+        moveKing(pieceToMove, toRank, ReturnPiece.PieceFile.valueOf(String.valueOf(toFile)));
         break;
       default:
         // no piece to move; illegal move
@@ -200,8 +200,6 @@ public class Chess {
     // cast a piece to a specific type to call canMove method
     Piece piece = (Piece) specificPiece;
 
-    // knight move is unique; check for obstacle only at the new spot
-
     // call canMove method to see if the move is valid
     if (piece.canMove(piece.pieceRank, piece.pieceFile, newRank, newFile, true)) {
       // piece can move, check if the new spot is empty
@@ -228,6 +226,76 @@ public class Chess {
         piece.pieceFile = newFile;
       }
     }
+    // set hasMoved to true
+    piece.hasMoved = true;
+  }
+
+  // move king (has additional conditionals for castling logic)
+  private static void moveKing(ReturnPiece specificPiece, int newRank, Piece.PieceFile newFile) {
+    // cast a piece to a specific type to call canMove method
+    Piece piece = (Piece) specificPiece;
+
+    // castling logic: king/rook has not moved, no pieces between king/rook
+    if (!piece.hasMoved) {
+      // castling to the right
+      if (newFile == Piece.PieceFile.g && newRank == piece.pieceRank) {
+        // check if rook has not moved
+        for (ReturnPiece otherPiece : play.piecesOnBoard) {
+          if (otherPiece.pieceFile == Piece.PieceFile.h
+              && otherPiece.pieceRank == piece.pieceRank) {
+            // cast otherPiece to a specific type to call hasMoved
+            Piece tempOtherPiece = (Piece) otherPiece;
+            if (!tempOtherPiece.hasMoved) {
+              // check if there are pieces between king and rook
+              boolean isPathClear = true;
+              for (ReturnPiece pathPiece : play.piecesOnBoard) {
+                if (pathPiece.pieceRank == piece.pieceRank
+                    && pathPiece.pieceFile.name().charAt(0) > piece.pieceFile.name().charAt(0)
+                    && pathPiece.pieceFile.name().charAt(0) < newFile.name().charAt(0)) {
+                  isPathClear = false;
+                  break;
+                }
+              }
+              if (isPathClear) {
+                // move king and rook
+                piece.pieceFile = newFile;
+                otherPiece.pieceFile = Piece.PieceFile.f;
+              }
+            }
+          }
+        }
+      }
+    } else if (newFile == Piece.PieceFile.c && newRank == piece.pieceRank) {
+      // castling to the left
+      // check if rook has not moved
+      for (ReturnPiece otherPiece : play.piecesOnBoard) {
+        if (otherPiece.pieceFile == Piece.PieceFile.a && otherPiece.pieceRank == piece.pieceRank) {
+          // cast otherPiece to a specific type to call hasMoved
+          Piece tempOtherPiece = (Piece) otherPiece;
+          if (!tempOtherPiece.hasMoved) {
+            // check if there are pieces between king and rook
+            boolean isPathClear = true;
+            for (ReturnPiece pathPiece : play.piecesOnBoard) {
+              if (pathPiece.pieceRank == piece.pieceRank
+                  && pathPiece.pieceFile.name().charAt(0) < piece.pieceFile.name().charAt(0)
+                  && pathPiece.pieceFile.name().charAt(0) > newFile.name().charAt(0)) {
+                isPathClear = false;
+                break;
+              }
+            }
+            if (isPathClear) {
+              // move king and rook
+              piece.pieceFile = newFile;
+              otherPiece.pieceFile = Piece.PieceFile.d;
+            }
+          }
+        }
+      }
+    } else {
+      // move king normally
+      movePiece(piece, newRank, newFile);
+    }
+
     // set hasMoved to true
     piece.hasMoved = true;
   }
