@@ -161,6 +161,11 @@ public class Chess {
       }
     }
 
+    // knight's movePiece() implementation ONLY
+    if (pieceToMove.pieceType.name().charAt(1) == 'N') {
+      movePiece(pieceToMove, toRank, ReturnPiece.PieceFile.valueOf(String.valueOf(toFile)));
+    }
+
     // TODO: move is valid; begin checking for unique moves (castling, en passant, etc.)
 
     // TODO: move is valid; check if move is legal for the piece
@@ -191,21 +196,56 @@ public class Chess {
   }
 
   // method to move a piece given specific piece and new rank and file after checking for obstacles
-  private static void movePiece(ReturnPiece piece, int newRank, ReturnPiece.PieceFile newFile) {
+  private static void movePiece(ReturnPiece specificPiece, int newRank, Piece.PieceFile newFile) {
 
-    // TODO: implement checking for pieces in the way
+    // cast a piece to a specific type to call canMove method
+    Piece piece = (Piece) specificPiece;
 
-    // knight move (has its own logic since it can jump over pieces; check for obstacle only at the
-    // new spot)
+    // knight move is unique; check for obstacle only at the new spot
     if (piece.pieceType.name().charAt(1) == 'N') {
-      // check if the new spot is empty
-      for (ReturnPiece otherPiece : play.piecesOnBoard) {
-        if (otherPiece.pieceFile == newFile && otherPiece.pieceRank == newRank) {
-          // new spot is not empty, must check if it's an enemy piece (can capture) or an ally piece
-          // (can't move)
+      // call canMove method to see if the move is valid
+      if (piece.canMove(piece.pieceRank, piece.pieceFile, newRank, newFile, true)) {
+        // piece can move, check if the new spot is empty
+        boolean isNewSpotEmpty = true;
+        for (ReturnPiece otherPiece : play.piecesOnBoard) {
+          // check if piece is at the new spot
+          if (otherPiece.pieceFile == newFile && otherPiece.pieceRank == newRank) {
+            isNewSpotEmpty = false;
+            break;
+          }
+        }
+
+        // if spot is not empty, attempt to capture the piece
+        if (!isNewSpotEmpty) {
+          if (capturePiece(piece, newRank, newFile)) {
+            piece.pieceRank = newRank; // move piece to new spot
+            piece.pieceFile = newFile;
+          }
+        } else {
+          // spot is empty, move piece to new spot
+          piece.pieceRank = newRank;
+          piece.pieceFile = newFile;
         }
       }
     }
+
+    // TODO: implement checking for pieces in the way
+
+  }
+
+  // method to capture a piece (must be different color)
+  private static boolean capturePiece(Piece piece, int rank, Piece.PieceFile file) {
+    for (ReturnPiece otherPiece : play.piecesOnBoard) {
+      // check if piece is at the new spot
+      if (otherPiece.pieceFile == file && otherPiece.pieceRank == rank) {
+        // check if piece is different color
+        if (piece.pieceType.name().charAt(0) != otherPiece.pieceType.name().charAt(0)) {
+          play.piecesOnBoard.remove(otherPiece); // remove captured piece
+          return true; // piece captured
+        }
+      }
+    }
+    return false; // same color; no capture
   }
 
   // method to create a new piece given a piece type and color
@@ -230,7 +270,7 @@ public class Chess {
 
   // method to add a piece to the board
   private static void addPieceToBoard(
-      ReturnPlay play, String pieceType, ReturnPiece.PieceFile file, int rank, boolean isWhite) {
+      ReturnPlay play, String pieceType, Piece.PieceFile file, int rank, boolean isWhite) {
     ReturnPiece piece = createNewPiece(pieceType, isWhite);
     piece.pieceFile = file;
     piece.pieceRank = rank;
