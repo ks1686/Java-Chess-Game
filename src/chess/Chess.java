@@ -229,6 +229,9 @@ public class Chess {
       }
     }
 
+    // set hasMoved to true
+    piece.hasMoved = true;
+
     // TODO: implement checking for pieces in the way
 
   }
