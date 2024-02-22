@@ -161,22 +161,22 @@ public class Chess {
       }
     }
 
-    // knight's movePiece() implementation ONLY
-    if (pieceToMove.pieceType.name().charAt(1) == 'N') {
-      movePiece(pieceToMove, toRank, ReturnPiece.PieceFile.valueOf(String.valueOf(toFile)));
+    // switch/case for piece type (may not be necessary; used currently for testing/in case
+    // additional features like a checkmate method are added)
+    switch (pieceToMove.pieceType.name().charAt(1)) {
+      case 'N': // knight; unique move() so no need for obstacle checking
+        moveKnight(pieceToMove, toRank, ReturnPiece.PieceFile.valueOf(String.valueOf(toFile)));
+        break;
+      case 'K': // king; currently only for castling
+        movePiece(pieceToMove, toRank, ReturnPiece.PieceFile.valueOf(String.valueOf(toFile)));
+        break;
+      default:
+        // no piece to move; illegal move
+        play.message = ReturnPlay.Message.ILLEGAL_MOVE;
+        break;
     }
 
-    // TODO: move is valid; begin checking for unique moves (castling, en passant, etc.)
-
-    // TODO: move is valid; check if move is legal for the piece
-
-    // TODO: move is valid; check if move puts the player in check
-
-    // TODO: move is valid; check if move puts the opponent in check
-
-    // TODO: move is valid; check if move puts the player in checkmate
-
-    // TODO: move is valid; check if move puts the opponent in checkmate
+    // TODO: finish unique move logic, obstacle checking, and check/checkmate logic
 
     // move is valid; check if a draw is requested. else, just perform move
     if (move.endsWith("draw?") && move.length() == 11) {
@@ -197,43 +197,73 @@ public class Chess {
 
   // method to move a piece given specific piece and new rank and file after checking for obstacles
   private static void movePiece(ReturnPiece specificPiece, int newRank, Piece.PieceFile newFile) {
-
     // cast a piece to a specific type to call canMove method
     Piece piece = (Piece) specificPiece;
 
     // knight move is unique; check for obstacle only at the new spot
-    if (piece.pieceType.name().charAt(1) == 'N') {
-      // call canMove method to see if the move is valid
-      if (piece.canMove(piece.pieceRank, piece.pieceFile, newRank, newFile, true)) {
-        // piece can move, check if the new spot is empty
-        boolean isNewSpotEmpty = true;
-        for (ReturnPiece otherPiece : play.piecesOnBoard) {
-          // check if piece is at the new spot
-          if (otherPiece.pieceFile == newFile && otherPiece.pieceRank == newRank) {
-            isNewSpotEmpty = false;
-            break;
-          }
-        }
 
-        // if spot is not empty, attempt to capture the piece
-        if (!isNewSpotEmpty) {
-          if (capturePiece(piece, newRank, newFile)) {
-            piece.pieceRank = newRank; // move piece to new spot
-            piece.pieceFile = newFile;
-          }
-        } else {
-          // spot is empty, move piece to new spot
-          piece.pieceRank = newRank;
+    // call canMove method to see if the move is valid
+    if (piece.canMove(piece.pieceRank, piece.pieceFile, newRank, newFile, true)) {
+      // piece can move, check if the new spot is empty
+      boolean isNewSpotEmpty = true;
+      for (ReturnPiece otherPiece : play.piecesOnBoard) {
+        // check if piece is at the new spot
+        if (otherPiece.pieceFile == newFile && otherPiece.pieceRank == newRank) {
+          isNewSpotEmpty = false;
+          break;
+        }
+      }
+
+      // TODO: obstacle checking for other pieces before capturing
+
+      // if spot is not empty, attempt to capture the piece
+      if (!isNewSpotEmpty) {
+        if (capturePiece(piece, newRank, newFile)) {
+          piece.pieceRank = newRank; // move piece to new spot
           piece.pieceFile = newFile;
         }
+      } else {
+        // spot is empty, move piece to new spot
+        piece.pieceRank = newRank;
+        piece.pieceFile = newFile;
+      }
+    }
+    // set hasMoved to true
+    piece.hasMoved = true;
+  }
+
+  // move a knight given specific piece and new rank and file (requires no obstacle checking)
+  private static void moveKnight(ReturnPiece specificPiece, int newRank, Piece.PieceFile newFile) {
+    // cast a piece to a specific type to call canMove method
+    Piece piece = (Piece) specificPiece;
+
+    // call canMove method to see if the move is valid
+    if (piece.canMove(piece.pieceRank, piece.pieceFile, newRank, newFile, true)) {
+      // piece can move, check if the new spot is empty
+      boolean isNewSpotEmpty = true;
+      for (ReturnPiece otherPiece : play.piecesOnBoard) {
+        // check if piece is at the new spot
+        if (otherPiece.pieceFile == newFile && otherPiece.pieceRank == newRank) {
+          isNewSpotEmpty = false;
+          break;
+        }
+      }
+
+      // if spot is not empty, attempt to capture the piece
+      if (!isNewSpotEmpty) {
+        if (capturePiece(piece, newRank, newFile)) {
+          piece.pieceRank = newRank; // move piece to new spot
+          piece.pieceFile = newFile;
+        }
+      } else {
+        // spot is empty, move piece to new spot
+        piece.pieceRank = newRank;
+        piece.pieceFile = newFile;
       }
     }
 
     // set hasMoved to true
     piece.hasMoved = true;
-
-    // TODO: implement checking for pieces in the way
-
   }
 
   // method to capture a piece (must be different color)
