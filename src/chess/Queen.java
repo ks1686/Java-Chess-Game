@@ -30,7 +30,7 @@ public class Queen extends Piece {
     // invalid move not accounting for pieces in the way
   }
 
-  public Square[] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
+  public Square[][] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
     return null;
   }
 

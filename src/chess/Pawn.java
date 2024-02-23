@@ -48,7 +48,7 @@ public class Pawn extends Piece {
     return false; // can't move any other way
   }
 
-  public Square[] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
+  public Square[][] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
     return null;
   }
 }

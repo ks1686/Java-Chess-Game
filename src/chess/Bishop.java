@@ -21,7 +21,7 @@ public class Bishop extends Piece {
     return rankChange == fileChange; // can move diagonally
   }
 
-  public Square[] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
+  public Square[][] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
     return null;
   }
 }

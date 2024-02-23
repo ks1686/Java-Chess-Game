@@ -13,10 +13,18 @@ public abstract class Piece extends ReturnPiece {
 
 
 
-  // TODO: make an abstract method that returns a list of visible squares for the piece (squares that the piece can MOVE to, accounting for obstacles)
-  // TODO: make an abstract method that returns a list of capturable squares for the piece (squares that the piece can CAPTURE on, if there was an enemy piece on it)
+  /* Create an abstract method to generate a list of potential move squares for a chess piece, excluding obstacle considerations. This method should return arrays representing the piece's movement options:
 
-  public abstract Square[] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file);
+  For bishops, an array of four arrays, each detailing a diagonal's squares.
+  For rooks, an array of four arrays, each listing a row or column's squares.
+  For pawns, a single array with two squares ahead, adaptable for initial moves.
+  For kings and knights, a single array each, detailing their respective surrounding move squares.
+  For queens, combine the movement patterns of kings, rooks, and bishops.
+  Then, in a separate method, we can evaluate these paths for obstacles to determine actual moves.
+  
+   */
+  
+  public abstract Square[][] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file);
 
   public abstract boolean canMoveSpecific(int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile);
 

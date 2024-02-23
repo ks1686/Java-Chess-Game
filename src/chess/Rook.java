@@ -21,7 +21,7 @@ public class Rook extends Piece {
     return rankChange == 0 || fileChange == 0; // can move horizontally or vertically
   }
 
-  public Square[] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
+  public Square[][] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
     return null;
   }
 }

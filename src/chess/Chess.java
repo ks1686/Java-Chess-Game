@@ -122,26 +122,25 @@ public class Chess {
       return play;
     }
 
-    // TODO: implement pawn promotion logic
-    // move is valid, check for pawn promotion (queen is default for unspecified promotion)
-    char promotion = '0'; // 0 for no promotion
-    if (pieceToMove instanceof Pawn && (toRank == 1 || toRank == 8)) {
-      switch (move.length()) {
-        case 5:
-          promotion = 'Q'; // handle future logic
-          break;
-        case 7:
-          promotion = move.charAt(6);
-          break;
-      }
-    }
 
     // TODO: finish unique move logic, obstacle checking, and check/checkmate logic
     if (!pieceToMove.canMove(toRank, toFile)) {
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
       return play;
     }
-
+    
+    // move is valid, check for pawn promotion (queen is default for unspecified promotion)
+    char promotion = '0'; // 0 for no promotion
+    if (pieceToMove instanceof Pawn && (toRank == 1 || toRank == 8)) {
+      switch (move.length()) {
+        case 5:
+          promotion = 'Q'; // TODO: implement pawn promotion logic
+          break;
+        case 7:
+          promotion = move.charAt(6);
+          break;
+      }
+    }
     
 
     // move is valid; check if a draw is requested. else, just perform move
@@ -162,7 +161,7 @@ public class Chess {
   }
 
   
-// TODO: move this to the king class's canMoveSpecific method
+// TODO: find a place to put this
   // move king (has additional conditionals for castling logic)
   private static void moveKing(ReturnPiece specificPiece, int newRank, Piece.PieceFile newFile) {
     // cast a piece to a specific type to call canMove method

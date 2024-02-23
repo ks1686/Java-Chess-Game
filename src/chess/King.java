@@ -31,7 +31,7 @@ public class King extends Piece {
     return rankChange <= 1 && fileChange <= 1; // can move one space in any direction
   }
 
-  public Square[] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
+  public Square[][] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
     return null;
   }
 }
