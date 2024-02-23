@@ -57,7 +57,7 @@ public class Pawn extends Piece {
         isAllowed = true;
       }
     }
-    return false; // can't move any other way
+    return isAllowed; // can't move any other way
   }
 
   public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {

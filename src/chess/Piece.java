@@ -33,22 +33,23 @@ public abstract class Piece extends ReturnPiece {
   public boolean canMove(int newRank, ReturnPiece.PieceFile newFile) {
       int rank = this.pieceRank;
       ReturnPiece.PieceFile file = this.pieceFile;
+      char fileChar = file.name().charAt(0);
+      char newFileChar = newFile.name().charAt(0);
+      if ((Chess.currentPlayer == Player.white && pieceType.name().charAt(0) == 'B') || 
+          (Chess.currentPlayer == Player.black && pieceType.name().charAt(0) == 'W')) {
+          return false; // check if the piece to move is the correct color
+      } else if (file == newFile && rank == newRank) {
+          return false; // check if piece didn't change squares
+      } else if (fileChar < Chess.MIN_FILE || fileChar > Chess.MAX_FILE ||
+                newFileChar < Chess.MIN_FILE || newFileChar > Chess.MAX_FILE ||
+                  rank < Chess.MIN_RANK || rank > Chess.MAX_RANK ||
+                  newRank < Chess.MIN_RANK || newRank > Chess.MAX_RANK) {
+          return false; // check if square is within bounds of the board
+      }
 
-        if ((Chess.currentPlayer == Player.white && pieceType.name().charAt(0) == 'B') || 
-            (Chess.currentPlayer == Player.black && pieceType.name().charAt(0) == 'W')) {
-            return false; // check if the piece to move is the correct color
-        } else if (file == newFile && rank == newRank) {
-            return false; // check if piece didn't change squares
-        } else if (file.name().charAt(0) < Chess.MIN_FILE || file.name().charAt(0) > Chess.MAX_FILE ||
-                    newFile.name().charAt(0) < Chess.MIN_FILE || newFile.name().charAt(0) > Chess.MAX_FILE ||
-                    rank < Chess.MIN_RANK || rank > Chess.MAX_RANK ||
-                    newRank < Chess.MIN_RANK || newRank > Chess.MAX_RANK) {
-            return false; // check if square is within bounds of the board
-        }
+      // TODO: obstacle checking for other pieces before capturing
 
-        // TODO: obstacle checking for other pieces before capturing
-
-        return canMoveSpecific(rank, file, newRank, newFile); // find out whether the specific piece can move to the new square
+      return canMoveSpecific(rank, file, newRank, newFile); // find out whether the specific piece can move to the new square
 
       }
 
