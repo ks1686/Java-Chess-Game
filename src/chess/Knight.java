@@ -26,6 +26,26 @@ public class Knight extends Piece {
   }
 
   public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
-    return null;
+    ArrayList<ArrayList<Square>> visibleSquares = new ArrayList<>();
+    ArrayList<Square> knightSquares = new ArrayList<>();
+    int[][] knightMoves = {
+        {+2, +1}, {+2, -1}, {-2, +1}, {-2, -1},
+        {+1, +2}, {+1, -2}, {-1, +2}, {-1, -2}
+    };
+    
+    int fileInt = file.ordinal();
+    
+    for (int[] move : knightMoves) {
+        int newRank = rank + move[0];
+        int newFileInt = fileInt + move[1];
+        
+        // Check if the new position is within the bounds of the board
+        if (newRank >= Chess.MIN_RANK && newRank <= Chess.MAX_RANK &&
+            newFileInt >= 0 && newFileInt < ReturnPiece.PieceFile.values().length) {
+            knightSquares.add(new Square(newRank, ReturnPiece.PieceFile.values()[newFileInt]));
+        }
+    }
+    visibleSquares.add(knightSquares);
+    return visibleSquares;
   }
 }

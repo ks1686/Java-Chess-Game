@@ -24,6 +24,40 @@ public class Bishop extends Piece {
   }
 
   public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
-    return null;
+    ArrayList<ArrayList<Square>> visibleSquares = new ArrayList<>();
+    ArrayList<Square> upperRightDiagonal = new ArrayList<>();
+    ArrayList<Square> upperLeftDiagonal = new ArrayList<>();
+    ArrayList<Square> lowerRightDiagonal = new ArrayList<>();
+    ArrayList<Square> lowerLeftDiagonal = new ArrayList<>();
+    
+    int fileInt = file.ordinal();
+
+    // Upper Right Diagonal
+    for (int r = rank + 1, f = fileInt + 1; r <= Chess.MAX_RANK && f < ReturnPiece.PieceFile.values().length; r++, f++) {
+        upperRightDiagonal.add(new Square(r, ReturnPiece.PieceFile.values()[f]));
+    }
+
+    // Upper Left Diagonal
+    for (int r = rank + 1, f = fileInt - 1; r <= Chess.MAX_RANK && f >= 0; r++, f--) {
+        upperLeftDiagonal.add(new Square(r, ReturnPiece.PieceFile.values()[f]));
+    }
+
+    // Lower Right Diagonal
+    for (int r = rank - 1, f = fileInt + 1; r >= Chess.MIN_RANK && f < ReturnPiece.PieceFile.values().length; r--, f++) {
+        lowerRightDiagonal.add(new Square(r, ReturnPiece.PieceFile.values()[f]));
+    }
+
+    // Lower Left Diagonal
+    for (int r = rank - 1, f = fileInt - 1; r >= Chess.MIN_RANK && f >= 0; r--, f--) {
+        lowerLeftDiagonal.add(new Square(r, ReturnPiece.PieceFile.values()[f]));
+    }
+
+    visibleSquares.add(upperRightDiagonal);
+    visibleSquares.add(upperLeftDiagonal);
+    visibleSquares.add(lowerRightDiagonal);
+    visibleSquares.add(lowerLeftDiagonal);
+
+    return visibleSquares;
+  
   }
 }

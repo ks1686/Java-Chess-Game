@@ -51,6 +51,9 @@ public class Pawn extends Piece {
   }
 
   public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
-    return null;
+    // for pawn, if !hasMoved, then the pawn can see two squares ahead. otherwise, only 1 square ahead
+    // also, if there is an enemy piece directly 1 diagonal square to the left or right of the pawn, then the pawn can see that piece also (since it would be able to move there)
+    // also, if the pawn can en passant, it can see there as well.
+    return null; 
   }
 }
