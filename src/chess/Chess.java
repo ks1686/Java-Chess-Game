@@ -85,9 +85,18 @@ public class Chess {
 
   static Player currentPlayer; // current player (white goes first)
 
+  private static Piece getPiece(char file, int rank) {
+    for (ReturnPiece piece : play.piecesOnBoard) {
+      if (piece.pieceFile.name().charAt(0) == file && piece.pieceRank == rank) {
+        return (Piece) piece;
+      }
+    }
+    return null;
+  }
+
   public static ReturnPlay play(String move) {
     move = move.trim(); // remove leading and trailing whitespace
-
+    
     // resign kills game immediately
     if (move.equals("resign")) {
       if (currentPlayer == Player.white) {
@@ -104,27 +113,9 @@ public class Chess {
     char toFile = move.toLowerCase().charAt(3);
     int toRank = Character.getNumericValue(move.charAt(4));
 
-    // check if the move is inside the board
-    if (fromFile < MIN_FILE
-        || fromFile > MAX_FILE
-        || toFile < MIN_FILE
-        || toFile > MAX_FILE
-        || fromRank < MIN_RANK
-        || fromRank > MAX_RANK
-        || toRank < MIN_RANK
-        || toRank > MAX_RANK) {
-      play.message = ReturnPlay.Message.ILLEGAL_MOVE;
-      return play;
-    }
-
     // find the piece to move in the piecesOnBoard list
-    ReturnPiece pieceToMove = null; // the piece to move
-    for (ReturnPiece piece : play.piecesOnBoard) {
-      if (piece.pieceFile.name().charAt(0) == fromFile && piece.pieceRank == fromRank) {
-        pieceToMove = piece;
-        break;
-      }
-    }
+    Piece pieceToMove = getPiece(fromFile, fromRank); // the piece to move
+    
 
     // check if the piece to move exists
     if (pieceToMove == null) {
@@ -132,28 +123,13 @@ public class Chess {
       return play;
     }
 
-    // check if the piece to move is the correct color
-    if (currentPlayer == Player.white && pieceToMove.pieceType.name().charAt(0) == 'B') {
-      play.message = ReturnPlay.Message.ILLEGAL_MOVE;
-      return play;
-    } else if (currentPlayer == Player.black && pieceToMove.pieceType.name().charAt(0) == 'W') {
-      play.message = ReturnPlay.Message.ILLEGAL_MOVE;
-      return play;
-    }
-
-    // check if we even move the piece at all
-    if (fromFile == toFile && fromRank == toRank) {
-      play.message = ReturnPlay.Message.ILLEGAL_MOVE;
-      return play;
-    }
-
     // TODO: implement pawn promotion logic
     // move is valid, check for pawn promotion (queen is default for unspecified promotion)
-    char promotion = 'Q';
-    if (toRank == 1 || toRank == 8) {
+    char promotion = '0'; // 0 for no promotion
+    if (pieceToMove instanceof Pawn && (toRank == 1 || toRank == 8)) {
       switch (move.length()) {
         case 5:
-          // promotion = 'Q'; handle future logic
+          promotion = 'Q'; // handle future logic
           break;
         case 7:
           promotion = move.charAt(6);
@@ -161,22 +137,11 @@ public class Chess {
       }
     }
 
-    // switch/case for piece type (may not be necessary; used currently for testing/in case
-    // additional features like a checkmate method are added)
-    switch (pieceToMove.pieceType.name().charAt(1)) {
-      case 'N': // knight; unique move() so no need for obstacle checking
-        moveKnight(pieceToMove, toRank, ReturnPiece.PieceFile.valueOf(String.valueOf(toFile)));
-        break;
-      case 'K': // king; currently only for castling
-        moveKing(pieceToMove, toRank, ReturnPiece.PieceFile.valueOf(String.valueOf(toFile)));
-        break;
-      default:
-        // no piece to move; illegal move
-        play.message = ReturnPlay.Message.ILLEGAL_MOVE;
-        break;
-    }
-
     // TODO: finish unique move logic, obstacle checking, and check/checkmate logic
+    if (!pieceToMove.isValidMove(fromRank, Piece.charToEnumFile(fromFile), toRank, Piece.charToEnumFile(toFile))) {
+      play.message = ReturnPlay.Message.ILLEGAL_MOVE;
+      return play;
+    }
 
     // move is valid; check if a draw is requested. else, just perform move
     if (move.endsWith("draw?") && move.length() == 11) {

@@ -1,5 +1,7 @@
 package chess;
 
+import chess.Chess.Player;
+
 public abstract class Piece extends ReturnPiece {
   public boolean isWhite;
   public boolean hasMoved = false; // default, nothing moved
@@ -15,8 +17,23 @@ public abstract class Piece extends ReturnPiece {
       int rank,
       ReturnPiece.PieceFile file,
       int newRank,
-      ReturnPiece.PieceFile newFile,
-      boolean isNewSpotEmpty);
+      ReturnPiece.PieceFile newFile, boolean isNewSpotEmpty);
+
+  public boolean isValidMove(int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile) {
+    
+    if ((Chess.currentPlayer == Player.white && pieceType.name().charAt(0) == 'B') || 
+        (Chess.currentPlayer == Player.black && pieceType.name().charAt(0) == 'W')) {
+        return false; // check if the piece to move is the correct color
+    } else if (file == newFile && rank == newRank) {
+        return false; // check if piece didn't change squares
+    } else if (file.name().charAt(0) < Chess.MIN_FILE || file.name().charAt(0) > Chess.MAX_FILE ||
+                newFile.name().charAt(0) < Chess.MIN_FILE || newFile.name().charAt(0) > Chess.MAX_FILE ||
+                rank < Chess.MIN_RANK || rank > Chess.MAX_RANK ||
+                newRank < Chess.MIN_RANK || newRank > Chess.MAX_RANK) {
+        return false; // check if square is within bounds of the board
+    }
+    return true;
+  }
 
   // return pieceType
   public ReturnPiece.PieceType getPieceType() {
@@ -29,7 +46,18 @@ public abstract class Piece extends ReturnPiece {
   }
 
   // method that returns a char for the piece's file
-  public char enumFileToChar(ReturnPiece.PieceFile file) {
+  public static char enumFileToChar(ReturnPiece.PieceFile file) {
     return (char) (file.name().charAt(0) + 32); // convert to lowercase
   }
+
+  public static ReturnPiece.PieceFile charToEnumFile(char file) {
+    for (ReturnPiece.PieceFile fileEnum : ReturnPiece.PieceFile.values()) {
+      if (Character.toLowerCase(fileEnum.name().charAt(0)) == Character.toLowerCase(file)) {
+          return fileEnum;
+      }
+    }
+
+    throw new IllegalArgumentException(file + " is not a vaid enum constant.");
+  }
+
 }
