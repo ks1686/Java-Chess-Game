@@ -94,22 +94,22 @@ public class King extends Piece {
       squares.add(new Square(rank - 1, file));
     }
     if (enumFileToChar(file) + 1 <= Chess.MAX_FILE) { // right
-      squares.add(new Square(rank, ReturnPiece.PieceFile.values()[enumFileToChar(file) + 1]));
+      squares.add(new Square(rank, ReturnPiece.PieceFile.values()[enumFileToChar(file) + 1 - 'a']));
     }
     if (enumFileToChar(file) - 1 >= Chess.MIN_FILE) { // left
-      squares.add(new Square(rank, ReturnPiece.PieceFile.values()[enumFileToChar(file) - 1]));
+      squares.add(new Square(rank, ReturnPiece.PieceFile.values()[enumFileToChar(file) - 1  - 'a']));
     }
     if (rank + 1 <= Chess.MAX_RANK && enumFileToChar(file) + 1 <= Chess.MAX_FILE) { // up-right
-      squares.add(new Square(rank + 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) + 1]));
+      squares.add(new Square(rank + 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) + 1 - 'a']));
     }
     if (rank + 1 <= Chess.MAX_RANK && enumFileToChar(file) - 1 >= Chess.MIN_FILE) { // up-left
-      squares.add(new Square(rank + 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) - 1]));
+      squares.add(new Square(rank + 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) - 1 - 'a']));
     }
     if (rank - 1 >= Chess.MIN_RANK && enumFileToChar(file) + 1 <= Chess.MAX_FILE) { // down-right
-      squares.add(new Square(rank - 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) + 1]));
+      squares.add(new Square(rank - 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) + 1 - 'a']));
     }
     if (rank - 1 >= Chess.MIN_RANK && enumFileToChar(file) - 1 >= Chess.MIN_FILE) { // down-left
-      squares.add(new Square(rank - 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) - 1]));
+      squares.add(new Square(rank - 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) - 1 - 'a']));
     }
 
     visibleSquares.add(squares);
