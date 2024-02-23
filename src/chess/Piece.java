@@ -57,7 +57,7 @@ public abstract class Piece extends ReturnPiece {
   // method to move a piece given specific piece and new rank and file after checking for obstacles and checking if the piece canMove() to the spot
   public void movePiece(int newRank, Piece.PieceFile newFile) {
     boolean isNewSpotEmpty;
-  
+
     // piece can move, check if the new spot is empty
     Piece otherPiece = Chess.getPiece(newRank, newFile);
     if (otherPiece == null) { isNewSpotEmpty = true; } else { isNewSpotEmpty = false; }

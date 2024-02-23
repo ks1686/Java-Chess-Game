@@ -159,7 +159,18 @@ public class Chess {
       }
     }
 
+    resetPawnHasJustAdvancedTwice(currentPlayer); // reset pawn hasJustAdvancedTwice of the opposite team to false
     return play; // return the current state of the game
+  }
+
+  private static void resetPawnHasJustAdvancedTwice(Player player) {
+    for (ReturnPiece piece : play.piecesOnBoard) {
+      if (piece.pieceType == ReturnPiece.PieceType.WP && player == Player.black) {
+        ((Pawn) piece).hasJustAdvancedTwice = false;
+      } else if (piece.pieceType == ReturnPiece.PieceType.BP && player == Player.white) {
+        ((Pawn) piece).hasJustAdvancedTwice = false;
+      }
+    }
   }
 
   // TODO: find a place to put this

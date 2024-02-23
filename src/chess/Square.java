@@ -6,9 +6,13 @@ public class Square {
     public int rank;
     public ReturnPiece.PieceFile file;
 
-    public Square(int rank, ReturnPiece.PieceFile file) {
+    public Square(int rank, ReturnPiece.PieceFile file) throws IllegalArgumentException{
         this.rank = rank;
         this.file = file;
+        // throw exception if rank or file is out of bounds
+        if (rank < Chess.MIN_RANK || rank > Chess.MAX_RANK || file.ordinal() < 0 || file.ordinal() > 7) {
+            throw new IllegalArgumentException("Invalid square. " + rank + "" + file + " is out of bounds.");
+        }
     }
 
     public boolean equals(Object other) {
