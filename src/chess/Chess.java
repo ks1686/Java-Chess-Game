@@ -137,10 +137,12 @@ public class Chess {
     }
 
     // TODO: finish unique move logic, obstacle checking, and check/checkmate logic
-    if (!pieceToMove.canMove(fromRank, Piece.charToEnumFile(fromFile), toRank, Piece.charToEnumFile(toFile))) {
+    if (!pieceToMove.canMove(toRank, Piece.charToEnumFile(toFile))) {
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
       return play;
     }
+
+    
 
     // move is valid; check if a draw is requested. else, just perform move
     if (move.endsWith("draw?") && move.length() == 11) {

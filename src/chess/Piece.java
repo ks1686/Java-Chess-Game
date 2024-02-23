@@ -16,11 +16,10 @@ public abstract class Piece extends ReturnPiece {
 
   public abstract boolean canMoveSpecific(int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile);
 
-  public boolean canMove(
-      int rank,
-      ReturnPiece.PieceFile file,
-      int newRank,
-      ReturnPiece.PieceFile newFile) {
+  public boolean canMove(int newRank, ReturnPiece.PieceFile newFile) {
+      int rank = this.pieceRank;
+      ReturnPiece.PieceFile file = this.pieceFile;
+
         if ((Chess.currentPlayer == Player.white && pieceType.name().charAt(0) == 'B') || 
             (Chess.currentPlayer == Player.black && pieceType.name().charAt(0) == 'W')) {
             return false; // check if the piece to move is the correct color
@@ -33,8 +32,7 @@ public abstract class Piece extends ReturnPiece {
             return false; // check if square is within bounds of the board
         }
 
-
-        return canMoveSpecific(rank, file, newRank, newFile);
+        return canMoveSpecific(rank, file, newRank, newFile); // find out whether the specific piece can move to the new square
 
       }
 
