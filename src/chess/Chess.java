@@ -239,6 +239,17 @@ public class Chess {
     piece = null;
   }
 
+  public static boolean isSquareOnBoard(int rank, ReturnPiece.PieceFile file) {
+    int a = rank;
+    char b = Piece.enumFileToChar(file);
+    char c = MIN_FILE;
+    char d = MAX_FILE; 
+    boolean isRankOnBoard = a >= MIN_RANK && a <= MAX_RANK;
+    boolean isFileOnBoard = b >= MIN_FILE && b <= MAX_FILE;
+
+    return rank >= MIN_RANK && rank <= MAX_RANK && Piece.enumFileToChar(file) >= MIN_FILE && Piece.enumFileToChar(file) <= MAX_FILE;
+  }
+
   // method to create a new piece given a piece type and color
   private static ReturnPiece createNewPiece(String pieceType, boolean isWhite) {
     switch (pieceType) {

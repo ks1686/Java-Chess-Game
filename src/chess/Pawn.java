@@ -126,35 +126,50 @@ public class Pawn extends Piece {
 
     // if there is an enemy piece directly 1 diagonal square to the left or right of the pawn, then the pawn can see that piece also (since it would be able to move there)
     int fileInt = file.ordinal();
-    Square rightDiag = new Square(rank + rankMultiplier, ReturnPiece.PieceFile.values()[fileInt + 1]);
-    Square leftDiag = new Square(rank+rankMultiplier, ReturnPiece.PieceFile.values()[fileInt + 1]);
-    Piece rightDiagPiece = Chess.getPiece(rightDiag.rank, rightDiag.file);
-    Piece leftDiagPiece = Chess.getPiece(leftDiag.rank, leftDiag.file);
-    if (isEnemy(rightDiagPiece)) {
-      visibleSquares.add(rightDiag);
+
+    // checlk to make sure that file is not 'h'
+    if (fileInt != 7) {
+      Square rightDiag = new Square(rank + rankMultiplier, ReturnPiece.PieceFile.values()[fileInt + 1]);
+      Piece rightDiagPiece = Chess.getPiece(rightDiag.rank, rightDiag.file);
+      if (isEnemy(rightDiagPiece)) {
+        visibleSquares.add(rightDiag);
+      }
+      Square rightSquare = new Square(rank, ReturnPiece.PieceFile.values()[fileInt + 1]);
+      if (Chess.isSquareOnBoard(rightSquare.rank, rightSquare.file)) {
+        Piece rightPiece = Chess.getPiece(rightSquare.rank, rightSquare.file);
+        if (rightPiece != null && (rightPiece.pieceType == PieceType.WP || rightPiece.pieceType == PieceType.BP)) {
+          if (rightPiece != null && isEnemy(rightPiece) && ((Pawn)rightPiece).hasJustAdvancedTwice) {
+            visibleSquares.add(rightSquare);
+          }
+        }
+      }
     }
-    if (isEnemy(leftDiagPiece)) {
-      visibleSquares.add(leftDiag);
+
+    // check to make sure that file is not 'a'
+    if (fileInt != 0) {
+      Square leftDiag = new Square(rank + rankMultiplier, ReturnPiece.PieceFile.values()[fileInt - 1]);
+      Piece leftDiagPiece = Chess.getPiece(leftDiag.rank, leftDiag.file);
+      if (isEnemy(leftDiagPiece)) {
+        visibleSquares.add(leftDiag);
+      }
+
+      // also, if the pawn can en passant, it can see there as well.
+      Square leftSquare = new Square(rank, ReturnPiece.PieceFile.values()[fileInt - 1]);
+      if (Chess.isSquareOnBoard(leftSquare.rank, leftSquare.file)) {
+        Piece leftPiece = Chess.getPiece(leftSquare.rank, leftSquare.file);
+        if (leftPiece != null && (leftPiece.pieceType == PieceType.WP || leftPiece.pieceType == PieceType.BP)) {
+          if (leftPiece != null && isEnemy(leftPiece) && ((Pawn)leftPiece).hasJustAdvancedTwice) {
+            visibleSquares.add(leftSquare);
+          }
+        }
+      }
+
     }
     
 
-    // also, if the pawn can en passant, it can see there as well.
-    Square leftSquare = new Square(rank, ReturnPiece.PieceFile.values()[fileInt - 1]);
-    Square rightSquare = new Square(rank, ReturnPiece.PieceFile.values()[fileInt + 1]);
-    Piece leftPiece = Chess.getPiece(leftSquare.rank, leftSquare.file);
-    Piece rightPiece = Chess.getPiece(rightSquare.rank, rightSquare.file);
-    // if the left or right pieces are pawns and are enemies and have just advanced twice, then the pawn can see them
-    if (leftPiece != null && (leftPiece.pieceType == PieceType.WP || leftPiece.pieceType == PieceType.BP)) {
-      if (leftPiece != null && isEnemy(leftPiece) && ((Pawn)leftPiece).hasJustAdvancedTwice) {
-        visibleSquares.add(leftSquare);
-      }
-    }
+    
 
-    if (rightPiece != null && (rightPiece.pieceType == PieceType.WP || rightPiece.pieceType == PieceType.BP)) {
-      if (rightPiece != null && isEnemy(rightPiece) && ((Pawn)rightPiece).hasJustAdvancedTwice) {
-        visibleSquares.add(rightSquare);
-      }
-    }
+    
 
     visibleSquaresOuter.add(visibleSquares);
     return visibleSquaresOuter;
