@@ -33,6 +33,10 @@ public class Queen extends Piece {
   }
 
   public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
+    // combination of rook, bishop, and king. 
+    // repeating squares should be fine 
+    // (for example, the square left of the queen would be shared w/ the king array as well as the leftRow array from the rook implementation)
+    // these squares repeat but it shouldn't cause problems if they do
     return null;
   }
 

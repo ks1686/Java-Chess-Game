@@ -34,6 +34,7 @@ public class King extends Piece {
   }
 
   public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
+    // literally have have to check all surrounding squares
     return null;
   }
 }
