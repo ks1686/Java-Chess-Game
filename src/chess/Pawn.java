@@ -131,7 +131,7 @@ public class Pawn extends Piece {
     // if there is an enemy piece directly 1 diagonal square to the left or right of the pawn, then the pawn can see that piece also (since it would be able to move there)
     int fileInt = file.ordinal();
 
-    // checlk to make sure that file is not 'h'
+    // check to make sure that file is not 'h'
     if (fileInt != 7) {
       Square rightDiag = new Square(rank + rankMultiplier, ReturnPiece.PieceFile.values()[fileInt + 1]);
       Piece rightDiagPiece = Chess.getPiece(rightDiag.rank, rightDiag.file);
