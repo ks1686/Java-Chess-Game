@@ -11,6 +11,7 @@ public class Knight extends Piece {
     }
   }
 
+  
   public boolean canMoveSpecific(
       int rank,
       ReturnPiece.PieceFile file,

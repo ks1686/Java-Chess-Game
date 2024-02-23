@@ -11,8 +11,9 @@ public abstract class Piece extends ReturnPiece {
     this.isWhite = isWhite;
   }
 
-  // abstract method; check if move is valid for specific type of piece (use PieceRank and PieceFile
-  // from ReturnPiece class
+
+  // TODO: make an abstract method that returns a list of visible squares for the piece (squares that the piece can MOVE to, accounting for obstacles)
+  // TODO: make an abstract method that returns a list of capturable squares for the piece (squares that the piece can CAPTURE on, if there was an enemy piece on it)
 
   public abstract boolean canMoveSpecific(int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile);
 
@@ -32,9 +33,30 @@ public abstract class Piece extends ReturnPiece {
             return false; // check if square is within bounds of the board
         }
 
+        // TODO: obstacle checking for other pieces before capturing
+
         return canMoveSpecific(rank, file, newRank, newFile); // find out whether the specific piece can move to the new square
 
       }
+
+
+  // method to move a piece given specific piece and new rank and file after checking for obstacles and checking if the piece canMove() to the spot
+  private void movePiece(int newRank, Piece.PieceFile newFile) {
+    boolean isNewSpotEmpty;
+  
+    // piece can move, check if the new spot is empty
+    Piece otherPiece = Chess.getPiece(newRank, newFile);
+    if (otherPiece == null) { isNewSpotEmpty = true; } else { isNewSpotEmpty = false; }
+
+    // at this point, we should've already established that the piece can move to the new spot. so, if there's a piece there, just capture it.
+    if (!isNewSpotEmpty) { Chess.capturePiece(otherPiece); }
+
+    this.pieceRank = newRank; // move piece to new spot
+    this.pieceFile = newFile;
+  
+    // set hasMoved to true
+    this.hasMoved = true;
+  }
 
   // return pieceType
   public ReturnPiece.PieceType getPieceType() {

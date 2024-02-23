@@ -85,9 +85,9 @@ public class Chess {
 
   static Player currentPlayer; // current player (white goes first)
 
-  public static Piece getPiece(char file, int rank) {
+  public static Piece getPiece(int rank, ReturnPiece.PieceFile file) {
     for (ReturnPiece piece : play.piecesOnBoard) {
-      if (piece.pieceFile.name().charAt(0) == file && piece.pieceRank == rank) {
+      if (piece.pieceFile == file && piece.pieceRank == rank) {
         return (Piece) piece;
       }
     }
@@ -108,13 +108,13 @@ public class Chess {
     }
 
     // move input formatting
-    char fromFile = move.toLowerCase().charAt(0);
+    ReturnPiece.PieceFile fromFile = Piece.charToEnumFile(move.toLowerCase().charAt(0));
     int fromRank = Character.getNumericValue(move.charAt(1));
-    char toFile = move.toLowerCase().charAt(3);
+    ReturnPiece.PieceFile toFile = Piece.charToEnumFile(move.toLowerCase().charAt(3));
     int toRank = Character.getNumericValue(move.charAt(4));
 
     // find the piece to move in the piecesOnBoard list
-    Piece pieceToMove = getPiece(fromFile, fromRank); // the piece to move
+    Piece pieceToMove = getPiece(fromRank, fromFile); // the piece to move
     
     // check if the piece to move exists
     if (pieceToMove == null) {
@@ -137,7 +137,7 @@ public class Chess {
     }
 
     // TODO: finish unique move logic, obstacle checking, and check/checkmate logic
-    if (!pieceToMove.canMove(toRank, Piece.charToEnumFile(toFile))) {
+    if (!pieceToMove.canMove(toRank, toFile)) {
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
       return play;
     }
@@ -161,41 +161,8 @@ public class Chess {
     return play; // return the current state of the game
   }
 
-  // method to move a piece given specific piece and new rank and file after checking for obstacles
-  private static void movePiece(ReturnPiece specificPiece, int newRank, Piece.PieceFile newFile) {
-    // cast a piece to a specific type to call canMove method
-    Piece piece = (Piece) specificPiece;
-
-    // call canMove method to see if the move is valid
-    if (piece.canMove(piece.pieceRank, piece.pieceFile, newRank, newFile, true)) {
-      // piece can move, check if the new spot is empty
-      boolean isNewSpotEmpty = true;
-      for (ReturnPiece otherPiece : play.piecesOnBoard) {
-        // check if piece is at the new spot
-        if (otherPiece.pieceFile == newFile && otherPiece.pieceRank == newRank) {
-          isNewSpotEmpty = false;
-          break;
-        }
-      }
-
-      // TODO: obstacle checking for other pieces before capturing
-
-      // if spot is not empty, attempt to capture the piece
-      if (!isNewSpotEmpty) {
-        if (capturePiece(piece, newRank, newFile)) {
-          piece.pieceRank = newRank; // move piece to new spot
-          piece.pieceFile = newFile;
-        }
-      } else {
-        // spot is empty, move piece to new spot
-        piece.pieceRank = newRank;
-        piece.pieceFile = newFile;
-      }
-    }
-    // set hasMoved to true
-    piece.hasMoved = true;
-  }
-
+  
+// TODO: move this to the king class's canMoveSpecific method
   // move king (has additional conditionals for castling logic)
   private static void moveKing(ReturnPiece specificPiece, int newRank, Piece.PieceFile newFile) {
     // cast a piece to a specific type to call canMove method
@@ -266,53 +233,11 @@ public class Chess {
     piece.hasMoved = true;
   }
 
-  // move a knight given specific piece and new rank and file (requires no obstacle checking)
-  private static void moveKnight(ReturnPiece specificPiece, int newRank, Piece.PieceFile newFile) {
-    // cast a piece to a specific type to call canMove method
-    Piece piece = (Piece) specificPiece;
-
-    // call canMove method to see if the move is valid
-    if (piece.canMove(piece.pieceRank, piece.pieceFile, newRank, newFile, true)) {
-      // piece can move, check if the new spot is empty
-      boolean isNewSpotEmpty = true;
-      for (ReturnPiece otherPiece : play.piecesOnBoard) {
-        // check if piece is at the new spot
-        if (otherPiece.pieceFile == newFile && otherPiece.pieceRank == newRank) {
-          isNewSpotEmpty = false;
-          break;
-        }
-      }
-
-      // if spot is not empty, attempt to capture the piece
-      if (!isNewSpotEmpty) {
-        if (capturePiece(piece, newRank, newFile)) {
-          piece.pieceRank = newRank; // move piece to new spot
-          piece.pieceFile = newFile;
-        }
-      } else {
-        // spot is empty, move piece to new spot
-        piece.pieceRank = newRank;
-        piece.pieceFile = newFile;
-      }
-    }
-
-    // set hasMoved to true
-    piece.hasMoved = true;
-  }
 
   // method to capture a piece (must be different color)
-  private static boolean capturePiece(Piece piece, int rank, Piece.PieceFile file) {
-    for (ReturnPiece otherPiece : play.piecesOnBoard) {
-      // check if piece is at the new spot
-      if (otherPiece.pieceFile == file && otherPiece.pieceRank == rank) {
-        // check if piece is different color
-        if (piece.pieceType.name().charAt(0) != otherPiece.pieceType.name().charAt(0)) {
-          play.piecesOnBoard.remove(otherPiece); // remove captured piece
-          return true; // piece captured
-        }
-      }
-    }
-    return false; // same color; no capture
+  public static void capturePiece(Piece piece) {
+    play.piecesOnBoard.remove(piece);
+    piece = null;
   }
 
   // method to create a new piece given a piece type and color
