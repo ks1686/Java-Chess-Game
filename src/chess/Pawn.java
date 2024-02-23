@@ -88,7 +88,6 @@ public class Pawn extends Piece {
         return true;
       }
 
-
       // handle en passant
       Square horizontalSquare = new Square(rank, ReturnPiece.PieceFile.values()[pieceFileIndex + fileDirection]);
       Piece horizontalPiece = Chess.getPiece(horizontalSquare.rank, horizontalSquare.file);
@@ -149,6 +148,7 @@ public class Pawn extends Piece {
       }
     }
 
+    // do the same thing but for the left side
     // check to make sure that file is not 'a'
     if (fileInt != 0) {
       Square leftDiag = new Square(rank + rankMultiplier, ReturnPiece.PieceFile.values()[fileInt - 1]);
@@ -207,6 +207,7 @@ public class Pawn extends Piece {
       }
     }
 
+    // do the same thing but for the right side
     if (this.pieceFile.ordinal() != 7) {
       Square rightSquare = new Square(this.pieceRank, ReturnPiece.PieceFile.values()[enumFileToChar(this.pieceFile) - 'a' + 1]);
       Piece rightPiece = Chess.getPiece(rightSquare.rank, rightSquare.file);
