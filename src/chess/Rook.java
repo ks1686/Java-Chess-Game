@@ -14,23 +14,22 @@ public class Rook extends Piece {
   }
 
   public boolean canMoveSpecific(
-      int rank,
-      ReturnPiece.PieceFile file,
-      int newRank,
-      ReturnPiece.PieceFile newFile) {
+      int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile) {
     int rankChange = Math.abs(rank - newRank); // change in rank
     int fileChange = Math.abs(enumFileToChar(file) - enumFileToChar(newFile)); // change in file
     return rankChange == 0 || fileChange == 0; // can move horizontally or vertically
   }
 
-  public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
+  public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(
+      int rank, ReturnPiece.PieceFile file) {
     ArrayList<ArrayList<Square>> visibleSquares = new ArrayList<>();
     ArrayList<Square> upperColumn = new ArrayList<>();
     ArrayList<Square> lowerColumn = new ArrayList<>();
     ArrayList<Square> rightRow = new ArrayList<>();
     ArrayList<Square> leftRow = new ArrayList<>();
-    
-    // to get the upper column, start at the rank, go up one, and then add to the arraylist until you reach the end of the board (MAXRANK)
+
+    // to get the upper column, start at the rank, go up one, and then add to the arraylist until
+    // you reach the end of the board (MAXRANK)
     for (int r = rank + 1; r <= Chess.MAX_RANK; r++) {
       upperColumn.add(new Square(r, file));
     }
@@ -40,6 +39,7 @@ public class Rook extends Piece {
       lowerColumn.add(new Square(r, file));
     }
 
+    // get the file as an int
     int fileInt = file.ordinal();
 
     for (int f = fileInt + 1; f < ReturnPiece.PieceFile.values().length; f++) {
@@ -54,7 +54,6 @@ public class Rook extends Piece {
     visibleSquares.add(lowerColumn);
     visibleSquares.add(rightRow);
     visibleSquares.add(leftRow);
-
 
     return visibleSquares;
   }

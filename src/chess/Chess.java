@@ -96,7 +96,7 @@ public class Chess {
 
   public static ReturnPlay play(String move) {
     move = move.trim(); // remove leading and trailing whitespace
-    
+
     // resign kills game immediately
     if (move.equals("resign")) {
       if (currentPlayer == Player.white) {
@@ -115,24 +115,24 @@ public class Chess {
 
     // find the piece to move in the piecesOnBoard list
     Piece pieceToMove = getPiece(fromRank, fromFile); // the piece to move
-    
+
     // check if the piece to move exists
     if (pieceToMove == null) {
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
       return play;
     }
 
-
     // TODO: finish unique move logic, obstacle checking, and check/checkmate logic
     if (!pieceToMove.canMove(toRank, toFile)) {
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
       return play;
     }
-    
+
     // the square is a valid piece to move. actually move the piece
     pieceToMove.movePiece(toRank, toFile);
 
-    // move is valid and we'ved moved the piece. check for pawn promotion (queen is default for unspecified promotion)
+    // move is valid and we'ved moved the piece. check for pawn promotion (queen is default for
+    // unspecified promotion)
     char promotion = '0'; // 0 for no promotion
     if (pieceToMove instanceof Pawn && (toRank == 1 || toRank == 8)) {
       switch (move.length()) {
@@ -144,7 +144,6 @@ public class Chess {
           break;
       }
     }
-    
 
     // move is valid; check if a draw is requested. else, just perform move
     if (move.endsWith("draw?") && move.length() == 11) {
@@ -163,8 +162,7 @@ public class Chess {
     return play; // return the current state of the game
   }
 
-  
-// TODO: find a place to put this
+  // TODO: find a place to put this
   // move king (has additional conditionals for castling logic)
   private static void moveKing(ReturnPiece specificPiece, int newRank, Piece.PieceFile newFile) {
     // cast a piece to a specific type to call canMove method
@@ -228,13 +226,12 @@ public class Chess {
       }
     } else {
       // move king normally
-      movePiece(piece, newRank, newFile);
+      // movePiece(piece, newRank, newFile);
     }
 
     // set hasMoved to true
     piece.hasMoved = true;
   }
-
 
   // method to capture a piece (must be different color)
   public static void capturePiece(Piece piece) {
