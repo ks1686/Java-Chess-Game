@@ -96,4 +96,9 @@ public abstract class Piece extends ReturnPiece {
     throw new IllegalArgumentException(file + " is not a vaid enum constant.");
   }
 
+  public boolean isEnemy(Piece other) {
+    // returns true if they are opposite teams
+    return (other != null) && (this.isWhite ^ other.isWhite);
+  }
+
 }
