@@ -33,8 +33,38 @@ public class King extends Piece {
 
   public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(
       int rank, ReturnPiece.PieceFile file) {
-    // check square
+    ArrayList<ArrayList<Square>> visibleSquares = new ArrayList<>();
 
-    return null;
+    // just add one array of squares for the king's 8 possible moves
+    ArrayList<Square> squares = new ArrayList<>();
+
+    // add all 8 possible moves for the king, keeping in mind the board boundaries
+    if (rank + 1 <= Chess.MAX_RANK) { // up
+      squares.add(new Square(rank + 1, file));
+    }
+    if (rank - 1 >= Chess.MIN_RANK) { // down
+      squares.add(new Square(rank - 1, file));
+    }
+    if (enumFileToChar(file) + 1 <= Chess.MAX_FILE) { // right
+      squares.add(new Square(rank, ReturnPiece.PieceFile.values()[enumFileToChar(file) + 1]));
+    }
+    if (enumFileToChar(file) - 1 >= Chess.MIN_FILE) { // left
+      squares.add(new Square(rank, ReturnPiece.PieceFile.values()[enumFileToChar(file) - 1]));
+    }
+    if (rank + 1 <= Chess.MAX_RANK && enumFileToChar(file) + 1 <= Chess.MAX_FILE) { // up-right
+      squares.add(new Square(rank + 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) + 1]));
+    }
+    if (rank + 1 <= Chess.MAX_RANK && enumFileToChar(file) - 1 >= Chess.MIN_FILE) { // up-left
+      squares.add(new Square(rank + 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) - 1]));
+    }
+    if (rank - 1 >= Chess.MIN_RANK && enumFileToChar(file) + 1 <= Chess.MAX_FILE) { // down-right
+      squares.add(new Square(rank - 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) + 1]));
+    }
+    if (rank - 1 >= Chess.MIN_RANK && enumFileToChar(file) - 1 >= Chess.MIN_FILE) { // down-left
+      squares.add(new Square(rank - 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) - 1]));
+    }
+
+    visibleSquares.add(squares);
+    return visibleSquares;
   }
 }

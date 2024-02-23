@@ -99,6 +99,6 @@ public class Queen extends Piece {
     visibleSquares.add(lowerRightDiagonal);
     visibleSquares.add(lowerLeftDiagonal);
 
-    return null;
+    return visibleSquares;
   }
 }
