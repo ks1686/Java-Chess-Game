@@ -22,4 +22,8 @@ public class Knight extends Piece {
     return (rankChange == 2 && fileChange == 1)
         || (rankChange == 1 && fileChange == 2); // can move in an L shape
   }
+
+  public Square[] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
+    return null;
+  }
 }

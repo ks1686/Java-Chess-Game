@@ -29,4 +29,9 @@ public class Queen extends Piece {
     } else return rank == newRank || file == newFile || rankChange == fileChange;
     // invalid move not accounting for pieces in the way
   }
+
+  public Square[] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
+    return null;
+  }
+
 }

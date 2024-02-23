@@ -20,4 +20,8 @@ public class Rook extends Piece {
     int fileChange = Math.abs(enumFileToChar(file) - enumFileToChar(newFile)); // change in file
     return rankChange == 0 || fileChange == 0; // can move horizontally or vertically
   }
+
+  public Square[] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
+    return null;
+  }
 }

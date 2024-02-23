@@ -20,4 +20,8 @@ public class Bishop extends Piece {
     int fileChange = Math.abs(enumFileToChar(file) - enumFileToChar(newFile)); // change in file
     return rankChange == fileChange; // can move diagonally
   }
+
+  public Square[] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
+    return null;
+  }
 }

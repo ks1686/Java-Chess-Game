@@ -12,8 +12,11 @@ public abstract class Piece extends ReturnPiece {
   }
 
 
+
   // TODO: make an abstract method that returns a list of visible squares for the piece (squares that the piece can MOVE to, accounting for obstacles)
   // TODO: make an abstract method that returns a list of capturable squares for the piece (squares that the piece can CAPTURE on, if there was an enemy piece on it)
+
+  public abstract Square[] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file);
 
   public abstract boolean canMoveSpecific(int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile);
 
