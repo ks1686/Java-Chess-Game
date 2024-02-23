@@ -85,7 +85,7 @@ public class Chess {
 
   static Player currentPlayer; // current player (white goes first)
 
-  private static Piece getPiece(char file, int rank) {
+  public static Piece getPiece(char file, int rank) {
     for (ReturnPiece piece : play.piecesOnBoard) {
       if (piece.pieceFile.name().charAt(0) == file && piece.pieceRank == rank) {
         return (Piece) piece;

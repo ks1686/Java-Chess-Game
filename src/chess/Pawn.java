@@ -21,6 +21,11 @@ public class Pawn extends Piece {
     int rankChange = Math.abs(rank - newRank); // change in rank
     int fileChange = Math.abs(enumFileToChar(file) - enumFileToChar(newFile)); // change in file
     boolean isAllowed = false;
+    Piece newSpotPiece = Chess.getPiece(Piece.enumFileToChar(newFile), newRank);
+    boolean isNewSpotEmpty;
+    if (newSpotPiece == null) { isNewSpotEmpty = true; } else { isNewSpotEmpty = false; }
+
+
 
     // check if pawn is moving up or down (white or black)
     if (isWhite) {
