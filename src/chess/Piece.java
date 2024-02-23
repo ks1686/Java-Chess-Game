@@ -84,7 +84,7 @@ public abstract class Piece extends ReturnPiece {
 
   // method that returns a char for the piece's file
   public static char enumFileToChar(ReturnPiece.PieceFile file) {
-    return (char) (file.name().charAt(0) + 32); // convert to lowercase
+    return (char) (file.name().charAt(0)); // convert to lowercase
   }
 
   public static ReturnPiece.PieceFile charToEnumFile(char file) {

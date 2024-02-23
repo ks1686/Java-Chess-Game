@@ -32,32 +32,73 @@ public class Pawn extends Piece {
       ReturnPiece.PieceFile newFile) {
     int rankChange = Math.abs(rank - newRank); // change in rank
     int fileChange = Math.abs(enumFileToChar(file) - enumFileToChar(newFile)); // change in file
-    boolean isAllowed = false;
     Piece newSpotPiece = Chess.getPiece(newRank, newFile);
     boolean isNewSpotEmpty;
     if (newSpotPiece == null) { isNewSpotEmpty = true; } else { isNewSpotEmpty = false; }
 
+    if (rankChange > 2 || fileChange > 1) {
+      return false; // pawns can never move like this
+    }
 
+    ArrayList<ArrayList<Square>> visibleSquares = getVisibleSquaresFromLocation(rank, file);
 
-    // check if pawn is moving up or down (white or black)
-    if (isWhite) {
-      if (rankChange == 1 && fileChange == 0 && isNewSpotEmpty) {
-        isAllowed = true;
-      } else if (rankChange == 2 && fileChange == 0 && isNewSpotEmpty && rank == 2) {
-        isAllowed = true;
-      } else if (rankChange == 1 && fileChange == 1 && !isNewSpotEmpty) {
-        isAllowed = true;
-      }
-    } else {
-      if (rankChange == 1 && fileChange == 0 && isNewSpotEmpty) {
-        isAllowed = true;
-      } else if (rankChange == 2 && fileChange == 0 && isNewSpotEmpty && rank == 7) {
-        isAllowed = true;
-      } else if (rankChange == 1 && fileChange == 1 && !isNewSpotEmpty) {
-        isAllowed = true;
+    // the only time we have to check for an obstacle is if the pawn is moving two squares ahead. we have to check that there's no piece in between the pawn and the new spot
+    if (rankChange == 2) {
+      if (isWhite) {
+        if (Chess.getPiece(rank + 1, file) != null) {
+          return false;
+        }
+      } else {
+        if (Chess.getPiece(rank - 1, file) != null) {
+          return false;
+        }
       }
     }
-    return isAllowed; // can't move any other way
+
+    // otherwise, if the new spot is empty, the pawn can move there
+    if (isNewSpotEmpty) {
+      if (Square.isSquareInNestedList(visibleSquares, new Square(newRank, newFile))) {
+        return true;
+      }
+    } else {
+      // if the new spot is not empty, the pawn can only move there if it's capturing an enemy piece (diagonally forward 1 square or en passant)
+      // need to get the current file as an int so we can get the file to the left and right of it
+      int pieceFileIndex = enumFileToChar(file) - 'a';
+      Square rightDiag = new Square(rank + 1, ReturnPiece.PieceFile.values()[pieceFileIndex + 1]);
+      Square leftDiag = new Square(rank - 1, ReturnPiece.PieceFile.values()[pieceFileIndex - 1]);
+      Square leftSquare = new Square(rank, ReturnPiece.PieceFile.values()[pieceFileIndex - 1]);
+      Square rightSquare = new Square(rank, ReturnPiece.PieceFile.values()[pieceFileIndex + 1]);
+      Piece rightDiagPiece = Chess.getPiece(rightDiag.rank, rightDiag.file);
+      Piece leftDiagPiece = Chess.getPiece(leftDiag.rank, leftDiag.file);
+      Piece leftPiece = Chess.getPiece(leftSquare.rank, leftSquare.file);
+      Piece rightPiece = Chess.getPiece(rightSquare.rank, rightSquare.file);
+
+      // check if square is visible to pawn. then check if the piece there is an enemy piece. if so, the pawn can move there
+      if (Square.isSquareInNestedList(visibleSquares, rightDiag) && isEnemy(rightDiagPiece) && rightDiag.rank == newRank && rightDiag.file == newFile) {
+        return true;
+      }
+      if (Square.isSquareInNestedList(visibleSquares, leftDiag) && isEnemy(leftDiagPiece) && leftDiag.rank == newRank && leftDiag.file == newFile) {
+        return true;
+      }
+      if (Square.isSquareInNestedList(visibleSquares, rightSquare) && isEnemy(rightPiece) && rightSquare.rank == newRank && rightSquare.file == newFile) {
+        // this is for en passant. in order to capture en passant, the other piece must be a pawn and must have just advanced twice
+        if (rightPiece.pieceType == PieceType.WP || rightPiece.pieceType == PieceType.BP) {
+          if (((Pawn)rightPiece).hasJustAdvancedTwice) {
+            return true;
+          }
+        }
+      }
+      if (Square.isSquareInNestedList(visibleSquares, leftSquare) && isEnemy(leftPiece) && leftSquare.rank == newRank && leftSquare.file == newFile) {
+        // this is for en passant. in order to capture en passant, the other piece must be a pawn and must have just advanced twice
+        if (leftPiece.pieceType == PieceType.WP || leftPiece.pieceType == PieceType.BP) {
+          if (((Pawn)leftPiece).hasJustAdvancedTwice) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false; // can't move any other way
   }
 
   public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
@@ -103,13 +144,13 @@ public class Pawn extends Piece {
     Piece leftPiece = Chess.getPiece(leftSquare.rank, leftSquare.file);
     Piece rightPiece = Chess.getPiece(rightSquare.rank, rightSquare.file);
     // if the left or right pieces are pawns and are enemies and have just advanced twice, then the pawn can see them
-    if (leftPiece.pieceType == PieceType.WP || leftPiece.pieceType == PieceType.BP) {
+    if (leftPiece != null && (leftPiece.pieceType == PieceType.WP || leftPiece.pieceType == PieceType.BP)) {
       if (leftPiece != null && isEnemy(leftPiece) && ((Pawn)leftPiece).hasJustAdvancedTwice) {
         visibleSquares.add(leftSquare);
       }
     }
 
-    if (rightPiece.pieceType == PieceType.WP || rightPiece.pieceType == PieceType.BP) {
+    if (rightPiece != null && (rightPiece.pieceType == PieceType.WP || rightPiece.pieceType == PieceType.BP)) {
       if (rightPiece != null && isEnemy(rightPiece) && ((Pawn)rightPiece).hasJustAdvancedTwice) {
         visibleSquares.add(rightSquare);
       }
