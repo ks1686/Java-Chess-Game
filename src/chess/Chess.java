@@ -116,7 +116,6 @@ public class Chess {
     // find the piece to move in the piecesOnBoard list
     Piece pieceToMove = getPiece(fromFile, fromRank); // the piece to move
     
-
     // check if the piece to move exists
     if (pieceToMove == null) {
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
@@ -138,7 +137,7 @@ public class Chess {
     }
 
     // TODO: finish unique move logic, obstacle checking, and check/checkmate logic
-    if (!pieceToMove.isValidMove(fromRank, Piece.charToEnumFile(fromFile), toRank, Piece.charToEnumFile(toFile))) {
+    if (!pieceToMove.canMove(fromRank, Piece.charToEnumFile(fromFile), toRank, Piece.charToEnumFile(toFile))) {
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
       return play;
     }

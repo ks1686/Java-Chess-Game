@@ -12,12 +12,11 @@ public class Queen extends Piece {
   }
 
   // TODO: need to implement checking for pieces in the way
-  public boolean canMove(
+  public boolean canMoveSpecific(
       int rank,
       ReturnPiece.PieceFile file,
       int newRank,
-      ReturnPiece.PieceFile newFile,
-      boolean isNewSpotEmpty) {
+      ReturnPiece.PieceFile newFile) {
     int rankChange = Math.abs(rank - newRank); // change in rank
     int fileChange = Math.abs(enumFileToChar(file) - enumFileToChar(newFile)); // change in file
     if (rankChange == 0 && fileChange != 0) {

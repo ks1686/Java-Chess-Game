@@ -11,12 +11,11 @@ public class Rook extends Piece {
     }
   }
 
-  public boolean canMove(
+  public boolean canMoveSpecific(
       int rank,
       ReturnPiece.PieceFile file,
       int newRank,
-      ReturnPiece.PieceFile newFile,
-      boolean isNewSpotEmpty) {
+      ReturnPiece.PieceFile newFile) {
     int rankChange = Math.abs(rank - newRank); // change in rank
     int fileChange = Math.abs(enumFileToChar(file) - enumFileToChar(newFile)); // change in file
     return rankChange == 0 || fileChange == 0; // can move horizontally or vertically
