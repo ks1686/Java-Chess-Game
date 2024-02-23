@@ -163,6 +163,29 @@ public class Chess {
     return play; // return the current state of the game
   }
 
+  public static boolean isSquareVisibleByEnemy(int rank, ReturnPiece.PieceFile file, boolean isWhite) {
+    // find the team of the piece. if isWhite is true, check if the piece is black. if isWhite is false, check if the piece is white.
+    // first  check if square is in bounds
+    Square s;
+    try {
+      s = new Square(rank, file); // throws exception if square is out of bounds
+    } catch (IllegalArgumentException e) {
+      return false;
+    }
+
+    for (ReturnPiece p: play.piecesOnBoard) {
+      Piece piece = (Piece) p;
+      if (isWhite != piece.isWhite) {
+        ArrayList<ArrayList<Square>> visibleSquares = piece.getVisibleSquaresFromLocation(piece.pieceRank, piece.pieceFile);
+        if (Square.isSquareInNestedList(visibleSquares, s)) {
+          return true; // there is a piece that can see the specified square
+        }
+      }
+    }
+
+    return false;
+  }
+
   private static void resetPawnHasJustAdvancedTwice(Player player) {
     for (ReturnPiece piece : play.piecesOnBoard) {
       if (piece.pieceType == ReturnPiece.PieceType.WP && player == Player.black) {

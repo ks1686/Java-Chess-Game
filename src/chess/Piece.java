@@ -47,6 +47,13 @@ public abstract class Piece extends ReturnPiece {
           return false; // check if square is within bounds of the board
       }
 
+      // if there's a piece in the new square, check if it's an enemy piece
+      Piece otherPiece = Chess.getPiece(newRank, newFile);
+      if ((this.pieceType != ReturnPiece.PieceType.WK || this.pieceType != ReturnPiece.PieceType.BK) && otherPiece != null) {
+          if (!this.isEnemy(otherPiece)) {
+              return false; // can't move to a square with a piece of the same team (with the exception of castling)
+          }
+      }
       // TODO: obstacle checking for other pieces before capturing
 
       return canMoveSpecific(rank, file, newRank, newFile); // find out whether the specific piece can move to the new square

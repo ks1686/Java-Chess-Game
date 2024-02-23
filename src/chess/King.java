@@ -19,16 +19,64 @@ public class King extends Piece {
   public boolean canMoveSpecific(
       int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile) {
 
-    // need to handle castling logic here
-    // logic: see if there's a rook in the new square. if so, make sure neither the king nor the
+    // castling logic: see if there's a rook of the same team in the new square. if so, make sure neither the king nor the
     // rook hasMoved.
     // if so, make sure there are no obstacles in between the king and rook.
     // if so, make sure no piece can see any squares between the king and rook.
     // if so, castle.
 
+    // king can't move into check
+    if (Chess.isSquareVisibleByEnemy(newRank, newFile, isWhite)) {
+      return false;
+    }
+
+    // castling logic implemented here
+    Piece otherPiece = Chess.getPiece(newRank, newFile);
+    if (otherPiece != null) {
+      if ((isWhite && otherPiece.getPieceType() == PieceType.WR) || (!isWhite && otherPiece.getPieceType() == PieceType.BR)) {
+        if (!otherPiece.hasMoved && !this.hasMoved) {
+          // get all the squares in between the king and the rook. they haven't moved, so it will be just a horizontal line.
+          ArrayList<Square> squares = new ArrayList<>();
+          int fileInt = file.ordinal();
+          int newFileInt = newFile.ordinal();
+          if (fileInt < newFileInt) {
+            for (int f = fileInt + 1; f < newFileInt; f++) { // castling to the right
+              squares.add(new Square(rank, ReturnPiece.PieceFile.values()[f]));
+            }
+          } else {
+            for (int f = newFileInt + 1; f < fileInt; f++) { // castling to the left
+              squares.add(new Square(rank, ReturnPiece.PieceFile.values()[f]));
+            }
+          }
+          // check if any of the squares have pieces on them
+          for (Square s : squares) {
+            if (Chess.getPiece(s.rank, s.file) != null) {
+              return false; // can't castle if there are pieces in between
+            }
+          }
+
+          // check if any of the squares are visible to the other team
+          for (Square s : squares) {
+            // go through piecesOnBoard arraylist, if the piece is of the opposite team, get its visible squares
+            // then iterate through its visible squares and see if any of them are in the squares arraylist
+            if (Chess.isSquareVisibleByEnemy(s.rank, s.file, isWhite)) {
+              return false; // can't castle if any of the squares are visible to the other team
+            }
+          }
+          // otherwise, we can castle
+          return true;
+
+        }
+      }
+    }
+
+    
+
+    // king can move one square in any direction provided 
     int rankChange = Math.abs(rank - newRank); // change in rank
     int fileChange = Math.abs(enumFileToChar(file) - enumFileToChar(newFile)); // change in file
-    return rankChange <= 1 && fileChange <= 1; // can move one space in any direction
+    return rankChange <= 1 && fileChange <= 1; // can move one square in any direction
+    
   }
 
   public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(
