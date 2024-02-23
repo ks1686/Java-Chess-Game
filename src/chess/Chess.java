@@ -129,7 +129,10 @@ public class Chess {
       return play;
     }
     
-    // move is valid, check for pawn promotion (queen is default for unspecified promotion)
+    // the square is a valid piece to move. actually move the piece
+    pieceToMove.movePiece(toRank, toFile);
+
+    // move is valid and we'ved moved the piece. check for pawn promotion (queen is default for unspecified promotion)
     char promotion = '0'; // 0 for no promotion
     if (pieceToMove instanceof Pawn && (toRank == 1 || toRank == 8)) {
       switch (move.length()) {

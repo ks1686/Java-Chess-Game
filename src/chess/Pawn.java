@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.ArrayList;
+
 public class Pawn extends Piece {
 
   private final boolean exposedToEnPassant = false; // true if pawn makes 2 square move at start
@@ -48,7 +50,7 @@ public class Pawn extends Piece {
     return false; // can't move any other way
   }
 
-  public Square[][] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
+  public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
     return null;
   }
 }

@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.ArrayList;
+
 public class Knight extends Piece {
 
   public Knight(boolean isWhite) {
@@ -23,7 +25,7 @@ public class Knight extends Piece {
         || (rankChange == 1 && fileChange == 2); // can move in an L shape
   }
 
-  public Square[][] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
+  public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
     return null;
   }
 }

@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.ArrayList;
+
 import chess.Chess.Player;
 
 public abstract class Piece extends ReturnPiece {
@@ -24,7 +26,7 @@ public abstract class Piece extends ReturnPiece {
   
    */
   
-  public abstract Square[][] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file);
+  public abstract ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file);
 
   public abstract boolean canMoveSpecific(int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile);
 
@@ -52,7 +54,7 @@ public abstract class Piece extends ReturnPiece {
 
 
   // method to move a piece given specific piece and new rank and file after checking for obstacles and checking if the piece canMove() to the spot
-  private void movePiece(int newRank, Piece.PieceFile newFile) {
+  public void movePiece(int newRank, Piece.PieceFile newFile) {
     boolean isNewSpotEmpty;
   
     // piece can move, check if the new spot is empty

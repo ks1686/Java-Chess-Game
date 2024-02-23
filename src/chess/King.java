@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.ArrayList;
+
 public class King extends Piece {
 
   public boolean inCheck = false; // default to false; will be set to true if in check
@@ -31,7 +33,7 @@ public class King extends Piece {
     return rankChange <= 1 && fileChange <= 1; // can move one space in any direction
   }
 
-  public Square[][] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
+  public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
     return null;
   }
 }

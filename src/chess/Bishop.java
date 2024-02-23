@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.ArrayList;
+
 public class Bishop extends Piece {
 
   public Bishop(boolean isWhite) {
@@ -21,7 +23,7 @@ public class Bishop extends Piece {
     return rankChange == fileChange; // can move diagonally
   }
 
-  public Square[][] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
+  public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
     return null;
   }
 }

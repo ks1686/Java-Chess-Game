@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.ArrayList;
+
 public class Queen extends Piece {
 
   public Queen(boolean isWhite) {
@@ -30,7 +32,7 @@ public class Queen extends Piece {
     // invalid move not accounting for pieces in the way
   }
 
-  public Square[][] getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
+  public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
     return null;
   }
 
