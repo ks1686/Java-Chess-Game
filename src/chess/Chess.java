@@ -151,6 +151,9 @@ public class Chess {
     } else {
       play.message = null; // no message
 
+      resetPawnHasJustAdvancedTwice(
+          currentPlayer); // reset pawn hasJustAdvancedTwice of the opposite team to false
+
       // change player
       if (currentPlayer == Player.white) {
         currentPlayer = Player.black;
@@ -159,12 +162,13 @@ public class Chess {
       }
     }
 
-    resetPawnHasJustAdvancedTwice(currentPlayer); // reset pawn hasJustAdvancedTwice of the opposite team to false
     return play; // return the current state of the game
   }
 
-  public static boolean isSquareVisibleByEnemy(int rank, ReturnPiece.PieceFile file, boolean isWhite) {
-    // find the team of the piece. if isWhite is true, check if the piece is black. if isWhite is false, check if the piece is white.
+  public static boolean isSquareVisibleByEnemy(
+      int rank, ReturnPiece.PieceFile file, boolean isWhite) {
+    // find the team of the piece. if isWhite is true, check if the piece is black. if isWhite is
+    // false, check if the piece is white.
     // first  check if square is in bounds
     Square s;
     try {
@@ -173,10 +177,11 @@ public class Chess {
       return false;
     }
 
-    for (ReturnPiece p: play.piecesOnBoard) {
+    for (ReturnPiece p : play.piecesOnBoard) {
       Piece piece = (Piece) p;
       if (isWhite != piece.isWhite) {
-        ArrayList<ArrayList<Square>> visibleSquares = piece.getVisibleSquaresFromLocation(piece.pieceRank, piece.pieceFile);
+        ArrayList<ArrayList<Square>> visibleSquares =
+            piece.getVisibleSquaresFromLocation(piece.pieceRank, piece.pieceFile);
         if (Square.isSquareInNestedList(visibleSquares, s)) {
           return true; // there is a piece that can see the specified square
         }
@@ -277,11 +282,14 @@ public class Chess {
     int a = rank;
     char b = Piece.enumFileToChar(file);
     char c = MIN_FILE;
-    char d = MAX_FILE; 
+    char d = MAX_FILE;
     boolean isRankOnBoard = a >= MIN_RANK && a <= MAX_RANK;
     boolean isFileOnBoard = b >= MIN_FILE && b <= MAX_FILE;
 
-    return rank >= MIN_RANK && rank <= MAX_RANK && Piece.enumFileToChar(file) >= MIN_FILE && Piece.enumFileToChar(file) <= MAX_FILE;
+    return rank >= MIN_RANK
+        && rank <= MAX_RANK
+        && Piece.enumFileToChar(file) >= MIN_FILE
+        && Piece.enumFileToChar(file) <= MAX_FILE;
   }
 
   // method to create a new piece given a piece type and color
