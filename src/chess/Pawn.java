@@ -216,12 +216,6 @@ public class Pawn extends Piece {
       }
     }
 
-    // if the pawn is on the last rank, then throw an exception
-    if (newRank == Chess.MAX_RANK || newRank == Chess.MIN_RANK) {
-      throw new IllegalArgumentException(
-          "Pawn is on the last rank and should've been promoted already.");
-    }
-
     // check for en passant. if the pawn is moving diagonally and the new spot is empty and the
     // other piece is a pawn and has just advanced twice, then capture it
     // the piece to be captured will either be to the left or right. so we need to check both and

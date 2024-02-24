@@ -133,15 +133,41 @@ public class Chess {
 
     // move is valid and we'ved moved the piece. check for pawn promotion (queen is default for
     // unspecified promotion)
-    char promotion = '0'; // 0 for no promotion
-    if (pieceToMove instanceof Pawn && (toRank == 1 || toRank == 8)) {
-      switch (move.length()) {
-        case 5:
-          promotion = 'Q'; // TODO: implement pawn promotion logic
-          break;
-        case 7:
-          promotion = move.charAt(6);
-          break;
+    if (pieceToMove instanceof Pawn) {
+      char promotion;
+      if (move.length() == 5) {
+        promotion = 'Q'; 
+      } else if (move.length() == 7) { // move looks like 'g7 g8 Q' (or N, B, R))
+        promotion = move.charAt(6);
+      } else {
+        promotion = 'Q'; //default promotion
+      }
+
+      int lastRank;
+      if (pieceToMove.isWhite) { lastRank = 8; } else { lastRank = 1; }
+      if (pieceToMove.pieceRank == lastRank) {
+        int currentRank = pieceToMove.pieceRank;
+        ReturnPiece.PieceFile currentFile = pieceToMove.pieceFile;
+        Piece newPiece;
+
+        switch (promotion) {
+            case 'N':
+                newPiece = new Knight(pieceToMove.isWhite);
+                break;
+            case 'B':
+                newPiece = new Bishop(pieceToMove.isWhite);
+                break;
+            case 'R':
+                newPiece = new Rook(pieceToMove.isWhite);
+                break;
+            default:
+                newPiece = new Queen(pieceToMove.isWhite);
+                break;
+        }
+        play.piecesOnBoard.remove(pieceToMove);
+        newPiece.pieceRank = currentRank;
+        newPiece.pieceFile = currentFile;
+        play.piecesOnBoard.add(newPiece);
       }
     }
 
