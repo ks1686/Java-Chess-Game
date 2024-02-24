@@ -49,7 +49,7 @@ public abstract class Piece extends ReturnPiece {
 
       // if there's a piece in the new square, check if it's an enemy piece
       Piece otherPiece = Chess.getPiece(newRank, newFile);
-      if ((this.pieceType != ReturnPiece.PieceType.WK || this.pieceType != ReturnPiece.PieceType.BK) && otherPiece != null) {
+      if ((this.pieceType != ReturnPiece.PieceType.WK && this.pieceType != ReturnPiece.PieceType.BK) && otherPiece != null) {
           if (!this.isEnemy(otherPiece)) {
               return false; // can't move to a square with a piece of the same team (with the exception of castling)
           }
