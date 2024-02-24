@@ -94,6 +94,11 @@ public class Chess {
     return null;
   }
 
+  // method to get the piecesOnBoard arraylist
+  public static ArrayList<ReturnPiece> getPiecesOnBoard() {
+    return play.piecesOnBoard;
+  }
+
   public static ReturnPlay play(String move) {
     move = move.trim(); // remove leading and trailing whitespace
 
@@ -127,7 +132,6 @@ public class Chess {
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
       return play;
     }
-
     // the square is a valid piece to move. actually move the piece
     pieceToMove.movePiece(toRank, toFile);
 
@@ -136,33 +140,37 @@ public class Chess {
     if (pieceToMove instanceof Pawn) {
       char promotion;
       if (move.length() == 5) {
-        promotion = 'Q'; 
+        promotion = 'Q';
       } else if (move.length() == 7) { // move looks like 'g7 g8 Q' (or N, B, R))
         promotion = move.charAt(6);
       } else {
-        promotion = 'Q'; //default promotion
+        promotion = 'Q'; // default promotion
       }
 
       int lastRank;
-      if (pieceToMove.isWhite) { lastRank = 8; } else { lastRank = 1; }
+      if (pieceToMove.isWhite) {
+        lastRank = 8;
+      } else {
+        lastRank = 1;
+      }
       if (pieceToMove.pieceRank == lastRank) {
         int currentRank = pieceToMove.pieceRank;
         ReturnPiece.PieceFile currentFile = pieceToMove.pieceFile;
         Piece newPiece;
 
         switch (promotion) {
-            case 'N':
-                newPiece = new Knight(pieceToMove.isWhite);
-                break;
-            case 'B':
-                newPiece = new Bishop(pieceToMove.isWhite);
-                break;
-            case 'R':
-                newPiece = new Rook(pieceToMove.isWhite);
-                break;
-            default:
-                newPiece = new Queen(pieceToMove.isWhite);
-                break;
+          case 'N':
+            newPiece = new Knight(pieceToMove.isWhite);
+            break;
+          case 'B':
+            newPiece = new Bishop(pieceToMove.isWhite);
+            break;
+          case 'R':
+            newPiece = new Rook(pieceToMove.isWhite);
+            break;
+          default:
+            newPiece = new Queen(pieceToMove.isWhite);
+            break;
         }
         play.piecesOnBoard.remove(pieceToMove);
         newPiece.pieceRank = currentRank;
@@ -239,7 +247,7 @@ public class Chess {
   }
 
   // TODO: find a place to put this
-  // move king (has additional conditionals for castling logic)
+  // ! no usages, remove if not needed
   private static void moveKing(ReturnPiece specificPiece, int newRank, Piece.PieceFile newFile) {
     // cast a piece to a specific type to call canMove method
     Piece piece = (Piece) specificPiece;
@@ -307,6 +315,31 @@ public class Chess {
 
     // set hasMoved to true
     piece.hasMoved = true;
+  }
+
+  // method to check if a king is in check
+  public static boolean isInCheck(Piece king) {
+    // get color of the king
+    boolean isWhite = king.isWhite;
+
+    // get the rank and file of the king
+    int kingRank = king.pieceRank;
+    ReturnPiece.PieceFile kingFile = king.pieceFile;
+
+    // call canMove() for all pieces of the opposite color to see if they can move to the king's
+    // square
+
+    for (ReturnPiece piece : play.piecesOnBoard) {
+      // cast a piece to a specific type to call canMove method
+      Piece otherPiece = (Piece) piece;
+      if (otherPiece.isEnemy(king)) {
+        if (otherPiece.canMove(kingRank, kingFile)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   // method to capture a piece (must be different color)
