@@ -17,20 +17,26 @@ public class King extends Piece {
 
   public void movePiece(int newRank, Piece.PieceFile newFile) {
     // check if king is castling
+    // variable to store file change for castling king
+    ReturnPiece.PieceFile kingCastleFile = null;
     if (Math.abs(this.pieceFile.ordinal() - newFile.ordinal()) > 1) {
       // if the king is castling, move the rook as well
       if (newFile.ordinal() > this.pieceFile.ordinal()) { // castling to the right
         Piece rook = Chess.getPiece(this.pieceRank, ReturnPiece.PieceFile.h);
         rook.movePiece(this.pieceRank, ReturnPiece.PieceFile.f);
         rook.hasMoved = true;
+        // set kingCastleFile to g
+        kingCastleFile = ReturnPiece.PieceFile.g;
       } else { // castling to the left
         Piece rook = Chess.getPiece(this.pieceRank, ReturnPiece.PieceFile.a);
         rook.movePiece(this.pieceRank, ReturnPiece.PieceFile.d);
         rook.hasMoved = true;
+        // set the kingCastleFile to c
+        kingCastleFile = ReturnPiece.PieceFile.c;
       }
       // now move the king
       this.pieceRank = newRank; // move piece to new spot
-      this.pieceFile = newFile;
+      this.pieceFile = kingCastleFile;
       this.hasMoved = true;
       return;
     }
@@ -43,23 +49,27 @@ public class King extends Piece {
   public boolean canMoveSpecific(
       int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile) {
 
-    // castling logic: see if there's a rook of the same team in the new square. if so, make sure neither the king nor the
+    // castling logic: see if there's a rook of the same team in the new square. if so, make sure
+    // neither the king nor the
     // rook hasMoved.
     // if so, make sure there are no obstacles in between the king and rook.
     // if so, make sure no piece can see any squares between the king and rook.
     // if so, castle.
 
     // king can't move into check
-    if (Chess.isSquareVisibleByEnemy(newRank, newFile, isWhite)) {
-      return false;
+    boolean inCheck = Chess.isInCheck(this);
+    if (inCheck) {
+      return false; // can't move if it puts the king into check
     }
 
     // castling logic implemented here
     Piece otherPiece = Chess.getPiece(newRank, newFile);
     if (otherPiece != null) {
-      if ((isWhite && otherPiece.getPieceType() == PieceType.WR) || (!isWhite && otherPiece.getPieceType() == PieceType.BR)) {
+      if ((isWhite && otherPiece.getPieceType() == PieceType.WR)
+          || (!isWhite && otherPiece.getPieceType() == PieceType.BR)) {
         if (!otherPiece.hasMoved && !this.hasMoved) {
-          // get all the squares in between the king and the rook. they haven't moved, so it will be just a horizontal line.
+          // get all the squares in between the king and the rook. they haven't moved, so it will be
+          // just a horizontal line.
           ArrayList<Square> squares = new ArrayList<>();
           int fileInt = file.ordinal();
           int newFileInt = newFile.ordinal();
@@ -79,28 +89,29 @@ public class King extends Piece {
             }
           }
 
-          // check if any of the squares are visible to the other team
+          // check if any of the enemy pieces canMove() to any of the squares
           for (Square s : squares) {
-            // go through piecesOnBoard arraylist, if the piece is of the opposite team, get its visible squares
-            // then iterate through its visible squares and see if any of them are in the squares arraylist
-            if (Chess.isSquareVisibleByEnemy(s.rank, s.file, isWhite)) {
-              return false; // can't castle if any of the squares are visible to the other team
+            for (ReturnPiece p : Chess.getPiecesOnBoard()) {
+              // cast to Piece
+              Piece piece = (Piece) p;
+              if (piece.isWhite != this.isWhite) {
+                // see if piece canMove() to any squares between the king and rook
+                if (piece.canMove(s.rank, s.file)) {
+                  return false; // can't castle if any of enemy pieces canMove() to any of the
+                  // squares
+                }
+              }
             }
           }
-          // otherwise, we can castle
           return true;
-
         }
       }
     }
 
-    
-
-    // king can move one square in any direction provided 
+    // king can move one square in any direction provided
     int rankChange = Math.abs(rank - newRank); // change in rank
     int fileChange = Math.abs(enumFileToChar(file) - enumFileToChar(newFile)); // change in file
     return rankChange <= 1 && fileChange <= 1; // can move one square in any direction
-    
   }
 
   public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(
@@ -121,19 +132,23 @@ public class King extends Piece {
       squares.add(new Square(rank, ReturnPiece.PieceFile.values()[enumFileToChar(file) + 1 - 'a']));
     }
     if (enumFileToChar(file) - 1 >= Chess.MIN_FILE) { // left
-      squares.add(new Square(rank, ReturnPiece.PieceFile.values()[enumFileToChar(file) - 1  - 'a']));
+      squares.add(new Square(rank, ReturnPiece.PieceFile.values()[enumFileToChar(file) - 1 - 'a']));
     }
     if (rank + 1 <= Chess.MAX_RANK && enumFileToChar(file) + 1 <= Chess.MAX_FILE) { // up-right
-      squares.add(new Square(rank + 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) + 1 - 'a']));
+      squares.add(
+          new Square(rank + 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) + 1 - 'a']));
     }
     if (rank + 1 <= Chess.MAX_RANK && enumFileToChar(file) - 1 >= Chess.MIN_FILE) { // up-left
-      squares.add(new Square(rank + 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) - 1 - 'a']));
+      squares.add(
+          new Square(rank + 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) - 1 - 'a']));
     }
     if (rank - 1 >= Chess.MIN_RANK && enumFileToChar(file) + 1 <= Chess.MAX_FILE) { // down-right
-      squares.add(new Square(rank - 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) + 1 - 'a']));
+      squares.add(
+          new Square(rank - 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) + 1 - 'a']));
     }
     if (rank - 1 >= Chess.MIN_RANK && enumFileToChar(file) - 1 >= Chess.MIN_FILE) { // down-left
-      squares.add(new Square(rank - 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) - 1 - 'a']));
+      squares.add(
+          new Square(rank - 1, ReturnPiece.PieceFile.values()[enumFileToChar(file) - 1 - 'a']));
     }
 
     visibleSquares.add(squares);
