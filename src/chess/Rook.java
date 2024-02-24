@@ -57,6 +57,8 @@ public class Rook extends Piece {
         if (Chess.getPiece(s.rank, s.file) != null) {
           return false;
         }
+      } else {
+        break;
       }
     }
 

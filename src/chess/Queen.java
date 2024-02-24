@@ -18,15 +18,56 @@ public class Queen extends Piece {
       int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile) {
     int rankChange = Math.abs(rank - newRank); // change in rank
     int fileChange = Math.abs(enumFileToChar(file) - enumFileToChar(newFile)); // change in file
-    if (rankChange == 0 && fileChange != 0) {
-      // perfect vertical
-      return true;
-    } else // perfect diagonal
-    if (fileChange == 0 && rankChange != 0) {
-      // perfect horizontal
-      return true;
-    } else return rank == newRank || file == newFile || rankChange == fileChange;
-    // invalid move not accounting for pieces in the way
+
+    /* CANMOVESPECIFIC() CHECKLIST
+       * 0. Get any prelimary illegal moves out of the way
+       * 1. Get visible squares from location
+       * 2. Make sure the new square is in in the visible squares list.
+       * 3. If required for the piece, make sure there are no pieces in the way (not including the new square, which is checked in step 5)
+       * 4. Make sure the new square is not occupied by a piece of the same team.
+       * 5. Return true if all conditions are met.
+       * (i think this is everything)
+       */
+    
+    // 0. Get any prelimary illegal moves out of the way. queen can only move in a straight line or diagonally
+    
+    // 1. Get visible squares from location
+    ArrayList<ArrayList<Square>> visibleSquares = getVisibleSquaresFromLocation(rank, file);
+
+    // 2. Make sure the new square is in in the visible squares list.
+    // find the arraylist in visibleSquares that contains the new square. this is the row/column/diagonal the queen is moving along
+    ArrayList<Square> visibleSquaresFromLocation = null;
+    for (ArrayList<Square> squaresList : visibleSquares) {
+      if (squaresList.contains(new Square(newRank, newFile))) {
+        visibleSquaresFromLocation = squaresList;
+        break;
+      }
+    }
+
+    if (visibleSquaresFromLocation == null) {
+      return false; // the new square is not in any of the rows/columns/diagonals the queen can move along
+    }
+
+    // 3. If required for the piece, make sure there are no pieces in the way.
+    for (Square s : visibleSquaresFromLocation) {
+      if (s.rank != newRank || s.file != newFile) {
+        if (Chess.getPiece(s.rank, s.file) != null) {
+          return false;
+        }
+      } else {
+        break;
+      }
+    }
+
+    // 4. Make sure the new square is not occupied by a piece of the same team.
+    Piece otherPiece = Chess.getPiece(newRank, newFile);
+    if (otherPiece != null) {
+      if (otherPiece.isWhite == this.isWhite) {
+        return false;
+      }
+    }
+
+    return true; // 5. Return true if all conditions are met.
   }
 
   public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(

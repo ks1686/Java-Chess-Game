@@ -21,6 +21,18 @@ public class Knight extends Piece {
       ReturnPiece.PieceFile newFile) {
     int rankChange = Math.abs(rank - newRank); // change in rank
     int fileChange = Math.abs(enumFileToChar(file) - enumFileToChar(newFile)); // change in file
+
+    /* CANMOVESPECIFIC() CHECKLIST
+       * 0. Get any prelimary illegal moves out of the way
+       * 1. Get visible squares from location
+       * 2. Make sure the new square is in in the visible squares list.
+       * 3. If required for the piece, make sure there are no pieces in the way (not including the new square, which is checked in step 5)
+       * 4. Make sure the new square is not occupied by a piece of the same team.
+       * 5. Return true if all conditions are met.
+       * (i think this is everything)
+       */
+
+    // tbh i think this already takes care of everything so i don't think we need to do anything else
     return (rankChange == 2 && fileChange == 1)
         || (rankChange == 1 && fileChange == 2); // can move in an L shape
   }
