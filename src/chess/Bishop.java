@@ -17,7 +17,57 @@ public class Bishop extends Piece {
       int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile) {
     int rankChange = Math.abs(rank - newRank); // change in rank
     int fileChange = Math.abs(enumFileToChar(file) - enumFileToChar(newFile)); // change in file
-    return rankChange == fileChange; // can move diagonally
+    /* CANMOVESPECIFIC() CHECKLIST
+       * 0. Get any prelimary illegal moves out of the way
+       * 1. Get visible squares from location
+       * 2. Make sure the new square is in in the visible squares list.
+       * 3. If required for the piece, make sure there are no pieces in the way (not including the new square, which is checked in step 5)
+       * 4. Make sure the new square is not occupied by a piece of the same team.
+       * 5. Return true if all conditions are met.
+       * (i think this is everything)
+       */
+
+
+    // 0. Get any prelimary illegal moves out of the way. bishop can only move diagonally
+    if (rankChange != fileChange) {
+      return false;
+    }
+
+    ArrayList<ArrayList<Square>> visibleSquares =
+        getVisibleSquaresFromLocation(
+            rank, file); // 1. Get visible squares from location
+    
+    // 2. Make sure the new square is in in the visible squares list.
+    // find the arraylist in visibleSquares that contains the new square. this is the diagonal the bishop is moving along
+    ArrayList<Square> visibleSquaresFromLocation = null;
+    for (ArrayList<Square> squaresList : visibleSquares) {
+      if (squaresList.contains(new Square(newRank, newFile))) {
+        visibleSquaresFromLocation = squaresList;
+        break;
+      }
+    }
+
+    if (visibleSquaresFromLocation == null) {
+      return false; // the new square is not in any of the diagonals the bishop can move along
+    }
+
+    // 3. If required for the piece, make sure there are no pieces in the way.
+    for (Square s : visibleSquaresFromLocation) {
+      if (s.rank != newRank || s.file != newFile) {
+        if (Chess.getPiece(s.rank, s.file) != null) {
+          return false;
+        }
+      }
+    }
+
+    // 4. Make sure the new square is not occupied by a piece of the same team.
+    if (Chess.getPiece(newRank, newFile) != null) {
+      if (Chess.getPiece(newRank, newFile).isWhite == this.isWhite) {
+        return false;
+      }
+    }
+
+    return true; // 5. Return true if all conditions are met.
   }
 
   public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(
