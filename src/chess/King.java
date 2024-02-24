@@ -15,6 +15,30 @@ public class King extends Piece {
     }
   }
 
+  public void movePiece(int newRank, Piece.PieceFile newFile) {
+    // check if king is castling
+    if (Math.abs(this.pieceFile.ordinal() - newFile.ordinal()) > 1) {
+      // if the king is castling, move the rook as well
+      if (newFile.ordinal() > this.pieceFile.ordinal()) { // castling to the right
+        Piece rook = Chess.getPiece(this.pieceRank, ReturnPiece.PieceFile.h);
+        rook.movePiece(this.pieceRank, ReturnPiece.PieceFile.f);
+        rook.hasMoved = true;
+      } else { // castling to the left
+        Piece rook = Chess.getPiece(this.pieceRank, ReturnPiece.PieceFile.a);
+        rook.movePiece(this.pieceRank, ReturnPiece.PieceFile.d);
+        rook.hasMoved = true;
+      }
+      // now move the king
+      this.pieceRank = newRank; // move piece to new spot
+      this.pieceFile = newFile;
+      this.hasMoved = true;
+      return;
+    }
+
+    // otherwise, super.movePiece()
+    super.movePiece(newRank, newFile);
+  }
+
   // TODO: need to implement checking for pieces in the way
   public boolean canMoveSpecific(
       int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile) {

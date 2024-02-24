@@ -191,6 +191,17 @@ public class Chess {
     return false;
   }
 
+  public static Piece getKing(Player player) {
+    for (ReturnPiece piece : play.piecesOnBoard) {
+      if (piece.pieceType == ReturnPiece.PieceType.WK && player == Player.white) {
+        return (Piece) piece;
+      } else if (piece.pieceType == ReturnPiece.PieceType.BK && player == Player.black) {
+        return (Piece) piece;
+      }
+    }
+    return null;
+  }
+
   private static void resetPawnHasJustAdvancedTwice(Player player) {
     for (ReturnPiece piece : play.piecesOnBoard) {
       if (piece.pieceType == ReturnPiece.PieceType.WP && player == Player.black) {

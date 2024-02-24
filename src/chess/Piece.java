@@ -54,7 +54,23 @@ public abstract class Piece extends ReturnPiece {
               return false; // can't move to a square with a piece of the same team (with the exception of castling)
           }
       }
-      // TODO: obstacle checking for other pieces before capturing
+
+      // current player can't make a move that will put the king into check
+      Piece king = Chess.getKing(Chess.currentPlayer);
+      // temporarily move the piece to the new square
+      int oldRank = this.pieceRank;
+      ReturnPiece.PieceFile oldFile = this.pieceFile;
+      this.pieceRank = newRank;
+      this.pieceFile = newFile;
+      // check if the king is in check
+      boolean inCheck = Chess.isSquareVisibleByEnemy(king.pieceRank, king.pieceFile, king.isWhite);
+      // move the piece back
+      this.pieceRank = oldRank;
+      this.pieceFile = oldFile;
+      if (inCheck) {
+          return false; // can't move if it puts the king into check
+      }
+      
 
       return canMoveSpecific(rank, file, newRank, newFile); // find out whether the specific piece can move to the new square
 
