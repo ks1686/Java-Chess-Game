@@ -191,14 +191,11 @@ public class Chess {
       // change player and send message if in check
       if (currentPlayer == Player.white) {
         currentPlayer = Player.black;
-        if (Piece.inCheck(getKing(currentPlayer))) {
-          play.message = ReturnPlay.Message.CHECK;
-        }
       } else {
         currentPlayer = Player.white;
-        if (Piece.inCheck(getKing(currentPlayer))) {
-          play.message = ReturnPlay.Message.CHECK;
-        }
+      }
+      if (Piece.inCheck(getKing(currentPlayer))) {
+        play.message = ReturnPlay.Message.CHECK;
       }
     }
 
