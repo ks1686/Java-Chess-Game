@@ -4,9 +4,6 @@ import java.util.ArrayList;
 
 public class King extends Piece {
 
-  // TODO: never used, remove?
-  public boolean inCheck = false; // default to false; will be set to true if in check
-
   public King(boolean isWhite) {
     super(isWhite);
     if (isWhite) {
@@ -61,11 +58,7 @@ public class King extends Piece {
     // if so, make sure no piece can see any squares between the king and rook.
     // if so, castle.
 
-    // king can't move into check
-    boolean inCheck = Chess.isKingInCheck(this);
-    if (inCheck) {
-      return false; // can't move if it puts the king into check
-    }
+    // TODO: king in check logic (if king in check, return false
 
     // castling logic implemented here
     Piece otherPiece = Chess.getPiece(newRank, newFile);

@@ -134,33 +134,12 @@ public class Chess {
 
     // TODO: Check/Checkmate Logic
 
-    /* *CHECK/CHECKMATE WALKTHROUGH
-     * canMove() checks if the current player's king is in check AFTER THE MOVE is made.
-     * Logic holds, since making moves is what puts the king in check, not the other way around.
-     * Missing logic:
-     * 1. Check if the enemy king is in check (method checks any passed piece, so have to call for both kings)
-     * 2. Checkmate portion of the logic
-     * */
     if (!pieceToMove.canMove(toRank, toFile)) { // check if the move is legal
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
       return play;
     }
 
-    pieceToMove.movePiece(toRank, toFile); // * move piece; save captured piece if any
-
-    // * check if the move puts the current or opposite player in check
-    // * currentPlayer check: if the move puts the current player in check, it's illegal
-    // * oppositePlayer check: if the move puts the opposite player in check, it's check
-    if (inCheck(currentPlayer)) {
-      play.message = ReturnPlay.Message.ILLEGAL_MOVE;
-      pieceToMove.movePiece(fromRank, fromFile); // move the piece back
-      play.piecesOnBoard.add(capturedPiece); // add back the piece that was captured
-      // TODO: may need to add back the piece that was captured; will need to create temporary
-      // method for that
-      return play;
-    } else if (inCheck(currentPlayer == Player.white ? Player.black : Player.white)) {
-      play.message = ReturnPlay.Message.CHECK;
-    }
+    pieceToMove.movePiece(toRank, toFile);
 
     // TODO: recheck for check/checkmate?
 
@@ -207,11 +186,19 @@ public class Chess {
       // reset pawn hasJustAdvancedTwice
       resetPawnHasJustAdvancedTwice(currentPlayer);
 
-      // change player
+      // TODO: check for check to send out message
+
+      // change player and send message if in check
       if (currentPlayer == Player.white) {
         currentPlayer = Player.black;
+        if (Piece.inCheck(getKing(currentPlayer))) {
+          play.message = ReturnPlay.Message.CHECK;
+        }
       } else {
         currentPlayer = Player.white;
+        if (Piece.inCheck(getKing(currentPlayer))) {
+          play.message = ReturnPlay.Message.CHECK;
+        }
       }
     }
 
@@ -271,38 +258,6 @@ public class Chess {
         ((Pawn) piece).hasJustAdvancedTwice = false;
       }
     }
-  }
-
-  // method to check if a king is in check
-  // * Given a specified king, checks if any enemy piece canMove() to the king's square
-  // * If so, return that king is in check. No moves or changes are made to pieces.
-  public static boolean isKingInCheck(Piece king) {
-
-    // get the rank and file of the king
-    int kingRank = king.pieceRank;
-    ReturnPiece.PieceFile kingFile = king.pieceFile;
-
-    // check if any piece of the opposite color can move to the king's square
-    for (ReturnPiece piece : play.piecesOnBoard) {
-      // cast a piece to a specific type to call canMove method
-      Piece otherPiece = (Piece) piece;
-      if (otherPiece.isEnemy(king)) {
-        if (otherPiece.canMove(kingRank, kingFile)) {
-          return true;
-        }
-      }
-    }
-
-    // king is not in check
-    return false;
-  }
-
-  public static boolean inCheck(Player currentPlayer) {
-    // get the king of the two players
-    Piece playerKing = getKing(currentPlayer);
-    Piece enemyKing = getKing(currentPlayer == Player.white ? Player.black : Player.white);
-
-    return isKingInCheck(playerKing) || isKingInCheck(enemyKing);
   }
 
   // method to capture a piece of opposite color

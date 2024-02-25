@@ -18,17 +18,21 @@ public abstract class Piece extends ReturnPiece {
   public abstract boolean canMoveSpecific(
       int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile);
 
+  // TODO: canMove method not playing nicely with check since we cannot move opposite color pieces,
+  // need to find workaround
   public boolean canMove(int newRank, ReturnPiece.PieceFile newFile) {
     int rank = this.pieceRank;
     ReturnPiece.PieceFile file = this.pieceFile;
     char fileChar = file.name().charAt(0);
     char newFileChar = newFile.name().charAt(0);
 
-    // check if the piece to move is the correct color
     if ((Chess.currentPlayer == Player.white && pieceType.name().charAt(0) == 'B')
         || (Chess.currentPlayer == Player.black && pieceType.name().charAt(0) == 'W')) {
       return false; // can't move a piece of the opposite color
-    } else if (file == newFile && rank == newRank) {
+    }
+
+    // check if move is to same square or out of bounds
+    if (file == newFile && rank == newRank) {
       return false; // can't move to the same square
     } else if (fileChar < Chess.MIN_FILE
         || fileChar > Chess.MAX_FILE
@@ -51,33 +55,58 @@ public abstract class Piece extends ReturnPiece {
       }
     }
 
-    // get the king of the current player and check if the move puts the king in check
+    // test moving the piece to the new square, then see if currentPlayer's king is in check
+    // if the king is in check, the move is invalid
     Piece king = Chess.getKing(Chess.currentPlayer);
+
+    // save the piece's rank and file
     int oldRank = this.pieceRank;
     ReturnPiece.PieceFile oldFile = this.pieceFile;
-    // temporarily move the piece to the new spot to check if it puts the king in check
+
+    // move the piece to the new square
     this.pieceRank = newRank;
     this.pieceFile = newFile;
 
-    // * check if the king is in check
-    assert king != null;
-    // kicks in before canMoveSpecific; checks if after moving the piece the king is in check
-    boolean inCheck = Chess.isKingInCheck(king);
+    // check if the king is in check
+    if (Piece.inCheck(king)) {
+      // move the piece back to its original square
+      this.pieceRank = oldRank;
+      this.pieceFile = oldFile;
+      return false; // can't move the piece if it puts the king in check
+    }
 
-    // move the piece back
     this.pieceRank = oldRank;
     this.pieceFile = oldFile;
-    if (inCheck) {
-      return false; // can't move if it puts the king into check
-    }
 
     // check if the piece can move to the new square after checking for obstacles
     return canMoveSpecific(rank, file, newRank, newFile);
   }
 
+  // TODO: static method to check if a piece is in check
+  public static boolean inCheck(Piece king) {
+    // set the checkFilter to true to bypass color check
+
+    // retrieve the king's rank and file
+    int kingRank = king.pieceRank;
+    ReturnPiece.PieceFile kingFile = king.pieceFile;
+
+    // iterate through all the pieces on the board
+    for (ReturnPiece piece : Chess.getPiecesOnBoard()) {
+      // cast piece into a Piece object
+      Piece otherPiece = (Piece) piece;
+      // check if the piece is an enemy and can move to the king's square
+      if (otherPiece.isEnemy(king) && otherPiece.canMove(kingRank, kingFile)) {
+        return true; // king is in check
+      }
+    }
+    return false; // king is not in check
+  }
+
   // move the piece to a new spot
   public void movePiece(int newRank, Piece.PieceFile newFile) {
     boolean isNewSpotEmpty;
+    int oldRank = this.pieceRank;
+    Piece.PieceFile oldFile = this.pieceFile;
 
     // piece can move, check if the new spot is empty
     Piece otherPiece = Chess.getPiece(newRank, newFile);
@@ -89,6 +118,16 @@ public abstract class Piece extends ReturnPiece {
     // move the piece to the new spot
     this.pieceRank = newRank;
     this.pieceFile = newFile;
+
+    // TODO: check for possible check
+    if (Piece.inCheck(Chess.getKing(Chess.currentPlayer))) {
+      // move the piece back to its original spot
+      this.pieceRank = oldRank;
+      this.pieceFile = oldFile;
+      // add the chess class variable capturedPiece back to the board
+      Chess.getPiecesOnBoard().add(Chess.capturedPiece);
+      return;
+    }
 
     // set hasMoved to true
     this.hasMoved = true;
