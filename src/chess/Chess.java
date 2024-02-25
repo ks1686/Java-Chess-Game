@@ -88,6 +88,9 @@ public class Chess {
   // static variable for a captured piece
   static Piece capturedPiece;
 
+  // static variable for a successful move
+  static boolean successfulMove = false;
+
   // method to get a piece from the piecesOnBoard arraylist
   public static Piece getPiece(int rank, ReturnPiece.PieceFile file) {
     for (ReturnPiece piece : play.piecesOnBoard) {
@@ -132,14 +135,33 @@ public class Chess {
       return play;
     }
 
-    // TODO: Check/Checkmate Logic
+    // check if the piece to move is the same color as the current player
+    if (currentPlayer == Player.white && !pieceToMove.isWhite) {
+      play.message = ReturnPlay.Message.ILLEGAL_MOVE;
+      return play;
+    } else if (currentPlayer == Player.black && pieceToMove.isWhite) {
+      play.message = ReturnPlay.Message.ILLEGAL_MOVE;
+      return play;
+    }
 
     if (!pieceToMove.canMove(toRank, toFile)) { // check if the move is legal
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
       return play;
     }
 
+    // TODO: Check/Checkmate Logic
+
+    // check if current player is in check
+
     pieceToMove.movePiece(toRank, toFile);
+
+    // check if successful move is true
+    if (!successfulMove) {
+      play.message = ReturnPlay.Message.ILLEGAL_MOVE;
+      // remove all null pieces from the piecesOnBoard arraylist
+      play.piecesOnBoard.removeIf(p -> p == null);
+      return play;
+    }
 
     // TODO: recheck for check/checkmate?
 
@@ -201,6 +223,11 @@ public class Chess {
 
     // reset capturedPiece
     capturedPiece = null;
+    // reset successfulMove
+    successfulMove = false;
+
+    // remove all null pieces from the piecesOnBoard arraylist
+    play.piecesOnBoard.removeIf(p -> p == null);
 
     return play; // return the current state of the game
   }
@@ -249,10 +276,13 @@ public class Chess {
   private static void resetPawnHasJustAdvancedTwice(Player player) {
     for (ReturnPiece piece : play.piecesOnBoard) {
       // reset hasJustAdvancedTwice for all pawns of the opposite color
-      if (piece.pieceType == ReturnPiece.PieceType.WP && player == Player.black) {
-        ((Pawn) piece).hasJustAdvancedTwice = false;
-      } else if (piece.pieceType == ReturnPiece.PieceType.BP && player == Player.white) {
-        ((Pawn) piece).hasJustAdvancedTwice = false;
+      // filter possible null pieces
+      if (piece != null) {
+        if (piece.pieceType == ReturnPiece.PieceType.WP && player == Player.black) {
+          ((Pawn) piece).hasJustAdvancedTwice = false;
+        } else if (piece.pieceType == ReturnPiece.PieceType.BP && player == Player.white) {
+          ((Pawn) piece).hasJustAdvancedTwice = false;
+        }
       }
     }
   }

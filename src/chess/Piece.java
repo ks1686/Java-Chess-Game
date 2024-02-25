@@ -1,6 +1,5 @@
 package chess;
 
-import chess.Chess.Player;
 import java.util.ArrayList;
 
 public abstract class Piece extends ReturnPiece {
@@ -26,10 +25,10 @@ public abstract class Piece extends ReturnPiece {
     char fileChar = file.name().charAt(0);
     char newFileChar = newFile.name().charAt(0);
 
-    if ((Chess.currentPlayer == Player.white && pieceType.name().charAt(0) == 'B')
-        || (Chess.currentPlayer == Player.black && pieceType.name().charAt(0) == 'W')) {
-      return false; // can't move a piece of the opposite color
-    }
+    //    if ((Chess.currentPlayer == Player.white && pieceType.name().charAt(0) == 'B')
+    //        || (Chess.currentPlayer == Player.black && pieceType.name().charAt(0) == 'W')) {
+    //      return false; // can't move a piece of the opposite color
+    //    }
 
     // check if move is to same square or out of bounds
     if (file == newFile && rank == newRank) {
@@ -55,48 +54,26 @@ public abstract class Piece extends ReturnPiece {
       }
     }
 
-    // test moving the piece to the new square, then see if currentPlayer's king is in check
-    // if the king is in check, the move is invalid
-    Piece king = Chess.getKing(Chess.currentPlayer);
-
-    // save the piece's rank and file
-    int oldRank = this.pieceRank;
-    ReturnPiece.PieceFile oldFile = this.pieceFile;
-
-    // move the piece to the new square
-    this.pieceRank = newRank;
-    this.pieceFile = newFile;
-
-    // check if the king is in check
-    if (Piece.inCheck(king)) {
-      // move the piece back to its original square
-      this.pieceRank = oldRank;
-      this.pieceFile = oldFile;
-      return false; // can't move the piece if it puts the king in check
-    }
-
-    this.pieceRank = oldRank;
-    this.pieceFile = oldFile;
-
     // check if the piece can move to the new square after checking for obstacles
     return canMoveSpecific(rank, file, newRank, newFile);
   }
 
   // TODO: static method to check if a piece is in check
   public static boolean inCheck(Piece king) {
-    // set the checkFilter to true to bypass color check
-
     // retrieve the king's rank and file
     int kingRank = king.pieceRank;
     ReturnPiece.PieceFile kingFile = king.pieceFile;
 
     // iterate through all the pieces on the board
     for (ReturnPiece piece : Chess.getPiecesOnBoard()) {
-      // cast piece into a Piece object
-      Piece otherPiece = (Piece) piece;
-      // check if the piece is an enemy and can move to the king's square
-      if (otherPiece.isEnemy(king) && otherPiece.canMove(kingRank, kingFile)) {
-        return true; // king is in check
+      // filter possible null pieces
+      if (piece != null) {
+        // cast piece into a Piece object
+        Piece otherPiece = (Piece) piece;
+        // check if the piece is an enemy and can move to the king's square
+        if (otherPiece.isEnemy(king) && otherPiece.canMove(kingRank, kingFile)) {
+          return true; // king is in check
+        }
       }
     }
     return false; // king is not in check
@@ -126,11 +103,15 @@ public abstract class Piece extends ReturnPiece {
       this.pieceFile = oldFile;
       // add the chess class variable capturedPiece back to the board
       Chess.getPiecesOnBoard().add(Chess.capturedPiece);
+      // set successfulMove to false
+      Chess.successfulMove = false;
       return;
     }
 
     // set hasMoved to true
     this.hasMoved = true;
+    // set successfulMove to true
+    Chess.successfulMove = true;
   }
 
   // return pieceType
