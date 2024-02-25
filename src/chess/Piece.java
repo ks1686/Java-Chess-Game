@@ -51,16 +51,18 @@ public abstract class Piece extends ReturnPiece {
       }
     }
 
-    // check if the piece can move to the new square
+    // get the king of the current player and check if the move puts the king in check
     Piece king = Chess.getKing(Chess.currentPlayer);
     int oldRank = this.pieceRank;
     ReturnPiece.PieceFile oldFile = this.pieceFile;
+    // temporarily move the piece to the new spot to check if it puts the king in check
     this.pieceRank = newRank;
     this.pieceFile = newFile;
 
-    // check if the king is in check
+    // * check if the king is in check
     assert king != null;
-    boolean inCheck = Chess.isInCheck(king);
+    // kicks in before canMoveSpecific; checks if after moving the piece the king is in check
+    boolean inCheck = Chess.isKingInCheck(king);
 
     // move the piece back
     this.pieceRank = oldRank;

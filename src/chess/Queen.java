@@ -13,7 +13,6 @@ public class Queen extends Piece {
     }
   }
 
-  // TODO: need to implement checking for pieces in the way
   public boolean canMoveSpecific(
       int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile) {
 
