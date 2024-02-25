@@ -227,11 +227,14 @@ public class Pawn extends Piece {
               this.pieceRank + rankMultiplier,
               ReturnPiece.PieceFile.values()[enumFileToChar(this.pieceFile) - 'a' - 1]);
 
+      // if the pawn can en passant, it can see there as well.
       if (leftPiece != null
           && (leftPiece.pieceType == PieceType.WP || leftPiece.pieceType == PieceType.BP)
           && isEnemy(leftPiece)) {
         if (((Pawn) leftPiece).hasJustAdvancedTwice) {
           if (leftDiag.rank == newRank && leftDiag.file == newFile) {
+            // capture the piece
+            Chess.capturedPiece = leftPiece;
             Chess.capturePiece(leftPiece);
           }
         }
@@ -254,6 +257,8 @@ public class Pawn extends Piece {
           && isEnemy(rightPiece)) {
         if (((Pawn) rightPiece).hasJustAdvancedTwice) {
           if (rightDiag.rank == newRank && rightDiag.file == newFile) {
+            // capture the piece
+            Chess.capturedPiece = rightPiece;
             Chess.capturePiece(rightPiece);
           }
         }

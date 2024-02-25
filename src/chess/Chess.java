@@ -85,6 +85,9 @@ public class Chess {
   // static variable for the current player
   static Player currentPlayer;
 
+  // static variable for a captured piece
+  static Piece capturedPiece;
+
   // method to get a piece from the piecesOnBoard arraylist
   public static Piece getPiece(int rank, ReturnPiece.PieceFile file) {
     for (ReturnPiece piece : play.piecesOnBoard) {
@@ -130,12 +133,34 @@ public class Chess {
     }
 
     // TODO: Check/Checkmate Logic
+
+    /* *CHECK/CHECKMATE WALKTHROUGH
+     * canMove() checks if the current player's king is in check AFTER THE MOVE is made.
+     * Logic holds, since making moves is what puts the king in check, not the other way around.
+     * Missing logic:
+     * 1. Check if the enemy king is in check (method checks any passed piece, so have to call for both kings)
+     * 2. Checkmate portion of the logic
+     * */
     if (!pieceToMove.canMove(toRank, toFile)) { // check if the move is legal
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
       return play;
     }
 
-    pieceToMove.movePiece(toRank, toFile); // move the piece
+    pieceToMove.movePiece(toRank, toFile); // * move piece; save captured piece if any
+
+    // * check if the move puts the current or opposite player in check
+    // * currentPlayer check: if the move puts the current player in check, it's illegal
+    // * oppositePlayer check: if the move puts the opposite player in check, it's check
+    if (inCheck(currentPlayer)) {
+      play.message = ReturnPlay.Message.ILLEGAL_MOVE;
+      pieceToMove.movePiece(fromRank, fromFile); // move the piece back
+      play.piecesOnBoard.add(capturedPiece); // add back the piece that was captured
+      // TODO: may need to add back the piece that was captured; will need to create temporary
+      // method for that
+      return play;
+    } else if (inCheck(currentPlayer == Player.white ? Player.black : Player.white)) {
+      play.message = ReturnPlay.Message.CHECK;
+    }
 
     // TODO: recheck for check/checkmate?
 
@@ -189,6 +214,9 @@ public class Chess {
         currentPlayer = Player.white;
       }
     }
+
+    // reset capturedPiece
+    capturedPiece = null;
 
     return play; // return the current state of the game
   }
@@ -246,7 +274,9 @@ public class Chess {
   }
 
   // method to check if a king is in check
-  public static boolean isInCheck(Piece king) {
+  // * Given a specified king, checks if any enemy piece canMove() to the king's square
+  // * If so, return that king is in check. No moves or changes are made to pieces.
+  public static boolean isKingInCheck(Piece king) {
 
     // get the rank and file of the king
     int kingRank = king.pieceRank;
@@ -267,8 +297,18 @@ public class Chess {
     return false;
   }
 
+  public static boolean inCheck(Player currentPlayer) {
+    // get the king of the two players
+    Piece playerKing = getKing(currentPlayer);
+    Piece enemyKing = getKing(currentPlayer == Player.white ? Player.black : Player.white);
+
+    return isKingInCheck(playerKing) || isKingInCheck(enemyKing);
+  }
+
   // method to capture a piece of opposite color
   public static void capturePiece(Piece piece) {
+    // remove the piece from the piecesOnBoard arraylist
+    capturedPiece = piece;
     play.piecesOnBoard.remove(piece);
   }
 

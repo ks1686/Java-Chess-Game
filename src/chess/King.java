@@ -62,7 +62,7 @@ public class King extends Piece {
     // if so, castle.
 
     // king can't move into check
-    boolean inCheck = Chess.isInCheck(this);
+    boolean inCheck = Chess.isKingInCheck(this);
     if (inCheck) {
       return false; // can't move if it puts the king into check
     }
