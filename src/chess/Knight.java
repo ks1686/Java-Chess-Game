@@ -13,50 +13,46 @@ public class Knight extends Piece {
     }
   }
 
-  
   public boolean canMoveSpecific(
-      int rank,
-      ReturnPiece.PieceFile file,
-      int newRank,
-      ReturnPiece.PieceFile newFile) {
-    int rankChange = Math.abs(rank - newRank); // change in rank
-    int fileChange = Math.abs(enumFileToChar(file) - enumFileToChar(newFile)); // change in file
+      int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile) {
+    // change in rank and file
+    int rankChange = Math.abs(rank - newRank);
+    int fileChange = Math.abs(enumFileToChar(file) - enumFileToChar(newFile));
 
-    /* CANMOVESPECIFIC() CHECKLIST
-       * 0. Get any prelimary illegal moves out of the way
-       * 1. Get visible squares from location
-       * 2. Make sure the new square is in in the visible squares list.
-       * 3. If required for the piece, make sure there are no pieces in the way (not including the new square, which is checked in step 5)
-       * 4. Make sure the new square is not occupied by a piece of the same team.
-       * 5. Return true if all conditions are met.
-       * (i think this is everything)
-       */
-
-    // tbh i think this already takes care of everything so i don't think we need to do anything else
-    return (rankChange == 2 && fileChange == 1)
-        || (rankChange == 1 && fileChange == 2); // can move in an L shape
+    // get illegal moves out of the way; knights move in an L shape
+    return (rankChange == 2 && fileChange == 1) || (rankChange == 1 && fileChange == 2);
   }
 
-  public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(int rank, ReturnPiece.PieceFile file) {
+  public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(
+      int rank, ReturnPiece.PieceFile file) {
+    // arraylist to store the visible squares from the location
     ArrayList<ArrayList<Square>> visibleSquares = new ArrayList<>();
     ArrayList<Square> knightSquares = new ArrayList<>();
+
+    // array of possible knight moves
     int[][] knightMoves = {
-        {+2, +1}, {+2, -1}, {-2, +1}, {-2, -1},
-        {+1, +2}, {+1, -2}, {-1, +2}, {-1, -2}
+      {+2, +1}, {+2, -1}, {-2, +1}, {-2, -1},
+      {+1, +2}, {+1, -2}, {-1, +2}, {-1, -2}
     };
-    
+
+    // convert the file to an int to use in the knightMoves array
     int fileInt = file.ordinal();
-    
+
+    // loop through the knightMoves array and add the squares to the knightSquares array
     for (int[] move : knightMoves) {
-        int newRank = rank + move[0];
-        int newFileInt = fileInt + move[1];
-        
-        // Check if the new position is within the bounds of the board
-        if (newRank >= Chess.MIN_RANK && newRank <= Chess.MAX_RANK &&
-            newFileInt >= 0 && newFileInt < ReturnPiece.PieceFile.values().length) {
-            knightSquares.add(new Square(newRank, ReturnPiece.PieceFile.values()[newFileInt]));
-        }
+      int newRank = rank + move[0];
+      int newFileInt = fileInt + move[1];
+
+      // check if the new rank and file are valid
+      if (newRank >= Chess.MIN_RANK
+          && newRank <= Chess.MAX_RANK
+          && newFileInt >= 0
+          && newFileInt < ReturnPiece.PieceFile.values().length) {
+        knightSquares.add(new Square(newRank, ReturnPiece.PieceFile.values()[newFileInt]));
+      }
     }
+
+    // add the knightSquares array to the visibleSquares arraylist
     visibleSquares.add(knightSquares);
     return visibleSquares;
   }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class King extends Piece {
 
+  // TODO: never used, remove?
   public boolean inCheck = false; // default to false; will be set to true if in check
 
   public King(boolean isWhite) {
@@ -18,19 +19,23 @@ public class King extends Piece {
   public void movePiece(int newRank, Piece.PieceFile newFile) {
     // check if king is castling
     // variable to store file change for castling king
-    ReturnPiece.PieceFile kingCastleFile = null;
+    ReturnPiece.PieceFile kingCastleFile;
     if (Math.abs(this.pieceFile.ordinal() - newFile.ordinal()) > 1) {
       // if the king is castling, move the rook as well
       if (newFile.ordinal() > this.pieceFile.ordinal()) { // castling to the right
         Piece rook = Chess.getPiece(this.pieceRank, ReturnPiece.PieceFile.h);
-        rook.movePiece(this.pieceRank, ReturnPiece.PieceFile.f);
-        rook.hasMoved = true;
+        if (rook != null) {
+          rook.movePiece(this.pieceRank, PieceFile.f);
+          rook.hasMoved = true;
+        }
         // set kingCastleFile to g
         kingCastleFile = ReturnPiece.PieceFile.g;
       } else { // castling to the left
         Piece rook = Chess.getPiece(this.pieceRank, ReturnPiece.PieceFile.a);
-        rook.movePiece(this.pieceRank, ReturnPiece.PieceFile.d);
-        rook.hasMoved = true;
+        if (rook != null) {
+          rook.movePiece(this.pieceRank, PieceFile.d);
+          rook.hasMoved = true;
+        }
         // set the kingCastleFile to c
         kingCastleFile = ReturnPiece.PieceFile.c;
       }

@@ -79,12 +79,13 @@ public class Chess {
   static final int MAX_RANK = 8;
   static final char MIN_FILE = 'a';
   static final char MAX_FILE = 'h';
-  private static final String[] pieceOrder = {
-    "R", "N", "B", "Q", "K", "B", "N", "R"
-  }; // order of pieces on the back rank
+  // static final variables for piece order
+  private static final String[] pieceOrder = {"R", "N", "B", "Q", "K", "B", "N", "R"};
 
-  static Player currentPlayer; // current player (white goes first)
+  // static variable for the current player
+  static Player currentPlayer;
 
+  // method to get a piece from the piecesOnBoard arraylist
   public static Piece getPiece(int rank, ReturnPiece.PieceFile file) {
     for (ReturnPiece piece : play.piecesOnBoard) {
       if (piece.pieceFile == file && piece.pieceRank == rank) {
@@ -99,15 +100,16 @@ public class Chess {
     return play.piecesOnBoard;
   }
 
+  // method to get the current state of the game, updated with String move
   public static ReturnPlay play(String move) {
-    move = move.trim(); // remove leading and trailing whitespace
+    move = move.trim(); // remove leading/trailing whitespace
 
     // resign kills game immediately
     if (move.equals("resign")) {
       if (currentPlayer == Player.white) {
-        play.message = ReturnPlay.Message.RESIGN_WHITE_WINS;
-      } else {
         play.message = ReturnPlay.Message.RESIGN_BLACK_WINS;
+      } else {
+        play.message = ReturnPlay.Message.RESIGN_WHITE_WINS;
       }
       return play;
     }
@@ -119,7 +121,7 @@ public class Chess {
     int toRank = Character.getNumericValue(move.charAt(4));
 
     // find the piece to move in the piecesOnBoard list
-    Piece pieceToMove = getPiece(fromRank, fromFile); // the piece to move
+    Piece pieceToMove = getPiece(fromRank, fromFile);
 
     // check if the piece to move exists
     if (pieceToMove == null) {
@@ -127,51 +129,43 @@ public class Chess {
       return play;
     }
 
-    // TODO: finish unique move logic, obstacle checking, and check/checkmate logic
-    if (!pieceToMove.canMove(toRank, toFile)) {
+    // TODO: Check/Checkmate Logic
+    if (!pieceToMove.canMove(toRank, toFile)) { // check if the move is legal
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
       return play;
     }
-    // the square is a valid piece to move. actually move the piece
-    pieceToMove.movePiece(toRank, toFile);
 
-    // move is valid and we'ved moved the piece. check for pawn promotion (queen is default for
-    // unspecified promotion)
+    pieceToMove.movePiece(toRank, toFile); // move the piece
+
+    // TODO: recheck for check/checkmate?
+
+    // check if move results in pawn promotion
     if (pieceToMove instanceof Pawn) {
-      char promotion;
-      if (move.length() == 5) {
-        promotion = 'Q';
-      } else if (move.length() == 7) { // move looks like 'g7 g8 Q' (or N, B, R))
-        promotion = move.charAt(6);
-      } else {
-        promotion = 'Q'; // default promotion
-      }
+      // check if the move results in pawn promotion
+      char promotion = 'Q'; // default promotion is queen
+      if (move.length() == 7) promotion = move.charAt(6);
 
       int lastRank;
-      if (pieceToMove.isWhite) {
+      if (pieceToMove.isWhite) { // white pawn
         lastRank = 8;
-      } else {
+      } else { // black pawn
         lastRank = 1;
       }
+
+      // check if the pawn has reached the last rank
       if (pieceToMove.pieceRank == lastRank) {
         int currentRank = pieceToMove.pieceRank;
         ReturnPiece.PieceFile currentFile = pieceToMove.pieceFile;
-        Piece newPiece;
+        // create a new piece of the specified promotion type
+        Piece newPiece =
+            switch (promotion) {
+              case 'N' -> new Knight(pieceToMove.isWhite);
+              case 'B' -> new Bishop(pieceToMove.isWhite);
+              case 'R' -> new Rook(pieceToMove.isWhite);
+              default -> new Queen(pieceToMove.isWhite);
+            };
 
-        switch (promotion) {
-          case 'N':
-            newPiece = new Knight(pieceToMove.isWhite);
-            break;
-          case 'B':
-            newPiece = new Bishop(pieceToMove.isWhite);
-            break;
-          case 'R':
-            newPiece = new Rook(pieceToMove.isWhite);
-            break;
-          default:
-            newPiece = new Queen(pieceToMove.isWhite);
-            break;
-        }
+        // remove the old piece and add the new piece
         play.piecesOnBoard.remove(pieceToMove);
         newPiece.pieceRank = currentRank;
         newPiece.pieceFile = currentFile;
@@ -179,14 +173,14 @@ public class Chess {
       }
     }
 
-    // move is valid; check if a draw is requested. else, just perform move
+    // move performed, check if player requests a draw
     if (move.endsWith("draw?") && move.length() == 11) {
       play.message = ReturnPlay.Message.DRAW;
     } else {
       play.message = null; // no message
 
-      resetPawnHasJustAdvancedTwice(
-          currentPlayer); // reset pawn hasJustAdvancedTwice of the opposite team to false
+      // reset pawn hasJustAdvancedTwice
+      resetPawnHasJustAdvancedTwice(currentPlayer);
 
       // change player
       if (currentPlayer == Player.white) {
@@ -199,11 +193,11 @@ public class Chess {
     return play; // return the current state of the game
   }
 
+  // TODO: method never implemented; remove or implement
   public static boolean isSquareVisibleByEnemy(
       int rank, ReturnPiece.PieceFile file, boolean isWhite) {
-    // find the team of the piece. if isWhite is true, check if the piece is black. if isWhite is
-    // false, check if the piece is white.
-    // first  check if square is in bounds
+
+    // check if the square is on the board
     Square s;
     try {
       s = new Square(rank, file); // throws exception if square is out of bounds
@@ -211,13 +205,15 @@ public class Chess {
       return false;
     }
 
+    // check if any piece of the opposite color can see the square
     for (ReturnPiece p : play.piecesOnBoard) {
       Piece piece = (Piece) p;
       if (isWhite != piece.isWhite) {
         ArrayList<ArrayList<Square>> visibleSquares =
             piece.getVisibleSquaresFromLocation(piece.pieceRank, piece.pieceFile);
+        // check if the square is in the visibleSquares arraylist
         if (Square.isSquareInNestedList(visibleSquares, s)) {
-          return true; // there is a piece that can see the specified square
+          return true;
         }
       }
     }
@@ -225,6 +221,7 @@ public class Chess {
     return false;
   }
 
+  // method to get the king of a specific player
   public static Piece getKing(Player player) {
     for (ReturnPiece piece : play.piecesOnBoard) {
       if (piece.pieceType == ReturnPiece.PieceType.WK && player == Player.white) {
@@ -233,11 +230,13 @@ public class Chess {
         return (Piece) piece;
       }
     }
-    return null;
+    return null; // should never happen
   }
 
+  // method to reset the hasJustAdvancedTwice variable for all pawns of a specific player
   private static void resetPawnHasJustAdvancedTwice(Player player) {
     for (ReturnPiece piece : play.piecesOnBoard) {
+      // reset hasJustAdvancedTwice for all pawns of the opposite color
       if (piece.pieceType == ReturnPiece.PieceType.WP && player == Player.black) {
         ((Pawn) piece).hasJustAdvancedTwice = false;
       } else if (piece.pieceType == ReturnPiece.PieceType.BP && player == Player.white) {
@@ -248,16 +247,12 @@ public class Chess {
 
   // method to check if a king is in check
   public static boolean isInCheck(Piece king) {
-    // get color of the king
-    boolean isWhite = king.isWhite;
 
     // get the rank and file of the king
     int kingRank = king.pieceRank;
     ReturnPiece.PieceFile kingFile = king.pieceFile;
 
-    // call canMove() for all pieces of the opposite color to see if they can move to the king's
-    // square
-
+    // check if any piece of the opposite color can move to the king's square
     for (ReturnPiece piece : play.piecesOnBoard) {
       // cast a piece to a specific type to call canMove method
       Piece otherPiece = (Piece) piece;
@@ -268,23 +263,18 @@ public class Chess {
       }
     }
 
+    // king is not in check
     return false;
   }
 
-  // method to capture a piece (must be different color)
+  // method to capture a piece of opposite color
   public static void capturePiece(Piece piece) {
     play.piecesOnBoard.remove(piece);
-    piece = null;
   }
 
+  // method to check if a square is on the board
   public static boolean isSquareOnBoard(int rank, ReturnPiece.PieceFile file) {
-    int a = rank;
-    char b = Piece.enumFileToChar(file);
-    char c = MIN_FILE;
-    char d = MAX_FILE;
-    boolean isRankOnBoard = a >= MIN_RANK && a <= MAX_RANK;
-    boolean isFileOnBoard = b >= MIN_FILE && b <= MAX_FILE;
-
+    // return true if the square is on the board
     return rank >= MIN_RANK
         && rank <= MAX_RANK
         && Piece.enumFileToChar(file) >= MIN_FILE
@@ -293,27 +283,21 @@ public class Chess {
 
   // method to create a new piece given a piece type and color
   private static ReturnPiece createNewPiece(String pieceType, boolean isWhite) {
-    switch (pieceType) {
-      case "P":
-        return new Pawn(isWhite);
-      case "R":
-        return new Rook(isWhite);
-      case "N":
-        return new Knight(isWhite);
-      case "B":
-        return new Bishop(isWhite);
-      case "Q":
-        return new Queen(isWhite);
-      case "K":
-        return new King(isWhite);
-      default:
-        throw new IllegalArgumentException("Invalid piece type: " + pieceType);
-    }
+    return switch (pieceType) {
+      case "P" -> new Pawn(isWhite);
+      case "R" -> new Rook(isWhite);
+      case "N" -> new Knight(isWhite);
+      case "B" -> new Bishop(isWhite);
+      case "Q" -> new Queen(isWhite);
+      case "K" -> new King(isWhite);
+      default -> throw new IllegalArgumentException("Invalid piece type: " + pieceType);
+    };
   }
 
   // method to add a piece to the board
   private static void addPieceToBoard(
       ReturnPlay play, String pieceType, Piece.PieceFile file, int rank, boolean isWhite) {
+    // create a new piece and add it to the piecesOnBoard arraylist
     ReturnPiece piece = createNewPiece(pieceType, isWhite);
     piece.pieceFile = file;
     piece.pieceRank = rank;
@@ -321,10 +305,11 @@ public class Chess {
   }
 
   // method to set up pieces on the board
-  private static void setupPieces(ReturnPlay play, String[] pieceOrder, boolean isWhite) {
+  private static void setupPieces(ReturnPlay play, boolean isWhite) {
     int backRank;
     int pawnRank;
 
+    // set up back rank and pawn rank
     if (isWhite) {
       backRank = 1;
       pawnRank = 2;
@@ -339,8 +324,9 @@ public class Chess {
     }
 
     // set up back rank pieces
-    for (int i = 0; i < pieceOrder.length; i++) {
-      addPieceToBoard(play, pieceOrder[i], ReturnPiece.PieceFile.values()[i], backRank, isWhite);
+    for (int i = 0; i < Chess.pieceOrder.length; i++) {
+      addPieceToBoard(
+          play, Chess.pieceOrder[i], ReturnPiece.PieceFile.values()[i], backRank, isWhite);
     }
   }
 
@@ -348,11 +334,11 @@ public class Chess {
   public static void start() {
     play = new ReturnPlay(); // create new ReturnPlay object
     currentPlayer = Player.white; // white goes first (needed for resets/draws)
-    play.piecesOnBoard = new ArrayList<ReturnPiece>(); // create new ArrayList for pieces
+    play.piecesOnBoard = new ArrayList<>(); // create new ArrayList for pieces
     play.message = null; // no message
 
     // set up team pieces
-    setupPieces(play, pieceOrder, true); // white
-    setupPieces(play, pieceOrder, false); // black
+    setupPieces(play, true); // white
+    setupPieces(play, false); // black
   }
 }
