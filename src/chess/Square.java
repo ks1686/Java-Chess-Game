@@ -15,6 +15,10 @@ public class Square {
     }
   }
 
+  public String toString() {
+    return file + "" + rank;
+  }
+
   public boolean equals(Object other) {
     if (!(other instanceof Square otherSquare)) {
       return false;

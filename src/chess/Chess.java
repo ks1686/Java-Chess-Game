@@ -1,6 +1,8 @@
 package chess;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 // ! Do not change
@@ -221,9 +223,17 @@ public class Chess {
       }
       if (Piece.inCheck(getKing(currentPlayer))) {
         play.message = ReturnPlay.Message.CHECK;
+
+        // check if the move results in checkmate
+        if (isInCheckmate(currentPlayer)) {
+          if (currentPlayer == Player.white) {
+            play.message = ReturnPlay.Message.CHECKMATE_BLACK_WINS;
+          } else {
+            play.message = ReturnPlay.Message.CHECKMATE_WHITE_WINS;
+          }
+        }
       }
     }
-
     // reset capturedPiece
     capturedPiece = null;
     // reset successfulMove
@@ -262,6 +272,50 @@ public class Chess {
 
     return false;
   }
+
+  public static boolean isInCheckmate(Player player) {
+    if (!Piece.inCheck(getKing(player))) {
+      return false;
+    }
+
+    List<Piece> piecesToAddBack = new ArrayList<>();
+    for (ReturnPiece piece : new ArrayList<>(play.piecesOnBoard)) { // Create a copy for safe iteration
+      if (piece != null && ((Piece) piece).isWhite == (player == Player.white)) {
+        for (ReturnPiece.PieceFile file : ReturnPiece.PieceFile.values()) {
+          for (int rank = MIN_RANK; rank <= MAX_RANK; rank++) {
+
+            if (((Piece) piece).canMove(rank, file)) {
+              int oldRank = ((Piece) piece).pieceRank;
+              ReturnPiece.PieceFile oldFile = ((Piece) piece).pieceFile;
+              Piece oldPiece = getPiece(rank, file);
+
+              ((Piece) piece).movePiece(rank, file); // 
+              if (!Piece.inCheck(getKing(player))) {
+                ((Piece) piece).movePiece(oldRank, oldFile);
+                if (oldPiece != null) {
+                  piecesToAddBack.add(oldPiece); // Collect the piece to add back later
+                }
+                return false;
+              }
+
+              if (piece.pieceRank != oldRank || piece.pieceFile != oldFile) {
+                ((Piece) piece).movePiece(oldRank, oldFile); 
+              }
+              
+              if (oldPiece != null) {
+                piecesToAddBack.add(oldPiece); // Collect the piece to add back later
+              }
+            }
+          }
+        }
+      }
+    }
+
+    play.piecesOnBoard.addAll(piecesToAddBack); // Add all collected pieces back after iteration
+
+    return true;
+  }
+
 
   // method to get the king of a specific player
   public static Piece getKing(Player player) {

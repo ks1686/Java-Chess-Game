@@ -17,6 +17,7 @@ public class King extends Piece {
     // check if king is castling
     // variable to store file change for castling king
     ReturnPiece.PieceFile kingCastleFile;
+
     if (Math.abs(this.pieceFile.ordinal() - newFile.ordinal()) > 1) {
       // if the king is castling, move the rook as well
       if (newFile.ordinal() > this.pieceFile.ordinal()) { // castling to the right
@@ -53,6 +54,18 @@ public class King extends Piece {
     // castling logic implemented here
     Piece otherPiece = Chess.getPiece(newRank, newFile);
     if (otherPiece != null) {
+      // if otherPiece is not a rook of the same team or if it is a rook of the same team and has moved, return false
+      if ((isWhite && otherPiece.getPieceType() != PieceType.WR)
+          || (!isWhite && otherPiece.getPieceType() != PieceType.BR)
+          || otherPiece.hasMoved) {
+        return false;
+      }
+
+    // can't move to same square
+    if (this.pieceRank == newRank && this.pieceFile == newFile) {
+      return false;
+    }
+
       if ((isWhite && otherPiece.getPieceType() == PieceType.WR)
           || (!isWhite && otherPiece.getPieceType() == PieceType.BR)) {
         if (!otherPiece.hasMoved && !this.hasMoved) {
