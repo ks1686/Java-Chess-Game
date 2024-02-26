@@ -108,6 +108,9 @@ public class Chess {
   // more global castleFile variable
   static ReturnPiece.PieceFile castleFile;
 
+  // static boolean for castling
+  static boolean castleAttempt = false;
+
   // method to get the current state of the game, updated with String move
   public static ReturnPlay play(String move) {
     move = move.trim(); // remove leading/trailing whitespace
@@ -146,18 +149,22 @@ public class Chess {
           && fromRank == 1
           && toFile == ReturnPiece.PieceFile.g) {
         castleFile = ReturnPiece.PieceFile.h;
+        castleAttempt = true;
       } else if (fromFile == ReturnPiece.PieceFile.e
           && fromRank == 1
           && toFile == ReturnPiece.PieceFile.c) {
         castleFile = ReturnPiece.PieceFile.a;
+        castleAttempt = true;
       } else if (fromFile == ReturnPiece.PieceFile.e
           && fromRank == 8
           && toFile == ReturnPiece.PieceFile.g) {
         castleFile = ReturnPiece.PieceFile.h;
+        castleAttempt = true;
       } else if (fromFile == ReturnPiece.PieceFile.e
           && fromRank == 8
           && toFile == ReturnPiece.PieceFile.c) {
         castleFile = ReturnPiece.PieceFile.a;
+        castleAttempt = true;
       }
     }
 
@@ -179,14 +186,15 @@ public class Chess {
     // move the piece to the new spot
     pieceToMove.movePiece(toRank, toFile);
 
-    // check for possible check
+    // check for possible check after move for current player
     if (Piece.inCheck(Chess.getKing(Chess.currentPlayer))) {
       // move the piece back to its original spot
       pieceToMove.pieceRank = fromRank;
       pieceToMove.pieceFile = fromFile;
       // add the chess class variable capturedPiece back to the board
       Piece otherPiece = Chess.getPiece(toRank, toFile);
-      boolean isNewSpotEmpty = otherPiece == null;
+      boolean isNewSpotEmpty =
+          otherPiece == null; // check if the new spot is empty (otherPiece is null)
       if (!isNewSpotEmpty) {
         play.piecesOnBoard.add(Chess.capturedPiece);
       }
@@ -201,6 +209,12 @@ public class Chess {
       play.piecesOnBoard.removeIf(Objects::isNull);
       return play;
     }
+
+    // reset successfulMove
+    successfulMove = false;
+
+    // reset castleAttempt
+    castleAttempt = false;
 
     // check if move results in pawn promotion
     if (pieceToMove instanceof Pawn) {
@@ -250,13 +264,15 @@ public class Chess {
       // reset pawn hasJustAdvancedTwice
       resetPawnHasJustAdvancedTwice(currentPlayer);
 
-      // change player and send message if in check or checkmate
+      // switch the current player
       if (currentPlayer == Player.white) {
         currentPlayer = Player.black;
       } else {
         currentPlayer = Player.white;
       }
-      if (Piece.inCheck(getKing(currentPlayer))) {
+
+      // check if move results in check for the other player
+      if (Piece.inCheck(getKing(currentPlayer))) { // player here is inversed
         play.message = ReturnPlay.Message.CHECK;
 
         // check if the move results in checkmate
@@ -271,8 +287,6 @@ public class Chess {
     }
     // reset capturedPiece
     capturedPiece = null;
-    // reset successfulMove
-    successfulMove = false;
 
     // remove all null pieces from the piecesOnBoard arraylist
     play.piecesOnBoard.removeIf(Objects::isNull);
@@ -323,20 +337,25 @@ public class Chess {
 
     // iterate through all pieces on the board
     List<Piece> piecesToAddBack = new ArrayList<>();
-    for (ReturnPiece piece :
+    for (ReturnPiece tempPiece :
         new ArrayList<>(play.piecesOnBoard)) { // Create a copy for safe iteration
-      if (piece != null && ((Piece) piece).isWhite == (player == Player.white)) {
+      // ignore null pieces and pieces of the same color
+      // cast piece into a Piece object
+      Piece piece = (Piece) tempPiece;
+      // filter possible null pieces and pieces of the same color
+      if (piece != null && piece.isWhite == (player == Player.white)) {
         // iterate through all possible moves for each piece
         for (ReturnPiece.PieceFile file : ReturnPiece.PieceFile.values()) {
           for (int rank = MIN_RANK; rank <= MAX_RANK; rank++) {
-            if (((Piece) piece).canMove(rank, file)) {
+            if (piece.canMove(rank, file)) {
               int oldRank = piece.pieceRank;
               ReturnPiece.PieceFile oldFile = piece.pieceFile;
               Piece oldPiece = getPiece(rank, file);
 
-              ((Piece) piece).movePiece(rank, file); //
+              piece.movePiece(rank, file); //
               if (!Piece.inCheck(getKing(player))) {
-                ((Piece) piece).movePiece(oldRank, oldFile);
+                // add piece at oldRank and oldFile to
+                piece.movePiece(oldRank, oldFile);
                 if (oldPiece != null) {
                   piecesToAddBack.add(oldPiece); // Collect the piece to add back later
                 }
@@ -344,7 +363,7 @@ public class Chess {
               }
 
               if (piece.pieceRank != oldRank || piece.pieceFile != oldFile) {
-                ((Piece) piece).movePiece(oldRank, oldFile);
+                piece.movePiece(oldRank, oldFile);
               }
 
               if (oldPiece != null) {

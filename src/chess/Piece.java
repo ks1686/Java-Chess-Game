@@ -40,11 +40,14 @@ public abstract class Piece extends ReturnPiece {
 
     Piece otherPiece = Chess.getPiece(newRank, newFile);
 
-    // check if the new square is occupied by a piece of the same team
-    if ((this.pieceType != ReturnPiece.PieceType.WK && this.pieceType != ReturnPiece.PieceType.BK)
-        && otherPiece != null) {
-      if (!this.isEnemy(otherPiece)) {
-        return false; // can't move to a square occupied by a piece of the same team
+    // check that the move being performed is not a castle
+    if (Chess.castleAttempt) {
+      // call canMoveSpecific to handle castle
+      return canMoveSpecific(rank, file, newRank, newFile);
+    } else {
+      // check if the new square is occupied by a piece of the same color
+      if (otherPiece != null && otherPiece.isWhite == this.isWhite) {
+        return false;
       }
     }
 
