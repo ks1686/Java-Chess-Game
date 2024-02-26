@@ -133,10 +133,13 @@ public class Chess {
     // find the piece to move in the piecesOnBoard list
     Piece pieceToMove = getPiece(fromRank, fromFile);
 
-    // ! CASTLE BULLSHIT
-    // shitty way of validating castle
-    // if move is (e1 g1, e8 g8, e1 c1, e8 c8). change file to h or a
-    // if piece is current player's king, see if we castle and set castleFile accordingly
+    // check piece to move exists
+    if (pieceToMove == null) {
+      play.message = ReturnPlay.Message.ILLEGAL_MOVE;
+      return play;
+    }
+
+    // check if the move is castling
     if (pieceToMove.getPieceType() == ReturnPiece.PieceType.WK
         || pieceToMove.getPieceType() == ReturnPiece.PieceType.BK) {
       if (fromFile == ReturnPiece.PieceFile.e
@@ -156,12 +159,6 @@ public class Chess {
           && toFile == ReturnPiece.PieceFile.c) {
         castleFile = ReturnPiece.PieceFile.a;
       }
-    }
-
-    // check if the piece to move exists
-    if (pieceToMove == null) {
-      play.message = ReturnPlay.Message.ILLEGAL_MOVE;
-      return play;
     }
 
     // check if the piece to move is the same color as the current player
