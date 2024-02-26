@@ -1,6 +1,5 @@
 package chess;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -112,7 +111,6 @@ public class Chess {
   // method to get the current state of the game, updated with String move
   public static ReturnPlay play(String move) {
     move = move.trim(); // remove leading/trailing whitespace
-
     // resign kills game immediately
     if (move.equals("resign")) {
       if (currentPlayer == Player.white) {
@@ -196,6 +194,11 @@ public class Chess {
         int currentRank = pieceToMove.pieceRank;
         ReturnPiece.PieceFile currentFile = pieceToMove.pieceFile;
         // create a new piece of the specified promotion type
+        if (promotion != 'N' && promotion != 'B' && promotion != 'R' && promotion != 'Q') {
+          play.message = ReturnPlay.Message.ILLEGAL_MOVE;
+          return play;
+        }
+
         Piece newPiece =
             switch (promotion) {
               case 'N' -> new Knight(pieceToMove.isWhite);
