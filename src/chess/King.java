@@ -52,19 +52,22 @@ public class King extends Piece {
       int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile) {
 
     // castling logic implemented here
-    Piece otherPiece = Chess.getPiece(newRank, newFile);
+
+    // shitty workaround i know
+    Piece otherPiece = Chess.getPiece(newRank, Chess.castleFile);
     if (otherPiece != null) {
-      // if otherPiece is not a rook of the same team or if it is a rook of the same team and has moved, return false
+      // if otherPiece is not a rook of the same team or if it is a rook of the same team and has
+      // moved, return false
       if ((isWhite && otherPiece.getPieceType() != PieceType.WR)
           || (!isWhite && otherPiece.getPieceType() != PieceType.BR)
           || otherPiece.hasMoved) {
         return false;
       }
 
-    // can't move to same square
-    if (this.pieceRank == newRank && this.pieceFile == newFile) {
-      return false;
-    }
+      // can't move to same square
+      if (this.pieceRank == newRank && this.pieceFile == newFile) {
+        return false;
+      }
 
       if ((isWhite && otherPiece.getPieceType() == PieceType.WR)
           || (!isWhite && otherPiece.getPieceType() == PieceType.BR)) {
