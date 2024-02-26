@@ -204,6 +204,15 @@ public class Chess {
       // reset pawn hasJustAdvancedTwice
       resetPawnHasJustAdvancedTwice(currentPlayer);
 
+      /*
+      TODO: Implement CheckMate Logic
+      * As of now, the game (should, will test) freeze when a check occurs and there is no way the player can get out of it.
+      * This is due to all possible moves resulting in a check. We need to somehow recognize this situation and end the game.
+      * Idea: successfulMove boolean keeps track of whether or not movePiece() was successful
+      * can attempt to move all pieces of the current player in all possible ways, and return checkmate if all moves result in check
+      * (above is a brute force method, but it should work, since that's how humans do it. will not be efficient at all)
+      */
+
       // change player and send message if in check
       if (currentPlayer == Player.white) {
         currentPlayer = Player.black;
