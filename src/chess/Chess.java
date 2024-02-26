@@ -155,6 +155,21 @@ public class Chess {
     // move the piece to the new spot
     pieceToMove.movePiece(toRank, toFile);
 
+    // check for possible check
+    if (Piece.inCheck(Chess.getKing(Chess.currentPlayer))) {
+      // move the piece back to its original spot
+      pieceToMove.pieceRank = fromRank;
+      pieceToMove.pieceFile = fromFile;
+      // add the chess class variable capturedPiece back to the board
+      Piece otherPiece = Chess.getPiece(toRank, toFile);
+      boolean isNewSpotEmpty = otherPiece == null;
+      if (!isNewSpotEmpty) {
+        play.piecesOnBoard.add(Chess.capturedPiece);
+      }
+      // set successfulMove to false
+      Chess.successfulMove = false;
+    }
+
     // check if successful move is true
     if (!successfulMove) {
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
@@ -278,12 +293,20 @@ public class Chess {
       return false;
     }
 
+
+    // create copy of piecesOnBoard to avoid concurrent modification
+    ArrayList<Piece> piecesOnBoardCopy = new ArrayList<>();
+    for (ReturnPiece piece : play.piecesOnBoard) {
+      if (piece != null) {
+        piecesOnBoardCopy.add((Piece) piece);
+      }
+    }
+    
     List<Piece> piecesToAddBack = new ArrayList<>();
     for (ReturnPiece piece : new ArrayList<>(play.piecesOnBoard)) { // Create a copy for safe iteration
       if (piece != null && ((Piece) piece).isWhite == (player == Player.white)) {
         for (ReturnPiece.PieceFile file : ReturnPiece.PieceFile.values()) {
           for (int rank = MIN_RANK; rank <= MAX_RANK; rank++) {
-
             if (((Piece) piece).canMove(rank, file)) {
               int oldRank = ((Piece) piece).pieceRank;
               ReturnPiece.PieceFile oldFile = ((Piece) piece).pieceFile;

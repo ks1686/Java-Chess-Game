@@ -76,8 +76,6 @@ public abstract class Piece extends ReturnPiece {
   // move the piece to a new spot
   public void movePiece(int newRank, Piece.PieceFile newFile) {
     boolean isNewSpotEmpty;
-    int oldRank = this.pieceRank;
-    Piece.PieceFile oldFile = this.pieceFile;
 
     // piece can move, check if the new spot is empty
     Piece otherPiece = Chess.getPiece(newRank, newFile);
@@ -89,20 +87,6 @@ public abstract class Piece extends ReturnPiece {
     // move the piece to the new spot
     this.pieceRank = newRank;
     this.pieceFile = newFile;
-
-    // check for possible check
-    if (Piece.inCheck(Chess.getKing(Chess.currentPlayer))) {
-      // move the piece back to its original spot
-      this.pieceRank = oldRank;
-      this.pieceFile = oldFile;
-      // add the chess class variable capturedPiece back to the board
-      if (!isNewSpotEmpty) {
-        Chess.getPiecesOnBoard().add(Chess.capturedPiece);
-      }
-      // set successfulMove to false
-      Chess.successfulMove = false;
-      return;
-    }
 
     // set hasMoved to true
     this.hasMoved = true;
