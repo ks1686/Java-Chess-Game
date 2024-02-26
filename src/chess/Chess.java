@@ -93,19 +93,16 @@ public class Chess {
   // static variable for a successful move (see Piece.movePiece())
   static boolean successfulMove = false;
 
-  // method to get a piece from the piecesOnBoard arraylist
-  public static Piece getPiece(int rank, ReturnPiece.PieceFile file) {
-    for (ReturnPiece piece : play.piecesOnBoard) {
-      if (piece.pieceFile == file && piece.pieceRank == rank) {
-        return (Piece) piece;
-      }
-    }
-    return null;
-  }
+  // method to start a new game
+  public static void start() {
+    play = new ReturnPlay(); // create new ReturnPlay object
+    currentPlayer = Player.white; // white goes first (needed for resets/draws)
+    play.piecesOnBoard = new ArrayList<>(); // create new ArrayList for pieces
+    play.message = null; // no message
 
-  // method to get the piecesOnBoard arraylist
-  public static ArrayList<ReturnPiece> getPiecesOnBoard() {
-    return play.piecesOnBoard;
+    // set up team pieces
+    setupPieces(play, true); // white
+    setupPieces(play, false); // black
   }
 
   // method to get the current state of the game, updated with String move
@@ -145,7 +142,8 @@ public class Chess {
       return play;
     }
 
-    if (!pieceToMove.canMove(toRank, toFile)) { // check if the move is legal
+    // check if the move is legal
+    if (!pieceToMove.canMove(toRank, toFile)) {
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
       return play;
     }
@@ -224,16 +222,7 @@ public class Chess {
       // reset pawn hasJustAdvancedTwice
       resetPawnHasJustAdvancedTwice(currentPlayer);
 
-      /*
-      TODO: Implement CheckMate Logic
-      * As of now, the game (should, will test) freeze when a check occurs and there is no way the player can get out of it.
-      * This is due to all possible moves resulting in a check. We need to somehow recognize this situation and end the game.
-      * Idea: successfulMove boolean keeps track of whether or not movePiece() was successful
-      * can attempt to move all pieces of the current player in all possible ways, and return checkmate if all moves result in check
-      * (above is a brute force method, but it should work, since that's how humans do it. will not be efficient at all)
-      */
-
-      // change player and send message if in check
+      // change player and send message if in check or checkmate
       if (currentPlayer == Player.white) {
         currentPlayer = Player.black;
       } else {
@@ -263,85 +252,15 @@ public class Chess {
     return play; // return the current state of the game
   }
 
-  // TODO: method never implemented; remove or implement
-  public static boolean isSquareVisibleByEnemy(
-      int rank, ReturnPiece.PieceFile file, boolean isWhite) {
-
-    // check if the square is on the board
-    Square s;
-    try {
-      s = new Square(rank, file); // throws exception if square is out of bounds
-    } catch (IllegalArgumentException e) {
-      return false;
-    }
-
-    // check if any piece of the opposite color can see the square
-    for (ReturnPiece p : play.piecesOnBoard) {
-      Piece piece = (Piece) p;
-      if (isWhite != piece.isWhite) {
-        ArrayList<ArrayList<Square>> visibleSquares =
-            piece.getVisibleSquaresFromLocation(piece.pieceRank, piece.pieceFile);
-        // check if the square is in the visibleSquares arraylist
-        if (Square.isSquareInNestedList(visibleSquares, s)) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
-  public static boolean isInCheckmate(Player player) {
-    if (!Piece.inCheck(getKing(player))) {
-      return false;
-    }
-
-
-    // create copy of piecesOnBoard to avoid concurrent modification
-    ArrayList<Piece> piecesOnBoardCopy = new ArrayList<>();
+  // method to get a piece from the piecesOnBoard arraylist
+  public static Piece getPiece(int rank, ReturnPiece.PieceFile file) {
     for (ReturnPiece piece : play.piecesOnBoard) {
-      if (piece != null) {
-        piecesOnBoardCopy.add((Piece) piece);
+      if (piece.pieceFile == file && piece.pieceRank == rank) {
+        return (Piece) piece;
       }
     }
-    
-    List<Piece> piecesToAddBack = new ArrayList<>();
-    for (ReturnPiece piece : new ArrayList<>(play.piecesOnBoard)) { // Create a copy for safe iteration
-      if (piece != null && ((Piece) piece).isWhite == (player == Player.white)) {
-        for (ReturnPiece.PieceFile file : ReturnPiece.PieceFile.values()) {
-          for (int rank = MIN_RANK; rank <= MAX_RANK; rank++) {
-            if (((Piece) piece).canMove(rank, file)) {
-              int oldRank = ((Piece) piece).pieceRank;
-              ReturnPiece.PieceFile oldFile = ((Piece) piece).pieceFile;
-              Piece oldPiece = getPiece(rank, file);
-
-              ((Piece) piece).movePiece(rank, file); // 
-              if (!Piece.inCheck(getKing(player))) {
-                ((Piece) piece).movePiece(oldRank, oldFile);
-                if (oldPiece != null) {
-                  piecesToAddBack.add(oldPiece); // Collect the piece to add back later
-                }
-                return false;
-              }
-
-              if (piece.pieceRank != oldRank || piece.pieceFile != oldFile) {
-                ((Piece) piece).movePiece(oldRank, oldFile); 
-              }
-              
-              if (oldPiece != null) {
-                piecesToAddBack.add(oldPiece); // Collect the piece to add back later
-              }
-            }
-          }
-        }
-      }
-    }
-
-    play.piecesOnBoard.addAll(piecesToAddBack); // Add all collected pieces back after iteration
-
-    return true;
+    return null;
   }
-
 
   // method to get the king of a specific player
   public static Piece getKing(Player player) {
@@ -355,26 +274,63 @@ public class Chess {
     return null; // should never happen
   }
 
-  // method to reset the hasJustAdvancedTwice variable for all pawns of a specific player
-  private static void resetPawnHasJustAdvancedTwice(Player player) {
+  // method to get the piecesOnBoard arraylist
+  public static ArrayList<ReturnPiece> getPiecesOnBoard() {
+    return play.piecesOnBoard;
+  }
+
+  // method to check if a player is in checkmate
+  public static boolean isInCheckmate(Player player) {
+    if (!Piece.inCheck(getKing(player))) {
+      return false;
+    }
+
+    // create copy of piecesOnBoard to avoid concurrent modification
+    ArrayList<Piece> piecesOnBoardCopy = new ArrayList<>();
     for (ReturnPiece piece : play.piecesOnBoard) {
-      // reset hasJustAdvancedTwice for all pawns of the opposite color
-      // filter possible null pieces
       if (piece != null) {
-        if (piece.pieceType == ReturnPiece.PieceType.WP && player == Player.black) {
-          ((Pawn) piece).hasJustAdvancedTwice = false;
-        } else if (piece.pieceType == ReturnPiece.PieceType.BP && player == Player.white) {
-          ((Pawn) piece).hasJustAdvancedTwice = false;
+        piecesOnBoardCopy.add((Piece) piece);
+      }
+    }
+
+    // iterate through all pieces on the board
+    List<Piece> piecesToAddBack = new ArrayList<>();
+    for (ReturnPiece piece :
+        new ArrayList<>(play.piecesOnBoard)) { // Create a copy for safe iteration
+      if (piece != null && ((Piece) piece).isWhite == (player == Player.white)) {
+        // iterate through all possible moves for each piece
+        for (ReturnPiece.PieceFile file : ReturnPiece.PieceFile.values()) {
+          for (int rank = MIN_RANK; rank <= MAX_RANK; rank++) {
+            if (((Piece) piece).canMove(rank, file)) {
+              int oldRank = piece.pieceRank;
+              ReturnPiece.PieceFile oldFile = piece.pieceFile;
+              Piece oldPiece = getPiece(rank, file);
+
+              ((Piece) piece).movePiece(rank, file); //
+              if (!Piece.inCheck(getKing(player))) {
+                ((Piece) piece).movePiece(oldRank, oldFile);
+                if (oldPiece != null) {
+                  piecesToAddBack.add(oldPiece); // Collect the piece to add back later
+                }
+                return false;
+              }
+
+              if (piece.pieceRank != oldRank || piece.pieceFile != oldFile) {
+                ((Piece) piece).movePiece(oldRank, oldFile);
+              }
+
+              if (oldPiece != null) {
+                piecesToAddBack.add(oldPiece); // Collect the piece to add back later
+              }
+            }
+          }
         }
       }
     }
-  }
 
-  // method to capture a piece of opposite color
-  public static void capturePiece(Piece piece) {
-    // remove the piece from the piecesOnBoard arraylist
-    capturedPiece = piece;
-    play.piecesOnBoard.remove(piece);
+    play.piecesOnBoard.addAll(piecesToAddBack); // Add all collected pieces back after iteration
+
+    return true;
   }
 
   // method to check if a square is on the board
@@ -435,15 +391,25 @@ public class Chess {
     }
   }
 
-  // method to start a new game
-  public static void start() {
-    play = new ReturnPlay(); // create new ReturnPlay object
-    currentPlayer = Player.white; // white goes first (needed for resets/draws)
-    play.piecesOnBoard = new ArrayList<>(); // create new ArrayList for pieces
-    play.message = null; // no message
+  // method to capture a piece of opposite color
+  public static void capturePiece(Piece piece) {
+    // remove the piece from the piecesOnBoard arraylist
+    capturedPiece = piece;
+    play.piecesOnBoard.remove(piece);
+  }
 
-    // set up team pieces
-    setupPieces(play, true); // white
-    setupPieces(play, false); // black
+  // method to reset the hasJustAdvancedTwice variable for all pawns of a specific player
+  private static void resetPawnHasJustAdvancedTwice(Player player) {
+    for (ReturnPiece piece : play.piecesOnBoard) {
+      // reset hasJustAdvancedTwice for all pawns of the opposite color
+      // filter possible null pieces
+      if (piece != null) {
+        if (piece.pieceType == ReturnPiece.PieceType.WP && player == Player.black) {
+          ((Pawn) piece).hasJustAdvancedTwice = false;
+        } else if (piece.pieceType == ReturnPiece.PieceType.BP && player == Player.white) {
+          ((Pawn) piece).hasJustAdvancedTwice = false;
+        }
+      }
+    }
   }
 }

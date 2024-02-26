@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Bishop extends Piece {
 
+  // constructor
   public Bishop(boolean isWhite) {
     super(isWhite);
     if (isWhite) {
@@ -13,6 +14,7 @@ public class Bishop extends Piece {
     }
   }
 
+  // method to check if the bishop can move to a specific square
   public boolean canMoveSpecific(
       int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile) {
     // change in rank and file
@@ -58,6 +60,7 @@ public class Bishop extends Piece {
     return true;
   }
 
+  // method to get the visible squares from the location
   public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(
       int rank, ReturnPiece.PieceFile file) {
     // arraylist to store the visible squares from the location

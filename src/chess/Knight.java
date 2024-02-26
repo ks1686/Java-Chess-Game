@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Knight extends Piece {
 
+  // constructor
   public Knight(boolean isWhite) {
     super(isWhite);
     if (isWhite) {
@@ -13,6 +14,7 @@ public class Knight extends Piece {
     }
   }
 
+  // method to check if the piece can move to a new square
   public boolean canMoveSpecific(
       int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile) {
     // change in rank and file
@@ -23,6 +25,7 @@ public class Knight extends Piece {
     return (rankChange == 2 && fileChange == 1) || (rankChange == 1 && fileChange == 2);
   }
 
+  // method to get the visible squares from the location
   public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(
       int rank, ReturnPiece.PieceFile file) {
     // arraylist to store the visible squares from the location

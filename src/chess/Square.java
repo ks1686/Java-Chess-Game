@@ -6,6 +6,7 @@ public class Square {
   public int rank;
   public ReturnPiece.PieceFile file;
 
+  // constructor
   public Square(int rank, ReturnPiece.PieceFile file) throws IllegalArgumentException {
     this.rank = rank;
     this.file = file;
@@ -15,10 +16,12 @@ public class Square {
     }
   }
 
+  // toString method
   public String toString() {
     return file + "" + rank;
   }
 
+  // equals method
   public boolean equals(Object other) {
     if (!(other instanceof Square otherSquare)) {
       return false;
@@ -26,6 +29,7 @@ public class Square {
     return rank == otherSquare.rank && file == otherSquare.file;
   }
 
+  // method to check if the square is within the list
   public static boolean isSquareInList(ArrayList<Square> squares, Square square) {
     for (Square s : squares) {
       if (s.equals(square)) {
@@ -35,6 +39,7 @@ public class Square {
     return false;
   }
 
+  // method to check if the square is within the nested list
   public static boolean isSquareInNestedList(
       ArrayList<ArrayList<Square>> squaresList, Square square) {
     for (ArrayList<Square> s : squaresList) {

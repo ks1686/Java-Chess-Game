@@ -52,6 +52,27 @@ public abstract class Piece extends ReturnPiece {
     return canMoveSpecific(rank, file, newRank, newFile);
   }
 
+  // move the piece to a new spot
+  public void movePiece(int newRank, Piece.PieceFile newFile) {
+    boolean isNewSpotEmpty;
+
+    // piece can move, check if the new spot is empty
+    Piece otherPiece = Chess.getPiece(newRank, newFile);
+    isNewSpotEmpty = otherPiece == null;
+    if (!isNewSpotEmpty) {
+      Chess.capturePiece(otherPiece);
+    }
+
+    // move the piece to the new spot
+    this.pieceRank = newRank;
+    this.pieceFile = newFile;
+
+    // set hasMoved to true
+    this.hasMoved = true;
+    // set successfulMove to true
+    Chess.successfulMove = true;
+  }
+
   // method to check if the king is in check
   public static boolean inCheck(Piece king) {
     // retrieve the king's rank and file
@@ -73,25 +94,10 @@ public abstract class Piece extends ReturnPiece {
     return false; // king is not in check
   }
 
-  // move the piece to a new spot
-  public void movePiece(int newRank, Piece.PieceFile newFile) {
-    boolean isNewSpotEmpty;
-
-    // piece can move, check if the new spot is empty
-    Piece otherPiece = Chess.getPiece(newRank, newFile);
-    isNewSpotEmpty = otherPiece == null;
-    if (!isNewSpotEmpty) {
-      Chess.capturePiece(otherPiece);
-    }
-
-    // move the piece to the new spot
-    this.pieceRank = newRank;
-    this.pieceFile = newFile;
-
-    // set hasMoved to true
-    this.hasMoved = true;
-    // set successfulMove to true
-    Chess.successfulMove = true;
+  // method to check if the king is an enemy
+  public boolean isEnemy(Piece other) {
+    // returns true if they are opposite teams
+    return (other != null) && (this.isWhite ^ other.isWhite);
   }
 
   // return pieceType
@@ -118,11 +124,5 @@ public abstract class Piece extends ReturnPiece {
     }
 
     throw new IllegalArgumentException(file + " is not a valid enum constant.");
-  }
-
-  // method that returns a PieceFile for the piece's file
-  public boolean isEnemy(Piece other) {
-    // returns true if they are opposite teams
-    return (other != null) && (this.isWhite ^ other.isWhite);
   }
 }

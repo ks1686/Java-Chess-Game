@@ -7,6 +7,7 @@ public class Pawn extends Piece {
   // if the pawn has just advanced twice, then it can be captured en passant
   public boolean hasJustAdvancedTwice = false;
 
+  // constructor
   public Pawn(boolean isWhite) {
     super(isWhite);
     if (isWhite) {
@@ -16,6 +17,7 @@ public class Pawn extends Piece {
     }
   }
 
+  // method to check if the piece can move to a new square
   public boolean canMoveSpecific(
       int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile) {
     // change in rank and file
@@ -118,6 +120,76 @@ public class Pawn extends Piece {
     return false;
   }
 
+  // move the piece
+  public void movePiece(int newRank, Piece.PieceFile newFile) {
+
+    // if the pawn has just advanced twice, then it can be captured en passant
+    if (this.pieceType == PieceType.WP || this.pieceType == PieceType.BP) {
+      if (Math.abs(this.pieceRank - newRank) == 2) {
+        this.hasJustAdvancedTwice = true;
+      }
+    }
+
+    // rankMultiplier for moving the pawn
+    int rankMultiplier;
+    if (this.isWhite) {
+      rankMultiplier = 1;
+    } else {
+      rankMultiplier = -1;
+    }
+    if (this.pieceFile.ordinal() != 0) {
+      Square leftSquare =
+          new Square(
+              this.pieceRank,
+              ReturnPiece.PieceFile.values()[enumFileToChar(this.pieceFile) - 'a' - 1]);
+      Piece leftPiece = Chess.getPiece(leftSquare.rank, leftSquare.file);
+      Square leftDiag =
+          new Square(
+              this.pieceRank + rankMultiplier,
+              ReturnPiece.PieceFile.values()[enumFileToChar(this.pieceFile) - 'a' - 1]);
+
+      // if the pawn can en passant, it can see there as well.
+      if (leftPiece != null
+          && (leftPiece.pieceType == PieceType.WP || leftPiece.pieceType == PieceType.BP)
+          && isEnemy(leftPiece)) {
+        if (((Pawn) leftPiece).hasJustAdvancedTwice) {
+          if (leftDiag.rank == newRank && leftDiag.file == newFile) {
+            // capture the piece
+            Chess.capturedPiece = leftPiece;
+            Chess.capturePiece(leftPiece);
+          }
+        }
+      }
+    }
+
+    // do the same thing but for the right side
+    if (this.pieceFile.ordinal() != 7) {
+      Square rightSquare =
+          new Square(
+              this.pieceRank,
+              ReturnPiece.PieceFile.values()[enumFileToChar(this.pieceFile) - 'a' + 1]);
+      Piece rightPiece = Chess.getPiece(rightSquare.rank, rightSquare.file);
+      Square rightDiag =
+          new Square(
+              this.pieceRank + rankMultiplier,
+              ReturnPiece.PieceFile.values()[enumFileToChar(this.pieceFile) - 'a' + 1]);
+      if (rightPiece != null
+          && (rightPiece.pieceType == PieceType.WP || rightPiece.pieceType == PieceType.BP)
+          && isEnemy(rightPiece)) {
+        if (((Pawn) rightPiece).hasJustAdvancedTwice) {
+          if (rightDiag.rank == newRank && rightDiag.file == newFile) {
+            // capture the piece
+            Chess.capturedPiece = rightPiece;
+            Chess.capturePiece(rightPiece);
+          }
+        }
+      }
+    }
+    // move the piece
+    super.movePiece(newRank, newFile);
+  }
+
+  // get the visible squares from the location
   public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(
       int rank, ReturnPiece.PieceFile file) {
     // arraylist to store the visible squares from the location
@@ -197,74 +269,5 @@ public class Pawn extends Piece {
     // add all the squares to the visibleSquares arraylist
     visibleSquaresOuter.add(visibleSquares);
     return visibleSquaresOuter;
-  }
-
-  // move the piece
-  public void movePiece(int newRank, Piece.PieceFile newFile) {
-
-    // if the pawn has just advanced twice, then it can be captured en passant
-    if (this.pieceType == PieceType.WP || this.pieceType == PieceType.BP) {
-      if (Math.abs(this.pieceRank - newRank) == 2) {
-        this.hasJustAdvancedTwice = true;
-      }
-    }
-
-    // rankMultiplier for moving the pawn
-    int rankMultiplier;
-    if (this.isWhite) {
-      rankMultiplier = 1;
-    } else {
-      rankMultiplier = -1;
-    }
-    if (this.pieceFile.ordinal() != 0) {
-      Square leftSquare =
-          new Square(
-              this.pieceRank,
-              ReturnPiece.PieceFile.values()[enumFileToChar(this.pieceFile) - 'a' - 1]);
-      Piece leftPiece = Chess.getPiece(leftSquare.rank, leftSquare.file);
-      Square leftDiag =
-          new Square(
-              this.pieceRank + rankMultiplier,
-              ReturnPiece.PieceFile.values()[enumFileToChar(this.pieceFile) - 'a' - 1]);
-
-      // if the pawn can en passant, it can see there as well.
-      if (leftPiece != null
-          && (leftPiece.pieceType == PieceType.WP || leftPiece.pieceType == PieceType.BP)
-          && isEnemy(leftPiece)) {
-        if (((Pawn) leftPiece).hasJustAdvancedTwice) {
-          if (leftDiag.rank == newRank && leftDiag.file == newFile) {
-            // capture the piece
-            Chess.capturedPiece = leftPiece;
-            Chess.capturePiece(leftPiece);
-          }
-        }
-      }
-    }
-
-    // do the same thing but for the right side
-    if (this.pieceFile.ordinal() != 7) {
-      Square rightSquare =
-          new Square(
-              this.pieceRank,
-              ReturnPiece.PieceFile.values()[enumFileToChar(this.pieceFile) - 'a' + 1]);
-      Piece rightPiece = Chess.getPiece(rightSquare.rank, rightSquare.file);
-      Square rightDiag =
-          new Square(
-              this.pieceRank + rankMultiplier,
-              ReturnPiece.PieceFile.values()[enumFileToChar(this.pieceFile) - 'a' + 1]);
-      if (rightPiece != null
-          && (rightPiece.pieceType == PieceType.WP || rightPiece.pieceType == PieceType.BP)
-          && isEnemy(rightPiece)) {
-        if (((Pawn) rightPiece).hasJustAdvancedTwice) {
-          if (rightDiag.rank == newRank && rightDiag.file == newFile) {
-            // capture the piece
-            Chess.capturedPiece = rightPiece;
-            Chess.capturePiece(rightPiece);
-          }
-        }
-      }
-    }
-    // move the piece
-    super.movePiece(newRank, newFile);
   }
 }
