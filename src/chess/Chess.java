@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 // ! Do not change
 
@@ -40,7 +41,7 @@ class ReturnPiece {
   }
 
   public boolean equals(Object other) {
-    if (other == null || !(other instanceof ReturnPiece otherPiece)) {
+    if (!(other instanceof ReturnPiece otherPiece)) {
       return false;
     }
     return pieceType == otherPiece.pieceType
@@ -88,7 +89,7 @@ public class Chess {
   // static variable for a captured piece
   static Piece capturedPiece;
 
-  // static variable for a successful move
+  // static variable for a successful move (see Piece.movePiece())
   static boolean successfulMove = false;
 
   // method to get a piece from the piecesOnBoard arraylist
@@ -159,7 +160,7 @@ public class Chess {
     if (!successfulMove) {
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
       // remove all null pieces from the piecesOnBoard arraylist
-      play.piecesOnBoard.removeIf(p -> p == null);
+      play.piecesOnBoard.removeIf(Objects::isNull);
       return play;
     }
 
@@ -227,7 +228,7 @@ public class Chess {
     successfulMove = false;
 
     // remove all null pieces from the piecesOnBoard arraylist
-    play.piecesOnBoard.removeIf(p -> p == null);
+    play.piecesOnBoard.removeIf(Objects::isNull);
 
     return play; // return the current state of the game
   }
