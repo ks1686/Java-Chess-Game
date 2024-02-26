@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class King extends Piece {
 
+  // constructor
   public King(boolean isWhite) {
     super(isWhite);
     if (isWhite) {
@@ -13,58 +14,41 @@ public class King extends Piece {
     }
   }
 
-  public void movePiece(int newRank, Piece.PieceFile newFile) {
-    // check if king is castling
-    // variable to store file change for castling king
-    ReturnPiece.PieceFile kingCastleFile;
-
-    if (Math.abs(this.pieceFile.ordinal() - newFile.ordinal()) > 1) {
-      // if the king is castling, move the rook as well
-      if (newFile.ordinal() > this.pieceFile.ordinal()) { // castling to the right
-        Piece rook = Chess.getPiece(this.pieceRank, ReturnPiece.PieceFile.h);
-        if (rook != null) {
-          rook.movePiece(this.pieceRank, PieceFile.f);
-          rook.hasMoved = true;
-        }
-        // set kingCastleFile to g
-        kingCastleFile = ReturnPiece.PieceFile.g;
-      } else { // castling to the left
-        Piece rook = Chess.getPiece(this.pieceRank, ReturnPiece.PieceFile.a);
-        if (rook != null) {
-          rook.movePiece(this.pieceRank, PieceFile.d);
-          rook.hasMoved = true;
-        }
-        // set the kingCastleFile to c
-        kingCastleFile = ReturnPiece.PieceFile.c;
-      }
-      // now move the king
-      this.pieceRank = newRank; // move piece to new spot
-      this.pieceFile = kingCastleFile;
-      this.hasMoved = true;
-      return;
-    }
-
-    // otherwise, super.movePiece()
-    super.movePiece(newRank, newFile);
-  }
-
+  // method to check if the piece can move to a new square
   public boolean canMoveSpecific(
       int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile) {
 
     // castling logic implemented here
-    Piece otherPiece = Chess.getPiece(newRank, newFile);
+    //    Piece otherPiece = Chess.getPiece(newRank, newFile);
+
+    // input for right castling is e1 g1, current logic expects e1 h1
+    // if newFile is g, change to h. If newfile is a, change to c
+    // store offsetFile in a new variable
+    ReturnPiece.PieceFile offsetFile;
+    if (newFile == ReturnPiece.PieceFile.g) {
+      offsetFile = ReturnPiece.PieceFile.h;
+    } else if (newFile == ReturnPiece.PieceFile.c) {
+      offsetFile = ReturnPiece.PieceFile.a;
+    } else {
+      offsetFile = newFile;
+    }
+
+    // get the rook using the offsetFile
+    Piece otherPiece = Chess.getPiece(rank, offsetFile);
+
     if (otherPiece != null) {
-      // if otherPiece is not a rook of the same team or if it is a rook of the same team and has moved, return false
+      // if otherPiece is not a rook of the same team or if it is a rook of the same team and has
+      // moved, return false
       if ((isWhite && otherPiece.getPieceType() != PieceType.WR)
           || (!isWhite && otherPiece.getPieceType() != PieceType.BR)
           || otherPiece.hasMoved) {
         return false;
       }
 
-    // can't move to same square
-    if (this.pieceRank == newRank && this.pieceFile == newFile) {
-      return false;
-    }
+      // can't move to same square
+      if (this.pieceRank == newRank && this.pieceFile == newFile) {
+        return false;
+      }
 
       if ((isWhite && otherPiece.getPieceType() == PieceType.WR)
           || (!isWhite && otherPiece.getPieceType() == PieceType.BR)) {
@@ -115,6 +99,43 @@ public class King extends Piece {
     return rankChange <= 1 && fileChange <= 1; // can move one square in any direction
   }
 
+  // method to move the piece to a new spot
+  public void movePiece(int newRank, Piece.PieceFile newFile) {
+    // check if king is castling
+    // variable to store file change for castling king
+    ReturnPiece.PieceFile kingCastleFile;
+
+    if (Math.abs(this.pieceFile.ordinal() - newFile.ordinal()) > 1) {
+      // if the king is castling, move the rook as well
+      if (newFile.ordinal() > this.pieceFile.ordinal()) { // castling to the right
+        Piece rook = Chess.getPiece(this.pieceRank, ReturnPiece.PieceFile.h);
+        if (rook != null) {
+          rook.movePiece(this.pieceRank, PieceFile.f);
+          rook.hasMoved = true;
+        }
+        // set kingCastleFile to g
+        kingCastleFile = ReturnPiece.PieceFile.g;
+      } else { // castling to the left
+        Piece rook = Chess.getPiece(this.pieceRank, ReturnPiece.PieceFile.a);
+        if (rook != null) {
+          rook.movePiece(this.pieceRank, PieceFile.d);
+          rook.hasMoved = true;
+        }
+        // set the kingCastleFile to c
+        kingCastleFile = ReturnPiece.PieceFile.c;
+      }
+      // now move the king
+      this.pieceRank = newRank; // move piece to new spot
+      this.pieceFile = kingCastleFile;
+      this.hasMoved = true;
+      return;
+    }
+
+    // otherwise, super.movePiece()
+    super.movePiece(newRank, newFile);
+  }
+
+  // method to get the visible squares from the location
   public ArrayList<ArrayList<Square>> getVisibleSquaresFromLocation(
       int rank, ReturnPiece.PieceFile file) {
     ArrayList<ArrayList<Square>> visibleSquares = new ArrayList<>();
