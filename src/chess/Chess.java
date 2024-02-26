@@ -150,10 +150,7 @@ public class Chess {
       return play;
     }
 
-    // TODO: Check/Checkmate Logic
-
-    // check if current player is in check
-
+    // move the piece to the new spot
     pieceToMove.movePiece(toRank, toFile);
 
     // check if successful move is true
@@ -163,8 +160,6 @@ public class Chess {
       play.piecesOnBoard.removeIf(Objects::isNull);
       return play;
     }
-
-    // TODO: recheck for check/checkmate?
 
     // check if move results in pawn promotion
     if (pieceToMove instanceof Pawn) {
@@ -208,8 +203,6 @@ public class Chess {
 
       // reset pawn hasJustAdvancedTwice
       resetPawnHasJustAdvancedTwice(currentPlayer);
-
-      // TODO: check for check to send out message
 
       // change player and send message if in check
       if (currentPlayer == Player.white) {

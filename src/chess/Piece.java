@@ -17,18 +17,12 @@ public abstract class Piece extends ReturnPiece {
   public abstract boolean canMoveSpecific(
       int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile);
 
-  // TODO: canMove method not playing nicely with check since we cannot move opposite color pieces,
-  // need to find workaround
+  // method to check if the piece can move to a new square
   public boolean canMove(int newRank, ReturnPiece.PieceFile newFile) {
     int rank = this.pieceRank;
     ReturnPiece.PieceFile file = this.pieceFile;
     char fileChar = file.name().charAt(0);
     char newFileChar = newFile.name().charAt(0);
-
-    //    if ((Chess.currentPlayer == Player.white && pieceType.name().charAt(0) == 'B')
-    //        || (Chess.currentPlayer == Player.black && pieceType.name().charAt(0) == 'W')) {
-    //      return false; // can't move a piece of the opposite color
-    //    }
 
     // check if move is to same square or out of bounds
     if (file == newFile && rank == newRank) {
@@ -58,7 +52,7 @@ public abstract class Piece extends ReturnPiece {
     return canMoveSpecific(rank, file, newRank, newFile);
   }
 
-  // TODO: static method to check if a piece is in check
+  // method to check if the king is in check
   public static boolean inCheck(Piece king) {
     // retrieve the king's rank and file
     int kingRank = king.pieceRank;
@@ -96,13 +90,15 @@ public abstract class Piece extends ReturnPiece {
     this.pieceRank = newRank;
     this.pieceFile = newFile;
 
-    // TODO: check for possible check
+    // check for possible check
     if (Piece.inCheck(Chess.getKing(Chess.currentPlayer))) {
       // move the piece back to its original spot
       this.pieceRank = oldRank;
       this.pieceFile = oldFile;
       // add the chess class variable capturedPiece back to the board
-      Chess.getPiecesOnBoard().add(Chess.capturedPiece);
+      if (!isNewSpotEmpty) {
+        Chess.getPiecesOnBoard().add(Chess.capturedPiece);
+      }
       // set successfulMove to false
       Chess.successfulMove = false;
       return;

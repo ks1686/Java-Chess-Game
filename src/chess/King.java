@@ -47,18 +47,8 @@ public class King extends Piece {
     super.movePiece(newRank, newFile);
   }
 
-  // TODO: need to implement checking for pieces in the way
   public boolean canMoveSpecific(
       int rank, ReturnPiece.PieceFile file, int newRank, ReturnPiece.PieceFile newFile) {
-
-    // castling logic: see if there's a rook of the same team in the new square. if so, make sure
-    // neither the king nor the
-    // rook hasMoved.
-    // if so, make sure there are no obstacles in between the king and rook.
-    // if so, make sure no piece can see any squares between the king and rook.
-    // if so, castle.
-
-    // TODO: king in check logic (if king in check, return false
 
     // castling logic implemented here
     Piece otherPiece = Chess.getPiece(newRank, newFile);
