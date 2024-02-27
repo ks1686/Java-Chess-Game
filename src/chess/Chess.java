@@ -183,7 +183,7 @@ public class Chess {
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
       return play;
     }
-    
+
     // move the piece to the new spot
     pieceToMove.movePiece(toRank, toFile);
 
@@ -324,7 +324,8 @@ public class Chess {
 
   // method to check if a player is in checkmate
   public static boolean isInCheckmate(Player player) {
-    if (!Piece.inCheck(getKing(player))) {
+    // if player not in check, return false
+    if (!Piece.inCheck(Chess.getKing(player))) {
       return false;
     }
 

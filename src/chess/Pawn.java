@@ -198,7 +198,7 @@ public class Pawn extends Piece {
 
     // get the rank multiplier
     int rankMultiplier;
-    if (Chess.currentPlayer == Chess.Player.white) {
+    if (this.isWhite) {
       rankMultiplier = 1;
     } else {
       rankMultiplier = -1;
