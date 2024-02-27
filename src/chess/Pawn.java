@@ -224,45 +224,53 @@ public class Pawn extends Piece {
 
     // check to make sure that file is not 'h'
     if (fileInt != 7) {
-      // add all the squares in the diagonals to the arraylists
-      Square rightDiag =
-          new Square(rank + rankMultiplier, ReturnPiece.PieceFile.values()[fileInt + 1]);
-      Piece rightDiagPiece = Chess.getPiece(rightDiag.rank, rightDiag.file);
-      // if the square is occupied by an enemy piece, then add it to the list of visible squares
-      if (isEnemy(rightDiagPiece)) visibleSquares.add(rightDiag);
+      try {
+        // add all the squares in the diagonals to the arraylists
+        Square rightDiag =
+            new Square(rank + rankMultiplier, ReturnPiece.PieceFile.values()[fileInt + 1]);
+        Piece rightDiagPiece = Chess.getPiece(rightDiag.rank, rightDiag.file);
+        // if the square is occupied by an enemy piece, then add it to the list of visible squares
+        if (isEnemy(rightDiagPiece)) visibleSquares.add(rightDiag);
 
-      // also, if the pawn can en passant, it can see there as well.
-      Square rightSquare = new Square(rank, ReturnPiece.PieceFile.values()[fileInt + 1]);
-      if (Chess.isSquareOnBoard(rightSquare.rank, rightSquare.file)) {
-        Piece rightPiece = Chess.getPiece(rightSquare.rank, rightSquare.file);
-        if (rightPiece != null
-            && (rightPiece.pieceType == PieceType.WP || rightPiece.pieceType == PieceType.BP)) {
-          if (isEnemy(rightPiece) && ((Pawn) rightPiece).hasJustAdvancedTwice) { //
-            visibleSquares.add(rightDiag);
+        // also, if the pawn can en passant, it can see there as well.
+        Square rightSquare = new Square(rank, ReturnPiece.PieceFile.values()[fileInt + 1]);
+        if (Chess.isSquareOnBoard(rightSquare.rank, rightSquare.file)) {
+          Piece rightPiece = Chess.getPiece(rightSquare.rank, rightSquare.file);
+          if (rightPiece != null
+              && (rightPiece.pieceType == PieceType.WP || rightPiece.pieceType == PieceType.BP)) {
+            if (isEnemy(rightPiece) && ((Pawn) rightPiece).hasJustAdvancedTwice) { //
+              visibleSquares.add(rightDiag);
+            }
           }
         }
+      } catch (IllegalArgumentException e) {
+        // do nothing
       }
     }
 
     // same but left side; check to make sure that file is not 'a'
     if (fileInt != 0) {
-      Square leftDiag =
-          new Square(rank + rankMultiplier, ReturnPiece.PieceFile.values()[fileInt - 1]);
-      Piece leftDiagPiece = Chess.getPiece(leftDiag.rank, leftDiag.file);
-      if (isEnemy(leftDiagPiece)) {
-        visibleSquares.add(leftDiag);
-      }
+      try {
+        Square leftDiag =
+            new Square(rank + rankMultiplier, ReturnPiece.PieceFile.values()[fileInt - 1]);
+        Piece leftDiagPiece = Chess.getPiece(leftDiag.rank, leftDiag.file);
+        if (isEnemy(leftDiagPiece)) {
+          visibleSquares.add(leftDiag);
+        }
 
-      // also, if the pawn can en passant, it can see there as well.
-      Square leftSquare = new Square(rank, ReturnPiece.PieceFile.values()[fileInt - 1]);
-      if (Chess.isSquareOnBoard(leftSquare.rank, leftSquare.file)) {
-        Piece leftPiece = Chess.getPiece(leftSquare.rank, leftSquare.file);
-        if (leftPiece != null
-            && (leftPiece.pieceType == PieceType.WP || leftPiece.pieceType == PieceType.BP)) {
-          if (isEnemy(leftPiece) && ((Pawn) leftPiece).hasJustAdvancedTwice) {
-            visibleSquares.add(leftDiag);
+        // also, if the pawn can en passant, it can see there as well.
+        Square leftSquare = new Square(rank, ReturnPiece.PieceFile.values()[fileInt - 1]);
+        if (Chess.isSquareOnBoard(leftSquare.rank, leftSquare.file)) {
+          Piece leftPiece = Chess.getPiece(leftSquare.rank, leftSquare.file);
+          if (leftPiece != null
+              && (leftPiece.pieceType == PieceType.WP || leftPiece.pieceType == PieceType.BP)) {
+            if (isEnemy(leftPiece) && ((Pawn) leftPiece).hasJustAdvancedTwice) {
+              visibleSquares.add(leftDiag);
+            }
           }
         }
+      } catch (IllegalArgumentException e) {
+        // do nothing
       }
     }
 
