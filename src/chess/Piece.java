@@ -38,6 +38,29 @@ public abstract class Piece extends ReturnPiece {
       return false; // check if square is within bounds of the board
     }
 
+    // if this move puts the current player's king in check, return false
+    // move the piece to the new spot
+    int oldRank = this.pieceRank;
+    ReturnPiece.PieceFile oldFile = this.pieceFile;
+    this.pieceRank = newRank;
+    this.pieceFile = newFile;
+
+    // check if the king is in check
+    // player is white if the piece is white, otherwise player is black
+    Chess.Player player = this.isWhite ? Chess.Player.white : Chess.Player.black;
+    boolean inCheck = King.inCheck(Chess.getKing(player));
+    if (inCheck) {
+      // move the piece back to the old square
+      this.pieceRank = oldRank;
+      this.pieceFile = oldFile;
+      return false;
+    } else {
+      // move the piece back to the old square
+      this.pieceRank = oldRank;
+      this.pieceFile = oldFile;
+    }
+
+
     Piece otherPiece = Chess.getPiece(newRank, newFile);
 
     // check that the move being performed is not a castle
@@ -58,7 +81,6 @@ public abstract class Piece extends ReturnPiece {
   // move the piece to a new spot
   public void movePiece(int newRank, Piece.PieceFile newFile) {
     boolean isNewSpotEmpty;
-
     // piece can move, check if the new spot is empty
     Piece otherPiece = Chess.getPiece(newRank, newFile);
     isNewSpotEmpty = otherPiece == null;

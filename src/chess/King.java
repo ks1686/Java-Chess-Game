@@ -112,6 +112,8 @@ public class King extends Piece {
       }
     }
 
+
+
     // king can move one square in any direction provided
     int rankChange = Math.abs(rank - newRank); // change in rank
     int fileChange = Math.abs(enumFileToChar(file) - enumFileToChar(newFile)); // change in file

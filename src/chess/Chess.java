@@ -128,6 +128,7 @@ public class Chess {
     castleFile = null;
 
     // move input formatting
+
     ReturnPiece.PieceFile fromFile = Piece.charToEnumFile(move.toLowerCase().charAt(0));
     int fromRank = Character.getNumericValue(move.charAt(1));
     ReturnPiece.PieceFile toFile = Piece.charToEnumFile(move.toLowerCase().charAt(3));
@@ -182,7 +183,7 @@ public class Chess {
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
       return play;
     }
-
+    
     // move the piece to the new spot
     pieceToMove.movePiece(toRank, toFile);
 
@@ -326,6 +327,7 @@ public class Chess {
     if (!Piece.inCheck(getKing(player))) {
       return false;
     }
+    
 
     // create copy of piecesOnBoard to avoid concurrent modification
     ArrayList<Piece> piecesOnBoardCopy = new ArrayList<>();
@@ -334,6 +336,9 @@ public class Chess {
         piecesOnBoardCopy.add((Piece) piece);
       }
     }
+
+    // make a reference to piecesOnBoard
+    ArrayList<ReturnPiece> piecesOnBoardRef = play.piecesOnBoard;
 
     // iterate through all pieces on the board
     List<Piece> piecesToAddBack = new ArrayList<>();
@@ -347,7 +352,21 @@ public class Chess {
         // iterate through all possible moves for each piece
         for (ReturnPiece.PieceFile file : ReturnPiece.PieceFile.values()) {
           for (int rank = MIN_RANK; rank <= MAX_RANK; rank++) {
+            if (piece.pieceType == ReturnPiece.PieceType.BK
+                  && file == ReturnPiece.PieceFile.f
+                  && rank == 7) {
+                System.out.println("Paused");
+              }
             if (piece.canMove(rank, file)) {
+              System.out.println("Checking move: " + piece.pieceType + " to " + file + rank);
+              //  break when checking black king to f7
+              
+              // pause when checking Bn to f6
+              if (piece.pieceType == ReturnPiece.PieceType.BN
+                  && file == ReturnPiece.PieceFile.f
+                  && rank == 6) {
+                System.out.println("Paused");
+              }
               int oldRank = piece.pieceRank;
               ReturnPiece.PieceFile oldFile = piece.pieceFile;
               Piece oldPiece = getPiece(rank, file);
