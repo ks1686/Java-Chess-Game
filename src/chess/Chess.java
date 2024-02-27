@@ -1,3 +1,7 @@
+// Karim Smires, ks1686
+// Jude Jacob, jj885
+// CS213 Software Methodology
+
 package chess;
 
 import java.util.ArrayList;
@@ -411,13 +415,21 @@ public class Chess {
               successfulMove = false;
               break;
             }
+
+            // unable to successfully move a piece, so no need to move it back
             // reset successfulMove
             successfulMove = false;
+            // add back the capturedPiece to the board
+            if (capturedPiece != null) {
+              play.piecesOnBoard.add(capturedPiece);
+            }
+            // reset capturedPiece
+            capturedPiece = null;
           }
         }
       }
     }
-    
+
     return inCheckmate;
   }
 
