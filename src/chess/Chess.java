@@ -336,10 +336,6 @@ public class Chess {
         piecesOnBoardCopy.add((Piece) piece);
       }
     }
-
-    // make a reference to piecesOnBoard
-    ArrayList<ReturnPiece> piecesOnBoardRef = play.piecesOnBoard;
-
     // iterate through all pieces on the board
     List<Piece> piecesToAddBack = new ArrayList<>();
     for (ReturnPiece tempPiece :
@@ -352,14 +348,7 @@ public class Chess {
         // iterate through all possible moves for each piece
         for (ReturnPiece.PieceFile file : ReturnPiece.PieceFile.values()) {
           for (int rank = MIN_RANK; rank <= MAX_RANK; rank++) {
-            if (piece.pieceType == ReturnPiece.PieceType.BK
-                  && file == ReturnPiece.PieceFile.f
-                  && rank == 7) {
-                System.out.println("Paused");
-              }
             if (piece.canMove(rank, file)) {
-              System.out.println("Checking move: " + piece.pieceType + " to " + file + rank);
-              //  break when checking black king to f7
               
               // pause when checking Bn to f6
               if (piece.pieceType == ReturnPiece.PieceType.BN
