@@ -387,7 +387,7 @@ public class Chess {
               boolean isNewSpotEmpty =
                   otherPiece == null; // check if the new spot is empty (otherPiece is null)
               if (!isNewSpotEmpty) {
-                play.piecesOnBoard.add(Chess.capturedPiece);
+                play.piecesOnBoard.add(capturedPiece);
               }
               // set successfulMove to false if the move results in check
               Chess.successfulMove = false;
@@ -403,7 +403,7 @@ public class Chess {
 
               // add back the capturedPiece to the board
               if (capturedPiece != null) {
-                piecesToAddBack.add(capturedPiece);
+                play.piecesOnBoard.add(capturedPiece);
               }
 
               // reset successfulMove
