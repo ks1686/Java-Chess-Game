@@ -373,9 +373,10 @@ public class Chess {
             if (!piece.canMove(toRank, toFile)) {
               continue;
             }
-
+            boolean piecehasMovedStatus = piece.hasMoved;
             // move the piece to the new spot
             piece.movePiece(toRank, toFile);
+            piece.hasMoved = piecehasMovedStatus;
 
             // check for possible check after move for current player
             if (Piece.inCheck(Chess.getKing(Chess.currentPlayer))) {
@@ -416,7 +417,7 @@ public class Chess {
         }
       }
     }
-
+    
     return inCheckmate;
   }
 
