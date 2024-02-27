@@ -345,6 +345,7 @@ public class Chess {
         new ArrayList<>(play.piecesOnBoard)) { // Create a copy for safe iteration
       // ignore null pieces and pieces of the same color
       // cast piece into a Piece object
+      // ! no error yet
       Piece piece = (Piece) tempPiece;
       // filter possible null pieces and pieces of the same color
       if (piece != null && piece.isWhite == (player == Player.white)) {
@@ -359,15 +360,12 @@ public class Chess {
             // if it is, then it's not checkmate (return false)
             // if it isn't, then it's checkmate (return false)
 
-            // check if in coordinates are in bounds; break if not
-            if (isSquareOnBoard(toRank, toFile)) {
-              continue;
-            }
-
             // check if the piece to move is the same color as the current player
             if (currentPlayer == Player.white && !piece.isWhite) {
+              // continue to the next piece if the piece is not the same color as the current player
               continue;
             } else if (currentPlayer == Player.black && piece.isWhite) {
+              // continue to the next piece if the piece is not the same color as the current player
               continue;
             }
 
