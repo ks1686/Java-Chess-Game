@@ -128,7 +128,6 @@ public class Chess {
     castleFile = null;
 
     // move input formatting
-
     ReturnPiece.PieceFile fromFile = Piece.charToEnumFile(move.toLowerCase().charAt(0));
     int fromRank = Character.getNumericValue(move.charAt(1));
     ReturnPiece.PieceFile toFile = Piece.charToEnumFile(move.toLowerCase().charAt(3));
@@ -183,7 +182,7 @@ public class Chess {
       play.message = ReturnPlay.Message.ILLEGAL_MOVE;
       return play;
     }
-    
+
     // move the piece to the new spot
     pieceToMove.movePiece(toRank, toFile);
 
@@ -327,7 +326,6 @@ public class Chess {
     if (!Piece.inCheck(getKing(player))) {
       return false;
     }
-    
 
     // create copy of piecesOnBoard to avoid concurrent modification
     ArrayList<Piece> piecesOnBoardCopy = new ArrayList<>();
@@ -336,8 +334,11 @@ public class Chess {
         piecesOnBoardCopy.add((Piece) piece);
       }
     }
+
     // iterate through all pieces on the board
     List<Piece> piecesToAddBack = new ArrayList<>();
+    // set inCheckmate to true
+    boolean inCheckmate = true;
     for (ReturnPiece tempPiece :
         new ArrayList<>(play.piecesOnBoard)) { // Create a copy for safe iteration
       // ignore null pieces and pieces of the same color
@@ -346,46 +347,77 @@ public class Chess {
       // filter possible null pieces and pieces of the same color
       if (piece != null && piece.isWhite == (player == Player.white)) {
         // iterate through all possible moves for each piece
-        for (ReturnPiece.PieceFile file : ReturnPiece.PieceFile.values()) {
-          for (int rank = MIN_RANK; rank <= MAX_RANK; rank++) {
-            if (piece.canMove(rank, file)) {
-              
-              // pause when checking Bn to f6
-              if (piece.pieceType == ReturnPiece.PieceType.BN
-                  && file == ReturnPiece.PieceFile.f
-                  && rank == 6) {
-                System.out.println("Paused");
-              }
-              int oldRank = piece.pieceRank;
-              ReturnPiece.PieceFile oldFile = piece.pieceFile;
-              Piece oldPiece = getPiece(rank, file);
+        for (ReturnPiece.PieceFile toFile : ReturnPiece.PieceFile.values()) {
+          for (int toRank = MIN_RANK; toRank <= MAX_RANK; toRank++) {
+            // save the piece's position to move back if needed
+            int fromRank = piece.pieceRank;
+            ReturnPiece.PieceFile fromFile = piece.pieceFile;
 
-              piece.movePiece(rank, file); //
-              if (!Piece.inCheck(getKing(player))) {
-                // add piece at oldRank and oldFile to
-                piece.movePiece(oldRank, oldFile);
-                if (oldPiece != null) {
-                  piecesToAddBack.add(oldPiece); // Collect the piece to add back later
-                }
-                return false;
-              }
+            // use entire previous play logic to check if the whole play is/isn't valid
+            // if it is, then it's not checkmate (return false)
+            // if it isn't, then it's checkmate (return false)
 
-              if (piece.pieceRank != oldRank || piece.pieceFile != oldFile) {
-                piece.movePiece(oldRank, oldFile);
-              }
-
-              if (oldPiece != null) {
-                piecesToAddBack.add(oldPiece); // Collect the piece to add back later
-              }
+            // check if in coordinates are in bounds; break if not
+            if (isSquareOnBoard(toRank, toFile)) {
+              continue;
             }
+
+            // check if the piece to move is the same color as the current player
+            if (currentPlayer == Player.white && !piece.isWhite) {
+              continue;
+            } else if (currentPlayer == Player.black && piece.isWhite) {
+              continue;
+            }
+
+            // check if the move is legal
+            if (!piece.canMove(toRank, toFile)) {
+              continue;
+            }
+
+            // move the piece to the new spot
+            piece.movePiece(toRank, toFile);
+
+            // check for possible check after move for current player
+            if (Piece.inCheck(Chess.getKing(Chess.currentPlayer))) {
+              // move the piece back to its original spot
+              piece.pieceRank = fromRank;
+              piece.pieceFile = fromFile;
+              // add the chess class variable capturedPiece back to the board
+              Piece otherPiece = Chess.getPiece(toRank, toFile);
+              boolean isNewSpotEmpty =
+                  otherPiece == null; // check if the new spot is empty (otherPiece is null)
+              if (!isNewSpotEmpty) {
+                play.piecesOnBoard.add(Chess.capturedPiece);
+              }
+              // set successfulMove to false if the move results in check
+              Chess.successfulMove = false;
+            }
+
+            // if we were able to successfully move a piece, then it's not checkmate
+            if (successfulMove) {
+              inCheckmate = false;
+
+              // move the piece back to its original spot
+              piece.pieceRank = fromRank;
+              piece.pieceFile = fromFile;
+
+              // add back the capturedPiece to the board
+              if (capturedPiece != null) {
+                piecesToAddBack.add(capturedPiece);
+              }
+
+              // reset successfulMove
+              successfulMove = false;
+              break;
+            }
+            // reset successfulMove
+            successfulMove = false;
           }
         }
       }
     }
 
-    play.piecesOnBoard.addAll(piecesToAddBack); // Add all collected pieces back after iteration
-
-    return true;
+    return inCheckmate;
   }
 
   // method to check if a square is on the board
